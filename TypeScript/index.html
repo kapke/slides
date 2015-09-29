@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>TypeScript</title>
+        <meta name="author" content="Andrzej Kopeć">
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/white.css" id="theme">
+
+        <!-- Code syntax highlighting -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+
+        <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+        <style type="text/css">
+            .reveal img.logo {
+                border: none;
+                box-shadow: none;
+            }
+            .reveal .author {
+                text-transform: none;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div class="reveal">
+
+            <!-- Any section element inside of this container is displayed as a slide -->
+            <div class="slides">
+                <section>
+                    <h1>TypeScript</h1>
+                    <h4>Pieśń przyszłości czy relikt przeszłości?</h4>
+                </section>
+                <section>
+                    <img class="logo" src="skygate.png" alt="">
+                    <h2 class="author">Andrzej Kopeć</h2>
+                </section>
+                <section>
+                    <h2>Skąd on w ogóle się wziął?</h2>
+                    <aside class="notes">
+                        <ul>
+                            <li>Ogłoszony w 2012 roku w wersji 0.8 po 2 latach wewnętrzengo użytku w M$</li>
+                            <li>Powstał z potrzeby tworzenia frontendów klasy enterprise</li>
+                            <li>Twórca: Anders Hejlsberg (to ten od C#, Delphi i Turbo Pascala)</li>
+                        </ul>
+                    </aside>
+                </section>
+                <section>
+                    <h2>Założenia</h2>
+                    <ul>
+                        <li>Statyczne typowanie</li>
+                        <li>Udostępnienie możliwości przyszłych wersji ECMAScript w obecnych dziś środowiskach uruchomieniowych</li>
+                        <li>Dodawanie nowych funkcjonalności bez ograniczania istniejących</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Możliwości</h2>
+                    <ul>
+                        <li>Wybór języka docelowego (ES3, ES5, ES2015)</li>
+                        <li>Kompilacja do modułów (AMD, CommonJS, SystemJS, UMD) albo do jednego pliku</li>
+                        <li>Dekoratory
+                            <pre><code>
+@log
+function doSth () {
+    ...
+}
+                            </code></pre>
+                        </li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Typowanie</h3>
+                    <pre><code>
+class Sth&lt;T&gt; {
+    private privateField:T;
+    public publicField:T;
+
+    public getSth ():T {
+        return this.privateField;
+    }
+}
+
+let sth:Sth&lt;Foo&gt; = new Sth(),
+    foo = sth.getSth(); //foo is of type Foo!
+                    </code></pre>
+                    <aside class="notes">
+                        <ul>
+                            <li>Modyfikatory dostępu</li>
+                            <li>Typy generyczne</li>
+                            <li>Interfejsy</li>
+                            <li>Inferencja typów</li>
+                        </ul>
+                    </aside>
+                </section>
+                <section>
+                    <h3>Interfejsy</h3>
+                    <pre><code>
+interface Foo {
+    bar();
+}
+
+class Sth implements Foo {
+    public bar () {
+    }
+}
+
+var obj:Foo = {
+    bar: () => {}
+};
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>ES 2015</h3>
+                    <pre><code>
+import Foo from './Foo';
+
+export default class Sth extends Foo {
+    fieldA;
+    fieldB;
+
+    constructor (attrA) {
+        this.fieldA = attrA;
+    }
+
+    someMethod* () {
+        for(let i=0; ;i++) {
+            yield i;
+        }
+    }
+
+    anotherMethod () {
+        return () => {
+            return this.fieldA;
+        };
+    }
+}
+                    </code></pre>
+                    <aside class="notes">
+                        <ul>
+                            <li>Klasy</li>
+                            <li>Generatory</li>
+                            <li>Funkcje strzałkowe</li>
+                            <li>Moduły ES6</li>
+                        </ul>
+                    </aside>
+                </section>
+                <section>
+                    <h2>Eksperymenty</h2>
+                    <ul>
+                        <li><a href="http://cretz.github.io/pratphall/">Kompilacja do PHP</a></li>
+                        <li><a href="http://typedmvvm.codeplex.com/">Wspólne źródło aplikacji na kilka platform (iOS, Android, Universal App)</a></li>
+                        <li><a href="https://github.com/niutech/typescript-compile">Kompilacja TS bezpośrednio w przeglądarce</a></li>
+                        <li><a href="https://github.com/praeclarum/Netjs">Kompilacja z .NET do TS</a></li>
+                        <li><a href="http://duoco.de/">Kompilacja z C# do JS z wykorzystaniem TS i Microsoft Roslyn</a></li>
+                    </ul>
+                </section>
+            </div>
+
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+
+            // Full list of configuration options available at:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                center: true,
+
+                transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+                // Optional reveal.js plugins
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true },
+                    { src: 'plugin/notes/notes.js', async: true }
+                ]
+            });
+
+        </script>
+
+    </body>
+</html>
