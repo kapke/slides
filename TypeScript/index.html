@@ -36,6 +36,16 @@
             .reveal .author {
                 text-transform: none;
             }
+            .reveal pre code.hljs.small {
+                font-size: 66% !important;
+                line-height: 125% !important;
+            }
+            .reveal pre.inline {
+                display: inline-block;
+                box-sizing: border-box;
+                width: calc(50% - 42px);
+                vertical-align: top;
+            }
         </style>
     </head>
 
@@ -129,14 +139,12 @@ var obj:Foo = {
                 </section>
                 <section>
                     <h3>ES 2015</h3>
-                    <pre><code>
+                    <pre><code class="small">
 import Foo from './Foo';
 
 export default class Sth extends Foo {
-    fieldA;
-    fieldB;
-
     constructor (attrA) {
+        super();
         this.fieldA = attrA;
     }
 
@@ -171,6 +179,50 @@ export default class Sth extends Foo {
                         <li><a href="https://github.com/praeclarum/Netjs">Kompilacja z .NET do TS</a></li>
                         <li><a href="http://duoco.de/">Kompilacja z C# do JS z wykorzystaniem TS i Microsoft Roslyn</a></li>
                     </ul>
+                </section>
+                <section>
+                    <h2>Kod wynikowy i debugowanie</h2>
+                    <pre class="inline"><code class="small">
+export default class Sth {
+    fieldA;
+
+    constructor (attrA) {
+        this.fieldA = attrA;
+    }
+
+    someMethod (attr:number):boolean {
+        return (attr%2 == 0);
+    }
+
+    anotherMethod () {
+        return () => {
+            return this.fieldA;
+        };
+    }
+}
+                    </code></pre>
+                    <pre class="inline"><code class="small">
+define(["require", "exports"], function (require, exports) {
+    var Sth = (function () {
+        function Sth(attrA) {
+            this.fieldA = attrA;
+        }
+        Sth.prototype.someMethod = function (attr) {
+            return (attr % 2 == 0);
+        };
+        Sth.prototype.anotherMethod = function () {
+            var _this = this;
+            return function () {
+                return _this.fieldA;
+            };
+        };
+        return Sth;
+    })();
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = Sth;
+});
+
+                    </code></pre>
                 </section>
             </div>
 
