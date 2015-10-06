@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Parse.com</title>
+        <meta name="author" content="Andrzej Kopeć">
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/white.css" id="theme">
+
+        <!-- Code syntax highlighting -->
+        <link rel="stylesheet" href="bower_components/highlightjs/styles/vs.css">
+
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+
+        <style>
+            /* skygate-blue: 00b0ea */
+
+            @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic);
+
+            .reveal .logo {
+                border: none;
+                box-shadow: none;
+            }
+            .reveal h2, .reveal h3, .reveal h4 {
+                color: black;
+                font-family: 'Open Sans';
+                text-transform: none;
+            }
+
+            .reveal .controls div.navigate-left, .reveal .controls div.navigate-left.enabled {
+                border-right-color: #00b0ea;
+            }
+
+            .reveal .controls div.navigate-right, .reveal .controls div.navigate-right.enabled {
+                border-left-color: #00b0ea;
+            }
+        </style>
+
+        <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+
+        <div class="reveal">
+
+            <!-- Any section element inside of this container is displayed as a slide -->
+            <div class="slides">
+                <section>
+                    <img src="skygate.png" alt="logo" class="logo" />
+                    <h3 class="author">Andrzej Kopeć</h3>
+                </section>
+                <section>
+                    <h2>Przyszedł do nas klient...</h2>
+                    <h4>z dość specyficznymi wymaganiami</h4>
+                </section>
+                <section>
+                    <h4>WTF #1</h4>
+                    <h2>Co to jest <em>parse.com</em>!?</h2>
+                </section>
+                <section>
+                    <h4>WTF #2</h4>
+                    <h2>Jak pod to pisać? Jak to ma się do <em>node.js</em>?</h2>
+                </section>
+                <section>
+                    <h4>WTF #3</h4>
+                    <h2>Jak przetestować ten kod?</h2>
+                </section>
+                <section>
+                    <h2>Jakiś czas później...</h2>
+                </section>
+                <section>
+                    <h1>Wnioski</h1>
+                </section>
+                <section>
+                    <h2>Zarządzanie zadaniami jest niesamowicie ważne przy chociaż 2 osobach w projekcie</h2>
+                </section>
+                <section>
+                    <h2>Refactor to integralna część pracy nad kodem</h2>
+                </section>
+                <section>
+                    <h2>Testy to jedyne wiarygodne źródło informacji czy kod działa jak powinien</h2>
+                </section>
+                <section>
+                    <h2>Pisanie własnych frameworków i bibliotek jest szalenie ciężkim zadaniem</h2>
+                </section>
+                <section>
+                    <h4>PolskiBus do Berlina przy wzroście > 160cm to nie jest dobry pomysł</h4>
+                </section>
+            </div>
+
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+
+            // Full list of configuration options available at:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                center: true,
+
+                transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+                // Optional reveal.js plugins
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true },
+                    { src: 'plugin/notes/notes.js', async: true }
+                ]
+            });
+
+        </script>
+
+    </body>
+</html>
