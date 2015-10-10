@@ -47,6 +47,15 @@
             .reveal .controls div.navigate-right, .reveal .controls div.navigate-right.enabled {
                 border-left-color: #00b0ea;
             }
+
+            .reveal pre {
+              width: auto;
+            }
+
+            .reveal pre code {
+              background: none;
+              color: black;
+            }
         </style>
 
         <!--[if lt IE 9]>
@@ -91,6 +100,38 @@
                 </section>
                 <section>
                     <h2>Refactor to integralna część pracy nad kodem</h2>
+                </section>
+                <section>
+                    <pre>
+                      <code>
+if (diff >= 3600 * 24 * 1000) return {
+    value: Math.ceil(diff / (3600 * 24 * 1000)),
+    unit: 'days',
+    percent: Math.round(((current - start) / (closing - start)) * 100)
+};
+else return {
+    value: Math.ceil(diff / (3600 * 1000)),
+    unit: 'hours',
+    percent: Math.round(((current - start) / (closing - start)) * 100)
+};
+                      </code>
+                    </pre>
+                </section>
+                <section>
+                  <pre>
+                    <code>
+var that = this,
+    now = moment(),
+    duration = this.closingDate.diff(this.publishDate),
+    elapsed = now.diff(this.publishDate);
+
+return {
+    string: now.to(this.closingDate, true),
+    moment: moment.duration(that.closingDate.diff(now)),
+    percent: elapsed*100/duration
+};
+                    </code>
+                  </pre>
                 </section>
                 <section>
                     <h2>Testy to jedyne wiarygodne źródło informacji czy kod działa jak powinien</h2>
