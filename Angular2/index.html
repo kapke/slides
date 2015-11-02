@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Angular2</title>
+        <meta name="author" content="Andrzej Kopeć">
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/white.css" id="theme">
+
+        <!-- Code syntax highlighting -->
+        <link rel="stylesheet" href="bower_components/highlight.js/src/styles/vs.css">
+
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+
+        <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+        <style type="text/css">
+            .reveal img.logo {
+                border: none;
+                box-shadow: none;
+                max-width: 30%;
+            }
+            .reveal .author {
+                text-transform: none;
+            }
+            .reveal pre code.hljs.small {
+                font-size: 66% !important;
+                line-height: 125% !important;
+            }
+            .reveal pre.inline {
+                display: inline-block;
+                box-sizing: border-box;
+                width: calc(50% - 42px);
+                vertical-align: top;
+            }
+            .reveal pre code {
+                background: transparent;
+                color: black;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div class="reveal">
+
+            <!-- Any section element inside of this container is displayed as a slide -->
+            <div class="slides">
+                <section>
+                    <h1>Angular2</h1>
+                    <h6 class="author">Andrzej Kopeć</h2>
+                </section>
+                <section>
+                    <h2>Co my tu mamy?</h2>
+                    <ul>
+                        <li>Komponenty</li>
+                        <li>Formularze</li>
+                        <li>Kontener wstrzykiwania zależności</li>
+                        <li>Router</li>
+                        <li>Pipe'y</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Komponenty</h2>
+                    <pre><code>
+import {Component, View, NgClass, NgIf, NgFor} from 'angular2/angular2';
+import TodoForm from './TodoForm';
+import Todo from '../Todo';
+
+@Component({
+    selector: 'todo-item',
+    properties: ['todo'],
+})
+@View({
+    directives: [NgClass, NgIf, NgFor, TodoForm],
+    templateUrl: 'src/template/todo-item.html'
+})
+class TodoItem {                        
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Komponenty</h2>
+                    <pre><code>
+<div [ng-class]="{done: todo.isDone}" 
+     (click)="toggleExpandedState()">
+    <header>{{ todo.title }}</header>
+    <div class="tags" *ng-if="todo.tags">
+        <span class="tag" *ng-for="#tag of todo.tags">{{ tag }}</span>
+    </div>
+    <todo-form *ng-if="ifEditing"
+               [fill-with]="todo"
+               [submit-button-title]="'save'"
+               (cancel)="toggleEditingState()"
+               (todo-ready)="updateTodo($event)"></todo-form>
+</div>
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Formularze</h2>
+                    <pre><code>
+@View({
+    directives: [FORM_DIRECTIVES],
+    ...
+})
+class TodoForm {
+    constructor (fb: FormBuilder) {
+        this.controls = {
+            title: fb.control('', Validators.compose([Validators.required, Validators.maxLength(140)])),
+            image: fb.control('', UrlValidator),
+            tags: fb.control('')
+        };
+        this.todoForm = fb.group(this.controls);
+    }
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Formularze</h2>
+                    <pre><code>
+function UrlValidator (control: Control):{[key:string]: boolean} {
+    return !isUri(control.value) ? {'uri': true} : null;
+}
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Formularze</h2>
+                    <pre><code>
+<form [ng-form-model]="todoForm" (submit)="sendTodo($event)">
+    <label>
+        Title: <input ng-control="title" />
+    </label>
+    <label>
+        Image: <input ng-control="image"/>
+    </label>
+    <label>
+        tags: <input ng-control="tags" />
+    </label>
+    <button type="submit" [disabled]="!todoForm.valid">Send</button>
+    <button type="reset" (click)="cancelled($event)">Cancel</button>
+</form>              
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Wstrzykiwanie zależności</h2>
+                    <pre><code>
+bootstrap(TodosApp, 
+    TodoRepository, 
+    provide(StorageToken, {useClass: LocalStorage}), 
+    FORM_BINDINGS]);
+
+class TodosApp {
+    constructor (todoRepository:TodoRepository);
+
+const StorageToken = new OpaqueToken('Storage');
+export {Storage, StorageToken};
+
+@Injectable()
+class TodoRepository {
+    public constructor (@Inject(StorageToken) storage:Storage);
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Router</h2>
+                    <p>Trzeba podać przez konfigurację lub element &lt;base&gt; bazową ścieżkę, względem której będą rozwiązywane ścieżki</p>
+                    <pre><code>
+@RouteConfig([
+    {path: '/', as: 'Todos', component: TodosList},
+    {path: '/add', as: 'AddTodo', component: TodoForm}
+])
+class TodosApp;
+                    </code></pre>
+                </section>
+                <section>
+                    <pre><code>
+@Component({
+    selector: 'todo-navigation',
+    directives: [RouterLink],
+    template: `
+        <ul>
+            <li [router-link]="['./Todos']">todos</li>
+            <li [router-link]="['./AddTodo']">add todo</li>
+        </ul>
+    `
+})
+export default class Navigation {}
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Pipe'y</h2>
+                    <h6>Czyli filtry z Angulara 1.</h6>
+                    <p>DatePipe, UpperCasePipe, LowerCasePipe, CurrencyPipe, PercentPipe</p>
+                </section>
+                <section>
+                    <h2>Pipe'y</h2>
+                    <pre><code>
+{{dataFromPromise | async}}
+{{someDate | date:'mediumDate' | uppercase}}
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Pipe'y</h2>
+                    <pre><code>
+@Pipe({
+    name: 'foo'
+})
+class FooPipe implements PipeTransform {
+    transform (value: string, args: any[]) {
+        return 'Foo';
+    }
+}
+//...
+@Component({
+    pipes: [FooPipe]
+})
+//...
+{{ someVariable | foo }}
+                    </code></pre>                    
+                </section>
+            </div>
+
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+
+            // Full list of configuration options available at:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                center: true,
+
+                transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+                // Optional reveal.js plugins
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true },
+                    { src: 'plugin/notes/notes.js', async: true }
+                ]
+            });
+
+        </script>
+
+    </body>
+</html>
