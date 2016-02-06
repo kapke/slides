@@ -1,0 +1,23 @@
+{
+  "name": "prezentacje",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "./node_modules/.bin/jade index.jade --pretty --obj=slides.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kapke/slides.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kapke/slides/issues"
+  },
+  "homepage": "https://github.com/kapke/slides#readme",
+  "devDependencies": {
+    "jade": "^1.11.0"
+  }
+}
