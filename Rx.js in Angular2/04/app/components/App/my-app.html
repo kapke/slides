@@ -1,0 +1,8 @@
+<div>
+    <label class="input-group">
+        Query: <input type="text" [ngFormControl]="query" />
+    </label>
+    <div>
+        <my-image *ngFor="#image of images | async" [image]="image"></my-image>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+extends slide
+
+block title
+    | Retry
+
+block layout
+    - var index = '08';
+    .xp-column: xp-editor
+        +includeFile(index, 'app/components/App/App.ts', '27-49')
+        +includeFile(index, 'app/PixabaySearcher.ts')
+        +includeFile(index, 'app/components/App/my-app.html')
+    .xp-column
+        +previewTs
+    +invisibleEditor('01', [
+        'node_modules/angular2/bootstrap.js',
+        'app/app.ts',
+        'app/components/Image/Image.ts',
+        'index.html',
+        'config.js'
+    ])

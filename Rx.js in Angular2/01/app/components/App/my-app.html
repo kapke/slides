@@ -1,0 +1,8 @@
+<div>
+    <label class="input-group">
+        Query: <input type="text" #input (keyup)="onQueryChange(input.value)" />
+    </label>
+    <div>
+        <my-image *ngFor="#image of images" [image]="image"></my-image>
+    </div>
+</div>

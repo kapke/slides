@@ -1,0 +1,23 @@
+extends slide
+
+block title
+    | Let's make events more explicit
+
+block layout
+    - var index = '02';
+    - var previousIndex = '01';
+    .xp-column
+        .xp-row: xp-editor
+            +includeFile(index, 'app/components/App/App.ts', '13,16')
+        .xp-row: xp-editor
+            +includeFile(index, 'app/components/App/my-app.html', '3')
+            +includeFile(previousIndex, 'app/PixabaySearcher.ts')
+    .xp-column
+        +previewTs
+    +invisibleEditor(previousIndex, [
+        'node_modules/angular2/bootstrap.js',
+        'app/app.ts',
+        'app/components/Image/Image.ts',
+        'index.html',
+        'config.js'
+    ])

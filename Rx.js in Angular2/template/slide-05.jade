@@ -1,0 +1,20 @@
+extends slide
+
+block title
+    | Doesn't make requests on duplicates
+
+block layout
+    - var index = '05';
+    .xp-column: xp-editor
+        +includeFile(index, 'app/components/App/App.ts', '23')
+        +includeFile('01', 'app/PixabaySearcher.ts')
+        +includeFile('04', 'app/components/App/my-app.html')
+    .xp-column
+        +previewTs
+    +invisibleEditor('01', [
+        'node_modules/angular2/bootstrap.js',
+        'app/app.ts',
+        'app/components/Image/Image.ts',
+        'index.html',
+        'config.js'
+    ])

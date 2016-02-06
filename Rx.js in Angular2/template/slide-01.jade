@@ -1,0 +1,24 @@
+extends slide
+
+block title
+    | Naive images searching
+
+block layout
+    - var index = '01';
+    .xp-column
+        .xp-row: xp-editor
+            +includeFile(index, 'app/components/App/App.ts')
+        .xp-row: xp-editor
+            +includeFile(index, 'app/PixabaySearcher.ts')
+    .xp-column
+        .xp-row
+            +previewTs
+        .xp-row: xp-editor
+            +includeFile(index, 'app/components/App/my-app.html')
+    +invisibleEditor(index, [
+        'node_modules/angular2/bootstrap.js',
+        'app/app.ts',
+        'app/components/Image/Image.ts',
+        'index.html',
+        'config.js'
+    ])
