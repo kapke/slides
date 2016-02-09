@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "./node_modules/.bin/jade --out . --obj slides.json --pretty ./template",
-    "watch": "npm run build -- --watch",
+    "watch": "watch npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

@@ -1,17 +1,20 @@
 extends slide
 
 block title
-    | Add debounce
+    | Let's make events more explicit
 
 block layout
-    - var index = '03';
-    .xp-column: xp-editor
-        +includeFile(index, 'app/components/App/App.ts', '19')
-        +includeFile('01', 'app/PixabaySearcher.ts')
-        +includeFile('02', 'app/components/App/my-app.html')
+    - var index = '02';
+    - var previousIndex = '01';
+    .xp-column
+        .xp-row: xp-editor
+            +includeFile(index, 'app/components/App/App.ts', '13,16')
+        .xp-row: xp-editor
+            +includeFile(index, 'app/components/App/my-app.html', '3')
+            +includeFile(previousIndex, 'app/PixabaySearcher.ts')
     .xp-column
         +previewTs
-    +invisibleEditor('01', [
+    +invisibleEditor(previousIndex, [
         'node_modules/angular2/bootstrap.js',
         'app/app.ts',
         'app/components/Image/Image.ts',
