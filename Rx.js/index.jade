@@ -1,0 +1,58 @@
+extends ../presentation-template
+
+block title
+    | Rx.js
+
+block slides
+    +titleSlide('Rx.js')
+    section
+        h3 Sposoby przekazywania danych w JS
+        table
+            tr: th &nbsp;
+                th Jedna wartość
+                th Wiele wartości
+            tr: th Synchronicznie
+                td Obiekt
+                td Iterable
+            tr: th Asynchronicznie
+                td Promise
+                td: ul: li Zdarzenia
+                        li Strumienie
+                        li: strong Observable
+    section
+        h3 API Rx.js (w dużym uproszczeniu)
+        pre: code.
+            observable.&lt;operator&gt;(parameters): observable
+            observable.subscribe(onNext, onError, onFinish): subscription
+            subscription.dispose()
+    section
+        h3 Operatory
+        pre: code.
+            .map(callback)
+            .filter(callback)
+            .reduce(callback, seed)
+            .flatMap(callback)
+            .retry(count)
+            .debounce(delay)
+            .pluck(propertyName)
+            ...
+        a(href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/gettingstarted/categories.md",target="_blank") Lista operatorów w Rx.js 4
+    section
+        h3: a(href="http://rxmarbles.com/",target="_blank") RxMarbles
+    section
+        h3 Tworzenie nowych sekwencji
+        h4 Ponownie do wyboru jest&nbsp;
+            a(href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/gettingstarted/which-static.md", target="_blank") bardzo dużo opcji
+    section
+        h3 Schedulery
+        h4 Rzecz, której w Rx.js raczej się nie używa, w innych językach bywają bardzo użyteczne
+    section
+        h3 Czy, gdzie i jak zacząć korzystać z Rx.js?
+    section
+        h3 Linki
+        a(href="http://rxjs5-esdoc-decision-tree.surge.sh/manual/overview.html#choose-an-operator", target="_blank") Pomoc w wyborze operatora w Rx.js 5
+        br
+        a(href="https://github.com/zenparsing/es-observable", target="_blank") Specyfikacja Observables
+        br
+        a(href="https://github.com/Reactive-Extensions/RxJS/", target="_blank") Rx.js 4
+    +hiringSlide

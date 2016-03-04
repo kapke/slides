@@ -1,0 +1,164 @@
+<!DOCTYPE html(lang='en')>
+<head>
+  <meta charset="utf-8"/>
+  <title>Rx.js</title>
+  <meta name="author" content="Andrzej Kopeć"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui"/>
+  <link rel="stylesheet" href="css/reveal.css"/>
+  <link id="theme" rel="stylesheet" href="css/theme/white.css"/>
+  <!-- Code syntax highlighting-->
+  <link rel="stylesheet" href="bower_components/highlightjs/styles/vs.css"/>
+  <!-- Printing and PDF exports-->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <style>
+    /* skygate-blue: 00b0ea */
+    @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic);
+    .reveal .logo {
+        border: none;
+        box-shadow: none;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    
+    .reveal .logo.devmeeting {
+        height: 60px;
+    }
+    
+    .reveal .logo.skygate {
+        height: 90px;
+    }
+    
+    .reveal h2, .reveal h3, .reveal h4 {
+        color: black;
+        font-family: 'Open Sans';
+        text-transform: none;
+    }
+    .reveal .controls div.navigate-left, .reveal .controls div.navigate-left.enabled {
+        border-right-color: #00b0ea;
+    }
+    .reveal .controls div.navigate-right, .reveal .controls div.navigate-right.enabled {
+        border-left-color: #00b0ea;
+    }
+    .reveal pre {
+        width: auto;
+    }
+    .reveal pre code {
+        background: none;
+        color: black;
+    }
+    .reveal table tr:last-child td {
+        border-bottom: 1px solid;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <!-- Any section element inside of this container is displayed as a slide-->
+    <div class="slides">
+      <section>
+        <h1>Rx.js</h1><img src="skygate.png" alt="" class="logo skygate"/><img src="devmeetings_logo.jpg" alt="" class="logo devmeeting"/>
+        <h6>Andrzej Kopeć</h6>
+      </section>
+      <section>
+        <h3>Sposoby przekazywania danych w JS</h3>
+        <table>
+          <tr>
+            <th>&nbsp;
+              <th>Jedna wartość</th>
+              <th>Wiele wartości</th>
+            </th>
+          </tr>
+          <tr>
+            <th>Synchronicznie
+              <td>Obiekt</td>
+              <td>Iterable</td>
+            </th>
+          </tr>
+          <tr>
+            <th>Asynchronicznie
+              <td>Promise</td>
+              <td>
+                <ul>
+                  <li>Zdarzenia
+                    <li>Strumienie</li>
+                    <li><strong>Observable</strong></li>
+                  </li>
+                </ul>
+              </td>
+            </th>
+          </tr>
+        </table>
+      </section>
+      <section>
+        <h3>API Rx.js (w dużym uproszczeniu)</h3>
+        <pre><code>observable.&lt;operator&gt;(parameters): observable
+observable.subscribe(onNext, onError, onFinish): subscription
+subscription.dispose()</code></pre>
+      </section>
+      <section>
+        <h3>Operatory</h3>
+        <pre><code>.map(callback)
+.filter(callback)
+.reduce(callback, seed)
+.flatMap(callback)
+.retry(count)
+.debounce(delay)
+.pluck(propertyName)
+...</code></pre><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/gettingstarted/categories.md" target="_blank">Lista operatorów w Rx.js 4</a>
+      </section>
+      <section>
+        <h3><a href="http://rxmarbles.com/" target="_blank">RxMarbles</a></h3>
+      </section>
+      <section>
+        <h3>Tworzenie nowych sekwencji</h3>
+        <h4>Ponownie do wyboru jest&nbsp;<a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/gettingstarted/which-static.md" target="_blank">bardzo dużo opcji</a></h4>
+      </section>
+      <section>
+        <h3>Schedulery</h3>
+        <h4>Rzecz, której w Rx.js raczej się nie używa, w innych językach bywają bardzo użyteczne</h4>
+      </section>
+      <section>
+        <h3>Czy, gdzie i jak zacząć korzystać z Rx.js?</h3>
+      </section>
+      <section>
+        <h3>Linki</h3><a href="http://rxjs5-esdoc-decision-tree.surge.sh/manual/overview.html#choose-an-operator" target="_blank">Pomoc w wyborze operatora w Rx.js 5</a><br/><a href="https://github.com/zenparsing/es-observable" target="_blank">Specyfikacja Observables</a><br/><a href="https://github.com/Reactive-Extensions/RxJS/" target="_blank">Rx.js 4</a>
+      </section>
+      <section>
+        <h3>Pytania?</h3>
+        <h6><a href="mailto:andrzej.kopec@outlook.com">andrzej.kopec@outlook.com</a></h6>
+        <h6><small>PS. SkyGate szuka frontendowców<br/>Więcej szczegółów u mnie, na&nbsp;<a href="skygate.pl">skygate.pl</a>, lub mailem</small></h6>
+      </section>
+    </div>
+  </div>
+  <script src="lib/js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+  <script>
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Optional reveal.js plugins
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+            { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+            { src: 'plugin/zoom-js/zoom.js', async: true },
+            { src: 'plugin/notes/notes.js', async: true }
+        ]
+    });
+  </script>
+</body>
