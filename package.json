@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "jade index.jade --pretty --obj=slides.json",
-    "serve": "webpack-dev-server",
+    "build": "pug index.pug --pretty --obj=slides.json",
+    "serve": "live-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,8 +22,8 @@
     "grunt-contrib-connect": "^1.0.2",
     "grunt-contrib-qunit": "^1.2.0",
     "jade": "^1.11.0",
-    "webpack": "^2.1.0-beta.22",
-    "webpack-dev-server": "^2.1.0-beta.4"
+    "live-server": "^1.1.0",
+    "pug-cli": "^1.0.0-alpha6"
   },
   "description": "",
   "dependencies": {
