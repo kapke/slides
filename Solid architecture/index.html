@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>SOLIDna Architektura
+  </title>
+  <meta name="author" content="Andrzej Kopeć">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="css/reveal.css">
+  <link id="theme" rel="stylesheet" href="css/theme/white.css">
+  <!-- Code syntax highlighting-->
+  <link rel="stylesheet" href="bower_components/highlightjs/styles/vs.css">
+  <!-- Printing and PDF exports-->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <style>
+    /* skygate-blue: 00b0ea */
+    @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic);
+    .reveal .logo {
+        border: none;
+        box-shadow: none;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    
+    .reveal .logo.devmeeting {
+        height: 60px;
+    }
+    
+    .reveal .logo.skygate {
+        height: 90px;
+    }
+    
+    .reveal .logo.ek {
+        height: 45px;
+    }
+    
+    .reveal h2, .reveal h3, .reveal h4 {
+        color: black;
+        font-family: 'Open Sans';
+        text-transform: none;
+    }
+    .reveal .controls div.navigate-left, .reveal .controls div.navigate-left.enabled {
+        border-right-color: #00b0ea;
+    }
+    .reveal .controls div.navigate-right, .reveal .controls div.navigate-right.enabled {
+        border-left-color: #00b0ea;
+    }
+    .reveal pre {
+        width: auto;
+    }
+    .reveal pre code {
+        background: none;
+        color: black;
+        max-height: 100%;
+    }
+    .reveal table tr:last-child td {
+        border-bottom: 1px solid;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <!-- Any section element inside of this container is displayed as a slide-->
+    <div class="slides">
+      <section>
+        <h1>SOLIDna Architektura</h1><img class="logo skygate" src="skygate.png" alt=""/><img class="logo devmeeting" src="devmeetings_logo.jpg" alt=""/>
+        <h6>Andrzej Kopeć</h6>
+      </section>
+      <section>
+        <h2>Czy w ogóle potrzebujemy wzorców projektowych? Zasad?</h2>
+      </section>
+      <section>
+        <h2>SOLID? A co to w ogóle jest?</h2>
+      </section>
+      <section>
+        <h1>Single Responsibility Principle</h1>
+      </section>
+      <section>
+        <pre><code>export class JSONFileConfigurationLoader {
+    constructor (fsp, configFilePath) {
+        this._fsp = fsp;
+        this._configFilePath = configFilePath;
+    }
+ 
+    getRaw () {
+        return this._fsp.readFile(this._configFilePath)
+            .then(JSON.parse);
+    }
+ }
+</code></pre>
+      </section>
+      <section>
+        <h1>Open-Closed Principle</h1>
+      </section>
+      <section>
+        <pre><code>import * as _ from 'lodash';
+ 
+export class Config {
+    constructor (loaders) {
+        this._config = {};
+        this.readyPromise = Promise.all(loaders.map(loader => loader.getRaw()))
+            .then(rawConfigs => this._init(rawConfigs))
+            .then(_ => this);
+    }
+ 
+    _init (rawConfigs) {
+        _.merge(this._config, ...rawConfigs);
+    }
+ 
+    get (property) {
+        return _.get(this._config, property);
+    }
+ }
+</code></pre>
+      </section>
+      <section>
+        <h1>Liskov Substitution Principle</h1>
+      </section>
+      <section>
+        <pre><code>interface Uploader {
+    uploadData(data: Stream|Buffer|string, type: string): Promise&lt;string&gt;;
+    checkFile(filename: string): Promise&lt;FileDescription&gt;;
+    getAuthenticatedUrl(filename: string): string;
+}
+
+class S3Uploader implements Uploader {}
+class FilesystemUploader implements Uploader {}
+</code></pre>
+      </section>
+      <section>
+        <h1>Interface Segregation Principle</h1>
+      </section>
+      <section>
+        <pre><code>interface Iterable {
+    Symbol.iterator: Iterator;
+}
+
+interface Collection extends Iterable {
+    entries(): Iterator;
+    values(): Iterator;
+}
+
+function forEach (collection: Iterable, callback: Function) {
+    for (let item of collection) {
+        callback(item);
+    }
+}
+</code></pre>
+      </section>
+      <section>
+        <h1>Dependency Inversion Principle</h1>
+      </section>
+      <section>
+        <pre><code>interface Uploader {
+    uploadData(data: Stream|Buffer|string, type: string): Promise&lt;string&gt;;
+    checkFile(filename: string): Promise&lt;FileDescription&gt;;
+    getAuthenticatedUrl(filename: string): string;
+}
+
+class S3Uploader implements Uploader {}
+class FilesystemUploader implements Uploader {}
+
+function uploadData (uploader: Uploader, data: Stream|Buffer|string, type: string) {
+    return uploader.checkFile(data)
+        .then((fileDescription) => {
+            if (!fileDescription.exists) {
+                return uploader.uploadData(data, type);
+            } else {
+                return fileDescription.filename;
+            }
+        })
+        .then(filename => uploader.getAuthenticatedUrl(filename));
+}
+</code></pre>
+      </section>
+      <section>
+        <h1>Po co w ogóle o tym mówię?</h1>
+      </section>
+      <section>
+        <h1>Jakość kodu ma wpływ na tempo rozwoju</h1>
+      </section>
+      <section>
+        <h1>Parę słów o historii projektu</h1>
+      </section>
+      <section>
+        <h1>Nasze decyzje </h1>
+        <ol>
+          <li>Zaczynamy z samym frontendem</li>
+          <li>Migracja na backend</li>
+          <li>Ogłupienie frontendu</li>
+        </ol>
+      </section>
+      <section>
+        <h1>Ale kod to nie wszystko...</h1>
+      </section>
+      <section>
+        <h1>Jeszcze potrzebna jest architektura</h1>
+      </section>
+      <section>
+        <h1>Luksus</h1>
+      </section>
+      <section>
+        <h1>Rzeczy ciężkie do zmiany</h1>
+      </section>
+      <section>
+        <h2>Backend</h2>
+        <ol>
+          <li>Service registry</li>
+          <li>Moduły</li>
+          <li>Fasada per moduł</li>
+          <li>Kontroler per moduł</li>
+          <li>Kontroler korzysta tylko z fasady</li>
+          <li>Inne moduły korzystają tylko z fasady</li>
+          <li>Moduły wraz z relacjami między nimi tworzą drzewo</li>
+        </ol>
+      </section>
+      <section>
+        <h2>Frontend</h2>
+        <ol>
+          <li>Komponenty</li>
+          <li>Service registry</li>
+          <li>SRP</li>
+          <li>"Lekkie" moduły definiowane przez główne komponenty</li>
+        </ol>
+      </section>
+      <section>
+        <h1>Efekty</h1>
+        <ol>
+          <li>Kod łatwy w rozwoju</li>
+          <li>Architektura umożliwiająca skalowanie</li>
+          <li>Architektura ułatwiająca dodawanie nowych funkcji</li>
+        </ol>
+      </section>
+      <section><img class="logo ek" src="ek-logo-registered.png">
+      </section>
+      <section>
+        <h3>Pytania?</h3>
+        <h6><a href="mailto:andrzej.kopec@outlook.com">andrzej.kopec@outlook.com</a></h6>
+      </section>
+    </div>
+  </div>
+  <script src="lib/js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+  <script>
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Optional reveal.js plugins
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+            { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+            { src: 'plugin/zoom-js/zoom.js', async: true },
+            { src: 'plugin/notes/notes.js', async: true }
+        ]
+    });
+  </script>
+</body>

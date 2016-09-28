@@ -1,0 +1,168 @@
+extends ../presentation-template
+
+block title
+    | SOLIDna Architektura
+
+block slides
+    +titleSlide('SOLIDna Architektura')
+
+    +slide
+        h2 Czy w ogóle potrzebujemy wzorców projektowych? Zasad?
+
+    +slide
+        h2 SOLID? A co to w ogóle jest?
+
+    +slide
+        h1 Single Responsibility Principle
+    +slide
+        pre: code.
+            export class JSONFileConfigurationLoader {
+                constructor (fsp, configFilePath) {
+                    this._fsp = fsp;
+                    this._configFilePath = configFilePath;
+                }
+             
+                getRaw () {
+                    return this._fsp.readFile(this._configFilePath)
+                        .then(JSON.parse);
+                }
+             }
+
+    +slide
+        h1 Open-Closed Principle
+    +slide
+        pre: code.
+            import * as _ from 'lodash';
+             
+            export class Config {
+                constructor (loaders) {
+                    this._config = {};
+                    this.readyPromise = Promise.all(loaders.map(loader => loader.getRaw()))
+                        .then(rawConfigs => this._init(rawConfigs))
+                        .then(_ => this);
+                }
+             
+                _init (rawConfigs) {
+                    _.merge(this._config, ...rawConfigs);
+                }
+             
+                get (property) {
+                    return _.get(this._config, property);
+                }
+             }
+    
+    +slide
+        h1 Liskov Substitution Principle
+    +slide
+        pre: code.
+            interface Uploader {
+                uploadData(data: Stream|Buffer|string, type: string): Promise&lt;string&gt;;
+                checkFile(filename: string): Promise&lt;FileDescription&gt;;
+                getAuthenticatedUrl(filename: string): string;
+            }
+        
+            class S3Uploader implements Uploader {}
+            class FilesystemUploader implements Uploader {}
+        
+    +slide
+        h1 Interface Segregation Principle
+    +slide
+        pre: code.
+            interface Iterable {
+                Symbol.iterator: Iterator;
+            }
+            
+            interface Collection extends Iterable {
+                entries(): Iterator;
+                values(): Iterator;
+            }
+        
+            function forEach (collection: Iterable, callback: Function) {
+                for (let item of collection) {
+                    callback(item);
+                }
+            }
+        
+    +slide
+        h1 Dependency Inversion Principle
+    +slide
+        pre: code.
+            interface Uploader {
+                uploadData(data: Stream|Buffer|string, type: string): Promise&lt;string&gt;;
+                checkFile(filename: string): Promise&lt;FileDescription&gt;;
+                getAuthenticatedUrl(filename: string): string;
+            }
+
+            class S3Uploader implements Uploader {}
+            class FilesystemUploader implements Uploader {}
+        
+            function uploadData (uploader: Uploader, data: Stream|Buffer|string, type: string) {
+                return uploader.checkFile(data)
+                    .then((fileDescription) => {
+                        if (!fileDescription.exists) {
+                            return uploader.uploadData(data, type);
+                        } else {
+                            return fileDescription.filename;
+                        }
+                    })
+                    .then(filename => uploader.getAuthenticatedUrl(filename));
+            }
+        
+    +slide
+        h1 Po co w ogóle o tym mówię?
+        
+    +slide
+        h1 Jakość kodu ma wpływ na tempo rozwoju
+        
+    +slide
+        h1 Parę słów o historii projektu
+        
+    +slide
+        h1 Nasze decyzje 
+        ol
+            li Zaczynamy z samym frontendem
+            li Migracja na backend
+            li Ogłupienie frontendu
+    
+    +slide
+        h1 Ale kod to nie wszystko...
+        
+    +slide
+        h1 Jeszcze potrzebna jest architektura
+        
+    +slide
+        h1 Luksus
+        
+    +slide
+        h1 Rzeczy ciężkie do zmiany
+        
+    +slide
+        h2 Backend
+        ol
+            li Service registry
+            li Moduły
+            li Fasada per moduł
+            li Kontroler per moduł
+            li Kontroler korzysta tylko z fasady
+            li Inne moduły korzystają tylko z fasady
+            li Moduły wraz z relacjami między nimi tworzą drzewo
+            
+    +slide
+        h2 Frontend
+        ol
+            li Komponenty
+            li Service registry
+            li SRP
+            li "Lekkie" moduły definiowane przez główne komponenty
+            
+    +slide
+        h1 Efekty
+        ol
+            li Kod łatwy w rozwoju
+            li Architektura umożliwiająca skalowanie
+            li Architektura ułatwiająca dodawanie nowych funkcji
+
+    +slide
+        img.logo.ek(src="ek-logo-registered.png")
+            
+    +finalSlide

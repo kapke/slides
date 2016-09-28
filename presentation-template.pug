@@ -1,0 +1,119 @@
+mixin slide
+    section
+        block
+
+mixin titleSlide(title)
+    +slide
+        h1= title
+        img.logo.skygate(src="skygate.png",alt="")
+        img.logo.devmeeting(src="devmeetings_logo.jpg",alt="")
+        h6 Andrzej Kopeć
+
+mixin finalSlide
+    +slide
+        h3 Pytania?
+        h6: a(href="mailto:andrzej.kopec@outlook.com") andrzej.kopec@outlook.com
+        if block
+            block
+
+mixin hiringSlide
+    +finalSlide
+        h6: small
+            | PS. SkyGate szuka frontendowców
+            br
+            | Więcej szczegółów u mnie, na&nbsp;
+            a(href="http://skygate.pl") skygate.pl
+            | , lub mailem
+
+doctype html
+head
+    meta(charset='utf-8')
+    title
+        block title
+    meta(name='author', content='Andrzej Kopeć')
+    meta(name='apple-mobile-web-app-capable', content='yes')
+    meta(name='apple-mobile-web-app-status-bar-style', content='black-translucent')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui')
+    link(rel='stylesheet', href='css/reveal.css')
+    link#theme(rel='stylesheet', href='css/theme/white.css')
+    // Code syntax highlighting
+    link(rel='stylesheet', href='bower_components/highlightjs/styles/vs.css')
+    // Printing and PDF exports
+    script.
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    style.
+        /* skygate-blue: 00b0ea */
+        @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic);
+        .reveal .logo {
+            border: none;
+            box-shadow: none;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .reveal .logo.devmeeting {
+            height: 60px;
+        }
+
+        .reveal .logo.skygate {
+            height: 90px;
+        }
+
+        .reveal .logo.ek {
+            height: 45px;
+        }
+
+        .reveal h2, .reveal h3, .reveal h4 {
+            color: black;
+            font-family: 'Open Sans';
+            text-transform: none;
+        }
+        .reveal .controls div.navigate-left, .reveal .controls div.navigate-left.enabled {
+            border-right-color: #00b0ea;
+        }
+        .reveal .controls div.navigate-right, .reveal .controls div.navigate-right.enabled {
+            border-left-color: #00b0ea;
+        }
+        .reveal pre {
+            width: auto;
+        }
+        .reveal pre code {
+            background: none;
+            color: black;
+            max-height: 100%;
+        }
+        .reveal table tr:last-child td {
+            border-bottom: 1px solid;
+        }
+
+body
+    .reveal
+        // Any section element inside of this container is displayed as a slide
+        .slides
+            block slides
+
+    script(src='lib/js/head.min.js')
+    script(src='js/reveal.js')
+    script.
+        // Full list of configuration options available at:
+        // https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+            transition: 'slide', // none/fade/slide/convex/concave/zoom
+            // Optional reveal.js plugins
+            dependencies: [
+                { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+                { src: 'plugin/zoom-js/zoom.js', async: true },
+                { src: 'plugin/notes/notes.js', async: true }
+            ]
+        });
