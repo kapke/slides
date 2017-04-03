@@ -1,10 +1,12 @@
 {
   "slides": [
     "Angular2",
+    "Elm",
     "Ionic-devmeeting",
     "Rx.js in Angular2",
     "Rx.js",
     "TypeScript",
+    "Types in TypeScript",
     "Solid architecture"
   ]
 }

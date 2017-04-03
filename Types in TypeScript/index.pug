@@ -1,0 +1,202 @@
+extends ../presentation-template
+
+block title
+    | Types in TypeScript
+
+block slides
+    +titleSlide('Types in TypeScript')
+
+    +slide
+        h2 Czy ja w ogólę potrzebuję jakichś tam typów?
+
+    +slide
+        h2 No dobra, to jak je w ogóle zadeklarować?
+
+    +slide
+        h2 Ano tak:
+        pre: code.
+            let zmienna: typ;
+            const zmienna : typ = new Klasa()
+
+            function (argument: typ) : typ_zwracany {}
+
+    +slide
+        h2 Typy podstawowe
+        ul
+            li Boolean/boolean
+            li Number/number
+            li String/string
+
+    +slide
+        h2 Ej, ej a te z []?
+        pre: code.
+            let zmienna1 : type[]; //Tablica obiektów typu "type"
+            let zmienna3 : [type1, type2]; //Krotka, czyli tablica 2 elementowa
+
+    +slide
+        h2 To jak mam opisać np. produkt?
+        pre: code.
+            class Product {
+                constructor (public name: string, public price: number) {}
+            }
+
+            type Product = {
+                name: string;
+                price: number;
+            }
+
+            interface Product {
+                name: string;
+                price: number;
+            }
+
+    +slide
+        h2 A jak zrobić opcjonalne pole z opisem?
+
+    +slide
+        h2 Pole opcjonalne
+        pre: code.
+            interface Product {
+                ...
+                description?: string;
+            }
+
+            interface Product {
+                ...
+                description: string | null;
+            }
+
+            interface Product {
+                ...
+                description: string | undefined;
+            }
+
+    +slide
+        h2 No ok, ale chcę dodać paginację, nie będę robił przecież paginatora dla każdej encji!
+
+    +slide
+        h2 Nie, zdefiniujesz typ generyczny, o tak:
+        pre: code.
+            class Paginator&lt;T&gt; {
+                constructor (private allElements: T[]) {}
+
+                getPage (nr: number): T[] {}
+            }
+
+    +slide
+        h2 A jak mam niby zdefiniować, że w danej zmiennej może być cokolwiek? Np. w jakimś kliencie Http?
+
+    +slide
+        pre: code.
+            interface HttpClient {
+                post (url: string, data: any): IPromise&lt;any&gt;
+                put (url: string, data: object): IPromise&lt;any&gt;
+                patch (url: string, data: Object): IPromise&lt;any&gt;
+            }
+
+    +slide
+        h2 Ale takie jQuery na przykład jeszcze ma callbacka, ja też chcę!
+
+    +slide
+        pre: code.
+            interface HttpClient {
+                get (url: string, callback: (data: any) =&gt; void);
+                delete (url: string, callback: (data: any) =&gt; never);
+            }
+
+    +slide
+        h2 A czy mogę jakoś zrobić, by moja wewnętrzna metoda "makeRequest" mogła przyjmować tylko określone wartości?
+
+    +slide
+        pre: code.
+            type HttpMethod = "get" | "post" | "delete";
+
+            makeRequest("get");
+
+            enum HttpMethod {Get, Post, Delete};
+
+            makeRequest(HttpMethod.Get);
+
+    +slide
+        h2 Ale teraz wszystko mi się psuje, bo promise ma typ "any" w środku!
+
+    +slide
+        h2 Na to są 2 rozwiązania:
+        ul
+            li Rzutowanie
+            li Type guard
+
+    +slide
+        h2 Rzutowanie
+        pre: code.
+            let zmienna: any;
+
+            const napis1 = zmienna as string;
+            const napis2 = &lt;string&gt;zmienna;
+
+    +slide
+        h2 Type guard
+        pre: code.
+            function isProduct (product: any) product is Product {
+                return product.name && product.price;
+            }
+
+            let zmienna: any;
+
+            if (isProduct(zmienna)) {
+                //zmienna ma typ Product i TypeScript o nic się nie pluje
+            }
+
+    +slide
+        h2 No działa, ale jak mam wyświetlić listę wyszukiwania, na której są i produkty i kategorie?
+
+    +slide
+        h2 Wykorzystując union types
+        pre: code.
+            interface Category {
+                name: string;
+                image: string;
+                products: Product[];
+            }
+
+            interface Product {
+                name: string;
+                image: string;
+                price: Money;
+            }
+
+            type SearchResultItem = Category | Product;
+
+            let item : SearchResultItem;
+            item.name; //OK;
+            item.image; //OK;
+            item.price //Error
+
+    +slide
+        h2 No, prawie, działa, bo backend do wyniku wyszukiwania dodaje link do szczegółów...
+        pre: code.
+            type WithDetailsLink = {detailsUrl: string;};
+            type ProductOrCategory = Product | Category;
+
+            type SearchResultsItem = ProductOrCategory & WithDetailsLink;
+
+            let item : SearchResultsItem;
+            item.detailsUrl; // OK
+
+    +slide
+        h2 Swoją drogą, w JS Intersection Types są dość popularne w różnych bibliotekach:
+        pre: code.
+            function assign&lt;T, U&gt; (t: T, u: U): T&U {}
+
+    +slide
+        h2 Podobnie jak te kilka wytrychów:
+        pre: code.
+            type Flags = { [name: string]: boolean};
+
+            function get&lt;T, U extends keyof T&gt;(key: U): T[U] {}
+
+            type Partial&lt;T&gt; = {
+                [P in keyof T]?: T[P];
+            }
+
+    +finalSlide

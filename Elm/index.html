@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>Elm
+  </title>
+  <meta name="author" content="Andrzej Kopeć">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="css/reveal.css">
+  <link id="theme" rel="stylesheet" href="css/theme/white.css">
+  <!-- Code syntax highlighting-->
+  <link rel="stylesheet" href="bower_components/highlightjs/styles/vs.css">
+  <!-- Printing and PDF exports-->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <style>
+    /* skygate-blue: 00b0ea */
+    @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic);
+    .reveal .logo {
+        border: none;
+        box-shadow: none;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    
+    .reveal .logo.devmeeting {
+        height: 60px;
+    }
+    
+    .reveal .logo.skygate {
+        height: 90px;
+    }
+    
+    .reveal .logo.ek {
+        height: 45px;
+    }
+    
+    .reveal h2, .reveal h3, .reveal h4 {
+        color: black;
+        font-family: 'Open Sans';
+        text-transform: none;
+    }
+    .reveal .controls div.navigate-left, .reveal .controls div.navigate-left.enabled {
+        border-right-color: #00b0ea;
+    }
+    .reveal .controls div.navigate-right, .reveal .controls div.navigate-right.enabled {
+        border-left-color: #00b0ea;
+    }
+    .reveal pre {
+        width: auto;
+    }
+    .reveal pre code {
+        background: none;
+        color: black;
+        max-height: 100%;
+    }
+    .reveal table tr:last-child td {
+        border-bottom: 1px solid;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <!-- Any section element inside of this container is displayed as a slide-->
+    <div class="slides">
+      <section>
+        <h1>Elm</h1><img class="logo skygate" src="skygate.png" alt=""/><img class="logo devmeeting" src="devmeetings_logo.jpg" alt=""/>
+        <h6>Andrzej Kopeć</h6>
+      </section>
+      <section>
+        <h2>Czym w ogóle jest Elm? I czy ktoś go w ogóle potrzebuje?</h2>
+      </section>
+      <section>
+        <h2>A co to w ogóle znaczy, że funkcyjny?</h2>
+        <ul>
+          <li>brak efektów ubocznych</li>
+          <li>niemutowalność danych</li>
+        </ul>
+      </section>
+      <section>
+        <h2>A z tego wynika, że...</h2>
+        <ul>
+          <li>występuje tzw. "referential transparency"</li>
+          <li>funkcje są bezstanowe</li>
+        </ul>
+      </section>
+      <section>
+        <h2>No dobra, ale mówiłeś, że do frontendu...</h2>
+      </section>
+      <section>
+        <ul>
+          <li>The Elm Architecture</li>
+          <li>Wbudowana biblioteka do Virtual DOM</li>
+          <li>Zadania</li>
+          <li>Porty i flagi</li>
+        </ul>
+      </section>
+      <section>
+        <h2>The Elm Architeture - wygląda znajomo?</h2>
+        <pre><code>import Html exposing (..)
+
+main = Html.beginnerProgram { model = 0, update = update, view = view }
+
+-- MODEL
+type alias Model = Int
+
+-- UPDATE
+type Msg = MakeCookie
+
+update : Msg -> Model -> Model
+update msg model =
+  case msg of
+    MakeCookie -> model + 1
+
+
+-- VIEW
+view : Model -> Html Msg
+view model = img [src "img/cookie.jpg", class "cookie", onClick MakeCookie] []
+</code></pre>
+      </section>
+      <section>
+        <h2>Jako dodatek mamy jeszcze subskrybcje...</h2>
+        <pre><code>import Html exposing (..)
+
+main = Html.program { init = init, update = update, view = view, subscriptions = subscriptions }
+
+init : (Model, Cmd Msg)
+init = (0, Cmd.none)
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Time.every second MakeCookie
+
+...
+</code></pre>
+      </section>
+      <section>
+        <h2>... i komendy</h2>
+        <pre><code>type Msg = RemoveNotification notification | ...
+
+update : Msg -> Model -> (Model, Cmd msg)
+update msg model =
+    case msg of
+        ...
+        AddNotification notification ->
+            (
+                { model
+                | notifications = model.notifications
+                    |> List.reverse
+                    |> (::) notification
+                    |> List.reverse
+                }
+            , Notification.remove RemoveNotification notification
+            )
+        ...
+</code></pre>
+      </section>
+      <section>
+        <h3>Efekt? Pełne wsparcie dla asynchronicznych i powtarzających się akcji</h3>
+        <h4>Wbudowane w język</h4>
+      </section>
+      <section>
+        <h2>Zadania (czyli Task)</h2>
+        <h3>To takie Promise'y, ale zintegrowane z resztą architektury</h3>
+        <pre><code>add : (Notification -> msg) -> String -> Cmd msg
+add tagger notification =
+    Task.perform tagger (Time.now
+        |> map (\time -> round (Time.inMilliseconds time))
+        |> map (\seed -> Random.step (Random.int minInt maxInt) (initialSeed seed))
+        |> map Tuple.first
+        |> map (\id -> Notification notification id))
+
+remove : (Notification -> msg) -> Notification -> Cmd msg
+remove tagger notification =
+    Task.perform tagger (Process.sleep (5 * Time.second)
+        |> Task.andThen (always <| Task.succeed notification))
+</code></pre>
+      </section>
+      <section>
+        <h2>A jak się dogadać z JS?</h2>
+        <h3>Portami, czyli przerzucamy wartości przez wielki mur - najpierw do JS</h3>
+        <pre><code>port module User exposing (..)
+
+import Json.Decode
+
+port getUserId : String -> Cmd msg
+
+port userId : (String -> msg) -> Sub msg
+</code></pre>
+      </section>
+      <section>
+        <h3>... po czym JS rzuca do nas odpowiedzi</h3>
+        <pre><code>import * as Elm from './Main';
+
+
+const app = Elm.Main.embed(document.getElementById('app'));
+
+app.ports.getUserId.subscribe(() => {
+    getUserId()
+        .then((userId) => app.ports.userId.send(userId));
+});
+</code></pre>
+      </section>
+      <section>
+        <h2>Ok, coś jeszcze?</h2>
+        <ul>
+          <li>Biblioteka do Http</li>
+          <li>Biblioteki z różnymi strukturami danych</li>
+          <li>Biblioteki do obsługi JSON</li>
+          <li>Własne operatory</li>
+          <li>Pełne sprawdzanie typów w trakcie działania programu</li>
+          <li>Świetny kompilator</li>
+          <li>Union Types</li>
+          <li>Prostota</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Czyli święty Graal na frontend?</h2>
+      </section>
+      <section>
+        <h3>Pytania?</h3>
+        <h6><a href="mailto:andrzej.kopec@outlook.com">andrzej.kopec@outlook.com</a></h6>
+      </section>
+    </div>
+  </div>
+  <script src="lib/js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+  <script>
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Optional reveal.js plugins
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+            { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+            { src: 'plugin/zoom-js/zoom.js', async: true },
+            { src: 'plugin/notes/notes.js', async: true }
+        ]
+    });
+  </script>
+</body>

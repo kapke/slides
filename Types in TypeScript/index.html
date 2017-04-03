@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>Elm
+  </title>
+  <meta name="author" content="Andrzej Kopeć">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="css/reveal.css">
+  <link id="theme" rel="stylesheet" href="css/theme/white.css">
+  <!-- Code syntax highlighting-->
+  <link rel="stylesheet" href="bower_components/highlightjs/styles/vs.css">
+  <!-- Printing and PDF exports-->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <style>
+    /* skygate-blue: 00b0ea */
+    @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic);
+    .reveal .logo {
+        border: none;
+        box-shadow: none;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    
+    .reveal .logo.devmeeting {
+        height: 60px;
+    }
+    
+    .reveal .logo.skygate {
+        height: 90px;
+    }
+    
+    .reveal .logo.ek {
+        height: 45px;
+    }
+    
+    .reveal h2, .reveal h3, .reveal h4 {
+        color: black;
+        font-family: 'Open Sans';
+        text-transform: none;
+    }
+    .reveal .controls div.navigate-left, .reveal .controls div.navigate-left.enabled {
+        border-right-color: #00b0ea;
+    }
+    .reveal .controls div.navigate-right, .reveal .controls div.navigate-right.enabled {
+        border-left-color: #00b0ea;
+    }
+    .reveal pre {
+        width: auto;
+    }
+    .reveal pre code {
+        background: none;
+        color: black;
+        max-height: 100%;
+    }
+    .reveal table tr:last-child td {
+        border-bottom: 1px solid;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <!-- Any section element inside of this container is displayed as a slide-->
+    <div class="slides">
+      <section>
+        <h1>Types</h1><img class="logo skygate" src="skygate.png" alt=""/><img class="logo devmeeting" src="devmeetings_logo.jpg" alt=""/>
+        <h6>Andrzej Kopeć</h6>
+      </section>
+      <section>
+        <h2>Czy ja w ogólę potrzebuję jakichś tam typów?</h2>
+      </section>
+      <section>
+        <h2>No dobra, to jak je w ogóle zadeklarować?</h2>
+      </section>
+      <section>
+        <h2>Ano tak:</h2>
+        <pre><code>let zmienna: typ;
+const zmienna : typ = new Klasa()
+
+function (argument: typ) : typ_zwracany {}
+</code></pre>
+      </section>
+      <section>
+        <h2>Typy podstawowe</h2>
+        <ul>
+          <li>Boolean/boolean</li>
+          <li>Number/number</li>
+          <li>String/string</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Ej, ej a te z []?</h2>
+        <pre><code>let zmienna1 : type[]; //Tablica obiektów typu "type"
+let zmienna3 : [type1, type2]; //Krotka, czyli tablica 2 elementowa
+</code></pre>
+      </section>
+      <section>
+        <h2>To jak mam opisać np. produkt?</h2>
+        <pre><code>class Product {
+    constructor (public name: string, public price: number) {}
+}
+
+type Product = {
+    name: string;
+    price: number;
+}
+
+interface Product {
+    name: string;
+    price: number;
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>A jak zrobić opcjonalne pole z opisem?</h2>
+      </section>
+      <section>
+        <h2>Pole opcjonalne</h2>
+        <pre><code>interface Product {
+    ...
+    description?: string;
+}
+
+interface Product {
+    ...
+    description: string | null;
+}
+
+interface Product {
+    ...
+    description: string | undefined;
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>No ok, ale chcę dodać paginację, nie będę robił przecież paginatora dla każdej encji!</h2>
+      </section>
+      <section>
+        <h2>Nie, zdefiniujesz typ generyczny, o tak:</h2>
+        <pre><code>class Paginator&lt;T&gt; {
+    constructor (private allElements: T[]) {}
+
+    getPage (nr: number): T[] {}
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>A jak mam niby zdefiniować, że w danej zmiennej może być cokolwiek? Np. w jakimś kliencie Http?</h2>
+      </section>
+      <section>
+        <pre><code>interface HttpClient {
+    post (url: string, data: any): IPromise&lt;any&gt;
+    put (url: string, data: object): IPromise&lt;any&gt;
+    patch (url: string, data: Object): IPromise&lt;any&gt;
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>Ale takie jQuery na przykład jeszcze ma callbacka, ja też chcę!</h2>
+      </section>
+      <section>
+        <pre><code>interface HttpClient {
+    get (url: string, callback: (data: any) =&gt; void);
+    delete (url: string, callback: (data: any) =&gt; never);
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>A czy mogę jakoś zrobić, by moja wewnętrzna metoda "makeRequest" mogła przyjmować tylko określone wartości?</h2>
+      </section>
+      <section>
+        <pre><code>type HttpMethod = "get" | "post" | "delete";
+
+makeRequest("get");
+
+enum HttpMethod {Get, Post, Delete};
+
+makeRequest(HttpMethod.Get);
+</code></pre>
+      </section>
+      <section>
+        <h2>Ale teraz wszystko mi się psuje, bo promise ma typ "any" w środku!</h2>
+      </section>
+      <section>
+        <h2>Na to są 2 rozwiązania:</h2>
+        <ul>
+          <li>Rzutowanie</li>
+          <li>Type guard</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Rzutowanie</h2>
+        <pre><code>let zmienna: any;
+
+const napis1 = zmienna as string;
+const napis2 = &lt;string&gt;zmienna;
+</code></pre>
+      </section>
+      <section>
+        <h2>Type guard</h2>
+        <pre><code>function isProduct (product: any) product is Product {
+    return product.name && product.price;
+}
+
+let zmienna: any;
+
+if (isProduct(zmienna)) {
+    //zmienna ma typ Product i TypeScript o nic się nie pluje
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>No działa, ale jak mam wyświetlić listę wyszukiwania, na której są i produkty i kategorie?</h2>
+      </section>
+      <section>
+        <h2>Wykorzystując union types</h2>
+        <pre><code>interface Category {
+    name: string;
+    image: string;
+    products: Product[];
+}
+
+interface Product {
+    name: string;
+    image: string;
+    price: Money;
+}
+
+type SearchResultItem = Category | Product;
+
+let item : SearchResultItem;
+item.name; //OK;
+item.image; //OK;
+item.price //Error
+</code></pre>
+      </section>
+      <section>
+        <h2>No, prawie, działa, bo backend do wyniku wyszukiwania dodaje link do szczegółów...</h2>
+        <pre><code>type WithDetailsLink = {detailsUrl: string;};
+type ProductOrCategory = Product | Category;
+
+type SearchResultsItem = ProductOrCategory & WithDetailsLink;
+
+let item : SearchResultsItem;
+item.detailsUrl; // OK
+</code></pre>
+      </section>
+      <section>
+        <h2>Swoją drogą, w JS Intersection Types są dość popularne w różnych bibliotekach:</h2>
+        <pre><code>function assign&lt;T, U&gt; (t: T, u: U): T&U {}
+</code></pre>
+      </section>
+      <section>
+        <h2>Podobnie jak te kilka wytrychów:</h2>
+        <pre><code>type Flags = { [name: string]: boolean};
+
+function get&lt;T, U extends keyof T&gt;(key: U): T[U] {}
+
+type Partial&lt;T&gt; = {
+    [P in keyof T]?: T[P];
+}
+</code></pre>
+      </section>
+      <section>
+        <h3>Pytania?</h3>
+        <h6><a href="mailto:andrzej.kopec@outlook.com">andrzej.kopec@outlook.com</a></h6>
+      </section>
+    </div>
+  </div>
+  <script src="lib/js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+  <script>
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Optional reveal.js plugins
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+            { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+            { src: 'plugin/zoom-js/zoom.js', async: true },
+            { src: 'plugin/notes/notes.js', async: true }
+        ]
+    });
+  </script>
+</body>

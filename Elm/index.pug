@@ -1,0 +1,154 @@
+extends ../presentation-template
+
+block title
+    | Elm
+
+block slides
+    +titleSlide('Elm')
+
+    +slide
+        h2 Czym w ogóle jest Elm? I czy ktoś go w ogóle potrzebuje?
+
+    +slide
+        h2 A co to w ogóle znaczy, że funkcyjny?
+        ul
+            li brak efektów ubocznych
+            li niemutowalność danych
+    +slide
+        h2 A z tego wynika, że...
+        ul
+            li występuje tzw. "referential transparency"
+            li funkcje są bezstanowe
+
+    +slide
+        h2 No dobra, ale mówiłeś, że do frontendu...
+
+    +slide
+        ul
+            li The Elm Architecture
+            li Wbudowana biblioteka do Virtual DOM
+            li Zadania
+            li Porty i flagi
+
+    +slide
+        h2 The Elm Architeture - wygląda znajomo?
+        pre: code.
+            import Html exposing (..)
+
+            main = Html.beginnerProgram { model = 0, update = update, view = view }
+
+            -- MODEL
+            type alias Model = Int
+
+            -- UPDATE
+            type Msg = MakeCookie
+
+            update : Msg -> Model -> Model
+            update msg model =
+              case msg of
+                MakeCookie -> model + 1
+
+
+            -- VIEW
+            view : Model -> Html Msg
+            view model = img [src "img/cookie.jpg", class "cookie", onClick MakeCookie] []
+
+    +slide
+        h2 Jako dodatek mamy jeszcze subskrybcje...
+        pre: code.
+            import Html exposing (..)
+
+            main = Html.program { init = init, update = update, view = view, subscriptions = subscriptions }
+
+            init : (Model, Cmd Msg)
+            init = (0, Cmd.none)
+
+            subscriptions : Model -> Sub Msg
+            subscriptions model =
+                Time.every second MakeCookie
+
+            ...
+
+    +slide
+        h2 ... i komendy
+        pre: code.
+            type Msg = RemoveNotification notification | ...
+
+            update : Msg -> Model -> (Model, Cmd msg)
+            update msg model =
+                case msg of
+                    ...
+                    AddNotification notification ->
+                        (
+                            { model
+                            | notifications = model.notifications
+                                |> List.reverse
+                                |> (::) notification
+                                |> List.reverse
+                            }
+                        , Notification.remove RemoveNotification notification
+                        )
+                    ...
+
+    +slide
+        h3 Efekt? Pełne wsparcie dla asynchronicznych i powtarzających się akcji
+        h4 Wbudowane w język
+
+    +slide
+        h2 Zadania (czyli Task)
+        h3 To takie Promise'y, ale zintegrowane z resztą architektury
+        pre: code.
+            add : (Notification -> msg) -> String -> Cmd msg
+            add tagger notification =
+                Task.perform tagger (Time.now
+                    |> map (\time -> round (Time.inMilliseconds time))
+                    |> map (\seed -> Random.step (Random.int minInt maxInt) (initialSeed seed))
+                    |> map Tuple.first
+                    |> map (\id -> Notification notification id))
+
+            remove : (Notification -> msg) -> Notification -> Cmd msg
+            remove tagger notification =
+                Task.perform tagger (Process.sleep (5 * Time.second)
+                    |> Task.andThen (always <| Task.succeed notification))
+
+    +slide
+        h2 A jak się dogadać z JS?
+        h3 Portami, czyli przerzucamy wartości przez wielki mur - najpierw do JS
+        pre: code.
+            port module User exposing (..)
+
+            import Json.Decode
+
+            port getUserId : String -> Cmd msg
+
+            port userId : (String -> msg) -> Sub msg
+
+    +slide
+        h3 ... po czym JS rzuca do nas odpowiedzi
+        pre: code.
+            import * as Elm from './Main';
+
+
+            const app = Elm.Main.embed(document.getElementById('app'));
+
+            app.ports.getUserId.subscribe(() => {
+                getUserId()
+                    .then((userId) => app.ports.userId.send(userId));
+            });
+
+    +slide
+        h2 Ok, coś jeszcze?
+        ul
+            li Biblioteka do Http
+            li Biblioteki z różnymi strukturami danych
+            li Biblioteki do obsługi JSON
+            li Własne operatory
+            li Pełne sprawdzanie typów w trakcie działania programu
+            li Świetny kompilator
+            li Union Types
+            li Prostota
+
+    +slide
+        h2 Czyli święty Graal na frontend?
+
+    +finalSlide
