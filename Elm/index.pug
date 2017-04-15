@@ -14,6 +14,7 @@ block slides
         ul
             li brak efektów ubocznych
             li niemutowalność danych
+            li funkcje jako obiekty pierwszej kategorii
     +slide
         h2 A z tego wynika, że...
         ul
@@ -32,7 +33,7 @@ block slides
 
     +slide
         h2 The Elm Architeture - wygląda znajomo?
-        pre: code.
+        pre: code.lang-elm.
             import Html exposing (..)
 
             main = Html.beginnerProgram { model = 0, update = update, view = view }
@@ -55,10 +56,10 @@ block slides
 
     +slide
         h2 Jako dodatek mamy jeszcze subskrybcje...
-        pre: code.
+        pre: code.lang-elm.
             import Html exposing (..)
 
-            main = Html.program { init = init, update = update, view = view, subscriptions = subscriptions }
+            main = Html.program { init = init, subscriptions = subscriptions, update = update, view = view }
 
             init : (Model, Cmd Msg)
             init = (0, Cmd.none)
@@ -67,17 +68,16 @@ block slides
             subscriptions model =
                 Time.every second MakeCookie
 
-            ...
+            -- ..
 
     +slide
         h2 ... i komendy
-        pre: code.
-            type Msg = RemoveNotification notification | ...
+        pre: code.lang-elm.
+            type Msg = RemoveNotification notification | RestOfTypes
 
             update : Msg -> Model -> (Model, Cmd msg)
             update msg model =
                 case msg of
-                    ...
                     AddNotification notification ->
                         (
                             { model
@@ -88,7 +88,7 @@ block slides
                             }
                         , Notification.remove RemoveNotification notification
                         )
-                    ...
+            -- ..
 
     +slide
         h3 Efekt? Pełne wsparcie dla asynchronicznych i powtarzających się akcji
@@ -97,7 +97,9 @@ block slides
     +slide
         h2 Zadania (czyli Task)
         h3 To takie Promise'y, ale zintegrowane z resztą architektury
-        pre: code.
+        pre: code.lang-elm.
+            module Notifications exposing (..)
+
             add : (Notification -> msg) -> String -> Cmd msg
             add tagger notification =
                 Task.perform tagger (Time.now
@@ -114,7 +116,7 @@ block slides
     +slide
         h2 A jak się dogadać z JS?
         h3 Portami, czyli przerzucamy wartości przez wielki mur - najpierw do JS
-        pre: code.
+        pre: code.lang-elm.
             port module User exposing (..)
 
             import Json.Decode
@@ -125,7 +127,7 @@ block slides
 
     +slide
         h3 ... po czym JS rzuca do nas odpowiedzi
-        pre: code.
+        pre: code.lang-javascript.
             import * as Elm from './Main';
 
 
