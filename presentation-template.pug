@@ -2,17 +2,22 @@ mixin slide
     section
         block
 
-mixin titleSlide(title)
+mixin titleSlide(title, withAuthor)
+    - withAuthor = withAuthor !== undefined ? !!withAuthor : true
     +slide
         h1= title
-        img.logo.skygate(src="skygate.png",alt="")
+        if withAuthor
+            img.logo.skygate(src="skygate.png",alt="")
         img.logo.devmeeting(src="devmeetings_logo.jpg",alt="")
-        h6 Andrzej Kopeć
+        if withAuthor
+            h6 Andrzej Kopeć
 
-mixin finalSlide
+mixin finalSlide(withContact)
+    - withContact = withContact !== undefined ? withContact : true
     +slide
-        h3 Pytania?
-        h6: a(href="mailto:andrzej.kopec@outlook.com") andrzej.kopec@outlook.com
+        h3 Questions time!
+        if withContact
+            h6: a(href="mailto:andrzej.kopec@outlook.com") andrzej.kopec@outlook.com
         if block
             block
 

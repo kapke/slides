@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>Unit testing
+  </title>
+  <meta name="author" content="Andrzej Kopeć">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="css/reveal.css">
+  <link id="theme" rel="stylesheet" href="css/theme/white.css">
+  <!-- Code syntax highlighting-->
+  <link rel="stylesheet" href="bower_components/highlightjs/styles/vs.css">
+  <!-- Printing and PDF exports-->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <style>
+    /* skygate-blue: 00b0ea */
+    @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic);
+    .reveal .logo {
+        border: none;
+        box-shadow: none;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    
+    .reveal .logo.devmeeting {
+        height: 60px;
+    }
+    
+    .reveal .logo.skygate {
+        height: 90px;
+    }
+    
+    .reveal .logo.ek {
+        height: 45px;
+    }
+    
+    .reveal h2, .reveal h3, .reveal h4 {
+        color: black;
+        font-family: 'Open Sans';
+        text-transform: none;
+    }
+    .reveal .controls div.navigate-left, .reveal .controls div.navigate-left.enabled {
+        border-right-color: #00b0ea;
+    }
+    .reveal .controls div.navigate-right, .reveal .controls div.navigate-right.enabled {
+        border-left-color: #00b0ea;
+    }
+    .reveal pre {
+        width: auto;
+    }
+    .reveal pre code {
+        background: none;
+        color: black;
+        max-height: 100%;
+    }
+    .reveal table tr:last-child td {
+        border-bottom: 1px solid;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <!-- Any section element inside of this container is displayed as a slide-->
+    <div class="slides">
+      <section>
+        <h1>Unit testing</h1><img class="logo devmeeting" src="devmeetings_logo.jpg" alt=""/>
+      </section>
+      <section>
+        <h2>What is purpose of automated testing at all?</h2>
+        <section>
+        </section>
+        <section>
+          <h3>Automation</h3>
+          <p>There is no need to click through whole application</p>
+        </section>
+        <section>
+          <h3>Documentation</h3>
+          <p>Sometimes code is complicated to read, tests should be much easier</p>
+        </section>
+        <section>
+          <h3>Give a confidence to programmer</h3>
+          <p>With well-tested code it's easier and faster to make changes</p>
+        </section>
+      </section>
+      <section>
+        <h2>What is a "unit"?</h2>
+        <h3>Object, class, function or what?</h3>
+        <section>
+        </section>
+        <section>
+          <h3>That depends on paradigm, even in single project it can be treated differently</h3>
+        </section>
+      </section>
+      <section>
+        <h2>So what is a "unit test"?</h2>
+        <section>
+        </section>
+        <section>
+          <h3>It's an automated test of specified unit performed in isolation from any other code</h3>
+        </section>
+      </section>
+      <section>
+        <h2>How to write test then?</h2>
+        <section>
+        </section>
+        <section>
+          <h3>1 logical assertion per test case</h3>
+        </section>
+        <section>
+          <h3>Each test case describes different use case of tested unit</h3>
+        </section>
+        <section>
+          <h3>Focus on behaviour, not internals</h3>
+        </section>
+        <section>
+          <h3>In a way that allows you to perform refactoring easily</h3>
+          <p>Definition of refactoring is completely different story...</p>
+        </section>
+        <section>
+          <h3>If possible - platform and framework independent</h3>
+          <p>That means that unit tests are extremely fast, if they are not - probably they are not unit tests</p>
+        </section>
+        <section>
+          <h3>SOLID, DRY, KISS, etc. - all these rules apply to tests as tests are code too</h3>
+        </section>
+      </section>
+      <section>
+        <h2>Bunch of tools in JS world</h2>
+        <ul>
+          <li>Karma - test runner</li>
+          <li>Jasmine - test framework</li>
+          <li>Mocha - test framework</li>
+          <li>Sinon.js - mocking utility</li>
+          <li>chai - assertion library</li>
+          <li>Jest - test framework with runner based on Jasmine</li>
+          <li>And more...</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Questions time!</h3>
+      </section>
+    </div>
+  </div>
+  <script src="lib/js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="bower_components/highlightjs/highlight.pack.min.js"></script>
+  <script>
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Optional reveal.js plugins
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+            { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+            { src: 'plugin/zoom-js/zoom.js', async: true },
+            { src: 'plugin/notes/notes.js', async: true }
+        ]
+    });
+  </script>
+</body>

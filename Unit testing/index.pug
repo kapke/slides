@@ -1,0 +1,79 @@
+extends ../presentation-template
+
+block title
+    | Unit testing
+
+block slides
+    +titleSlide('Unit testing', false)
+
+    +slide
+        h2 What is purpose of automated testing at all?
+
+        +slide
+
+        +slide
+            h3 Automation
+            p There is no need to click through whole application
+
+        +slide
+            h3 Documentation
+            p Sometimes code is complicated to read, tests should be much easier
+
+        +slide
+            h3 Give a confidence to programmer
+            p With well-tested code it's easier and faster to make changes
+
+    +slide
+        h2 What is a "unit"?
+        h3 Object, class, function or what?
+
+        +slide
+
+        +slide
+            h3 That depends on paradigm, even in single project it can be treated differently
+
+    +slide
+        h2 So what is a "unit test"?
+
+        +slide
+
+        +slide
+            h3 It's an automated test of specified unit performed in isolation from any other code
+
+    +slide
+        h2 How to write test then?
+
+        +slide
+
+        +slide
+            h3 1 logical assertion per test case
+
+        +slide
+            h3 Each test case describes different use case of tested unit
+
+        +slide
+            h3 Focus on behaviour, not internals
+
+        +slide
+            h3 In a way that allows you to perform refactoring easily
+            p Definition of refactoring is completely different story...
+
+        +slide
+            h3 If possible - platform and framework independent
+            p That means that unit tests are extremely fast, if they are not - probably they are not unit tests
+
+        +slide
+            h3 SOLID, DRY, KISS, etc. - all these rules apply to tests as tests are code too
+
+    +slide
+        h2 Bunch of tools in JS world
+        ul
+            li Karma - test runner
+            li Jasmine - test framework
+            li Mocha - test framework
+            li Sinon.js - mocking utility
+            li chai - assertion library
+            li Jest - test framework with runner based on Jasmine
+            li And more...
+
+    +finalSlide(false)
