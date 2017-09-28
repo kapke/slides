@@ -90,8 +90,8 @@
     <!-- Any section element inside of this container is displayed as a slide-->
     <div class="slides">
       <section>
-        <h1>TypeScript</h1><img class="logo skygate" src="skygate.png" alt=""/><img class="logo devmeeting" src="devmeetings_logo.jpg" alt=""/>
-        <h6>Andrzej Kopeć</h6>
+        <h1>TypeScript</h1><img class="logo skygate no-devmeeting" src="skygate.png" alt=""/><img class="logo devmeeting" src="devmeetings_logo.jpg" alt=""/>
+        <h6 class="no-devmeeting">Andrzej Kopeć</h6>
       </section>
       <section>
         <h2>Origins</h2>
@@ -232,7 +232,7 @@ async function doSth (params) {
       </section>
       <section>
         <h3>Questions time!</h3>
-        <h6><a href="mailto:andrzej.kopec@outlook.com">andrzej.kopec@outlook.com</a></h6>
+        <h6 class="no-devmeeting"><a href="mailto:andrzej.kopec@outlook.com">andrzej.kopec@outlook.com</a></h6>
       </section>
     </div>
   </div>
@@ -257,6 +257,15 @@ async function doSth (params) {
             { src: 'plugin/zoom-js/zoom.js', async: true },
             { src: 'plugin/notes/notes.js', async: true }
         ]
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (location.search.includes('devmeeting=true')) {
+            const elementsToRemove = Array.from(document.getElementsByClassName('no-devmeeting'));
+    
+            elementsToRemove.forEach(e => e.parentElement.removeChild(e));
+        }
     });
   </script>
 </body>

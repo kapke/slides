@@ -7,17 +7,17 @@ mixin titleSlide(title, withAuthor)
     +slide
         h1= title
         if withAuthor
-            img.logo.skygate(src="skygate.png",alt="")
+            img.logo.skygate.no-devmeeting(src="skygate.png",alt="")
         img.logo.devmeeting(src="devmeetings_logo.jpg",alt="")
         if withAuthor
-            h6 Andrzej Kopeć
+            h6.no-devmeeting Andrzej Kopeć
 
 mixin finalSlide(withContact)
     - withContact = withContact !== undefined ? withContact : true
     +slide
         h3 Questions time!
         if withContact
-            h6: a(href="mailto:andrzej.kopec@outlook.com") andrzej.kopec@outlook.com
+            h6.no-devmeeting: a(href="mailto:andrzej.kopec@outlook.com") andrzej.kopec@outlook.com
         if block
             block
 
@@ -141,4 +141,12 @@ body
                 { src: 'plugin/zoom-js/zoom.js', async: true },
                 { src: 'plugin/notes/notes.js', async: true }
             ]
+        });
+    script.
+        document.addEventListener('DOMContentLoaded', () => {
+            if (location.search.includes('devmeeting=true')) {
+                const elementsToRemove = Array.from(document.getElementsByClassName('no-devmeeting'));
+
+                elementsToRemove.forEach(e => e.parentElement.removeChild(e));
+            }
         });
