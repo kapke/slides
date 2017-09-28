@@ -1,110 +1,127 @@
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>TypeScript</title>
-        <meta name="author" content="Andrzej Kopeć">
-
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-
-        <link rel="stylesheet" href="css/reveal.css">
-        <link rel="stylesheet" href="css/theme/white.css" id="theme">
-
-        <!-- Code syntax highlighting -->
-        <link rel="stylesheet" href="bower_components/highlight.js/src/styles/vs.css">
-
-        <!-- Printing and PDF exports -->
-        <script>
-            var link = document.createElement( 'link' );
-            link.rel = 'stylesheet';
-            link.type = 'text/css';
-            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-            document.getElementsByTagName( 'head' )[0].appendChild( link );
-        </script>
-
-        <!--[if lt IE 9]>
-        <script src="lib/js/html5shiv.js"></script>
-        <![endif]-->
-        <style type="text/css">
-            .reveal img.logo {
-                border: none;
-                box-shadow: none;
-                max-width: 30%;
-                display: inline-block;
-                vertical-align: middle;
-            }
-            .reveal .author {
-                text-transform: none;
-            }
-            .reveal pre code.hljs.small {
-                font-size: 66% !important;
-                line-height: 125% !important;
-            }
-            .reveal pre.inline {
-                display: inline-block;
-                box-sizing: border-box;
-                width: calc(50% - 42px);
-                vertical-align: top;
-            }
-            .reveal pre code {
-                background: transparent;
-                color: black;
-            }
-        </style>
-    </head>
-
-    <body>
-
-        <div class="reveal">
-
-            <!-- Any section element inside of this container is displayed as a slide -->
-            <div class="slides">
-                <section>
-                    <h1>TypeScript</h1>
-                    <img src="skygate.png" alt="" class="logo">
-                    <img src="devmeetings_logo.jpg" alt="" class="logo">
-                    <h6 class="author">Andrzej Kopeć</h2>
-                </section>
-                <section>
-                    <h2>Skąd on w ogóle się wziął?</h2>
-                    <aside class="notes">
-                        <ul>
-                            <li>Ogłoszony w 2012 roku w wersji 0.8 po 2 latach wewnętrzengo użytku w M$</li>
-                            <li>Powstał z potrzeby tworzenia frontendów klasy enterprise</li>
-                            <li>Twórca: Anders Hejlsberg (to ten od C#, Delphi i Turbo Pascala)</li>
-                        </ul>
-                    </aside>
-                </section>
-                <section>
-                    <h2>Założenia</h2>
-                    <ul>
-                        <li>Statyczne typowanie</li>
-                        <li>Udostępnienie możliwości przyszłych wersji ECMAScript w&nbsp;obecnych dziś środowiskach uruchomieniowych</li>
-                        <li>Dodawanie nowych funkcjonalności bez ograniczania istniejących</li>
-                    </ul>
-                </section>
-                <section>
-                    <h2>Możliwości</h2>
-                    <ul>
-                        <li>Wybór języka docelowego (ES3, ES5, ES2015)</li>
-                        <li>Kompilacja do modułów (AMD, CommonJS, SystemJS, UMD) albo do jednego pliku</li>
-                        <li>Dekoratory
-                            <pre><code>
-@log
-function doSth () {
-    ...
-}
-                            </code></pre>
-                        </li>
-                    </ul>
-                </section>
-                <section>
-                    <h3>Typowanie</h3>
-                    <pre><code>
-class Sth&lt;T&gt; {
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>TypeScript
+  </title>
+  <meta name="author" content="Andrzej Kopeć">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="css/reveal.css">
+  <link id="theme" rel="stylesheet" href="css/theme/white.css">
+  <!-- Code syntax highlighting-->
+  <link rel="stylesheet" href="bower_components/highlightjs/styles/vs.css">
+  <!-- Printing and PDF exports-->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <style>
+    /* skygate-blue: 00b0ea */
+    @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic);
+    .reveal .logo {
+        border: none;
+        box-shadow: none;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    
+    .reveal .logo.devmeeting {
+        height: 60px;
+    }
+    
+    .reveal .logo.skygate {
+        height: 90px;
+    }
+    
+    .reveal .logo.ek {
+        height: 45px;
+    }
+    
+    .reveal h2, .reveal h3, .reveal h4 {
+        color: black;
+        font-family: 'Open Sans';
+        text-transform: none;
+    }
+    .reveal .controls div.navigate-left, .reveal .controls div.navigate-left.enabled {
+        border-right-color: #00b0ea;
+    }
+    .reveal .controls div.navigate-right, .reveal .controls div.navigate-right.enabled {
+        border-left-color: #00b0ea;
+    }
+    .reveal pre {
+        width: auto;
+    }
+    .reveal pre code {
+        background: none;
+        color: black;
+        max-height: 100%;
+    }
+    .reveal table tr:last-child td {
+        border-bottom: 1px solid;
+    }
+    
+    .reveal pre code.typescript.hljs.small {
+        font-size: 66% !important;
+        line-height: 125% !important;
+    }
+    
+    .reveal pre.inline {
+        display: inline-block;
+        box-sizing: border-box;
+        width: calc(50% - 42px);
+        vertical-align: top;
+        box-shadow: none;
+    }
+    
+    .reveal pre.inline code.hljs {
+        overflow: visible;
+        border: none;
+    }
+    
+    
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <!-- Any section element inside of this container is displayed as a slide-->
+    <div class="slides">
+      <section>
+        <h1>TypeScript</h1><img class="logo skygate" src="skygate.png" alt=""/><img class="logo devmeeting" src="devmeetings_logo.jpg" alt=""/>
+        <h6>Andrzej Kopeć</h6>
+      </section>
+      <section>
+        <h2>Origins</h2>
+        <ul>
+          <li>2012 - Microsoft announces the 0.8 version after 2 years of internal usage</li>
+          <li>Main reason: frontends for enterprise apps</li>
+          <li>Creator: Anders Hejlsberg (this is the guy who created also C#, Delphi and Turbo Pascal)</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Main goals</h2>
+        <ul>
+          <li>Static type checking</li>
+          <li>No fixes for JS weirdness</li>
+          <li>Wide and simple support in tools by TypeScript language service</li>
+          <li>Transpilation of ES.Next features</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Possibilities</h2>
+        <ul>
+          <li>Target language and platform selection (ES3, ES5, ES2015, browser, node)</li>
+          <li>Selection of target module system (AMD, CommonJS, SystemJS, UMD)</li>
+          <li>Adjustment of how strict checks are applied (null, implicit any, lack of variable usage)</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Types</h3>
+        <p>And type interference!</p>
+        <pre><code class="typescript">class Sth&lt;T&gt; {
     private privateField:T;
     public publicField:T;
 
@@ -114,38 +131,26 @@ class Sth&lt;T&gt; {
 }
 
 let sth:Sth&lt;Foo&gt; = new Sth(),
-    foo = sth.getSth(); //foo is of type Foo!
-                    </code></pre>
-                    <aside class="notes">
-                        <ul>
-                            <li>Modyfikatory dostępu</li>
-                            <li>Typy generyczne</li>
-                            <li>Interfejsy</li>
-                            <li>Inferencja typów</li>
-                        </ul>
-                    </aside>
-                </section>
-                <section>
-                    <h3>Interfejsy</h3>
-                    <pre><code>
-interface Foo {
+foo = sth.getSth(); //foo is of type Foo!
+</code></pre>
+      </section>
+      <section>
+        <h3>Interfaces</h3>
+        <pre><code class="typescript">interface Foo {
     bar();
 }
 
 class Sth implements Foo {
-    public bar () {
-    }
+    public bar () {}
 }
 
 var obj:Foo = {
     bar: () => {}
-};
-                    </code></pre>
-                </section>
-                <section>
-                    <h3>ES 2015</h3>
-                    <pre><code class="small">
-import Foo from './Foo';
+};</code></pre>
+      </section>
+      <section>
+        <h3>ES 2015</h3>
+        <pre><code class="typescript">import Foo from './Foo';
 
 export default class Sth extends Foo {
     constructor (attrA) {
@@ -165,37 +170,36 @@ export default class Sth extends Foo {
         };
     }
 }
-                    </code></pre>
-                    <aside class="notes">
-                        <ul>
-                            <li>Klasy</li>
-                            <li>Generatory</li>
-                            <li>Funkcje strzałkowe</li>
-                            <li>Moduły ES6</li>
-                        </ul>
-                    </aside>
-                </section>
-                <section>
-                    <h2>Eksperymenty</h2>
-                    <ul>
-                        <li><a href="http://cretz.github.io/pratphall/">Kompilacja do PHP</a></li>
-                        <li><a href="http://typedmvvm.codeplex.com/">Wspólne źródło aplikacji na kilka platform (iOS, Android, Universal App)</a></li>
-                        <li><a href="https://github.com/niutech/typescript-compile">Kompilacja TS bezpośrednio w przeglądarce</a></li>
-                        <li><a href="https://github.com/praeclarum/Netjs">Kompilacja z .NET do TS</a></li>
-                        <li><a href="http://duoco.de/">Kompilacja z C# do JS z wykorzystaniem TS i Microsoft Roslyn</a></li>
-                    </ul>
-                </section>
-                <section>
-                    <h2>Kod wynikowy i debugowanie</h2>
-                    <pre class="inline"><code class="small">
-export default class Sth {
+</code></pre>
+      </section>
+      <section>
+        <h3>ES 2015+</h3>
+        <pre><code class="typescript">@log
+async function doSth (params) {
+    const defaultParams = {foo: 'foo', bar: 'bar'};
+    await otherAsyncFunction({...defaultParams, ...params});
+}</code></pre>
+      </section>
+      <section>
+        <h2>Experiments</h2>
+        <ul>
+          <li><a href="http://cretz.github.io/pratphall/">PHP as a target language</a></li>
+          <li><a href="http://typedmvvm.codeplex.com/">Sharing code source between different platforms (iOS, Android, Universal App)</a></li>
+          <li><a href="https://github.com/niutech/typescript-compile">Compilation in browser</a></li>
+          <li><a href="https://github.com/praeclarum/Netjs">.NET to TS</a></li>
+          <li><a href="http://duoco.de/">C# to JS with TS and Microsoft Roslyn in the middle</a></li>
+        </ul>
+      </section>
+      <section>
+        <h2>Result code and debugging</h2>
+        <pre class="inline"><code class="typescript small">export default class Sth {
     fieldA;
 
     constructor (attrA) {
         this.fieldA = attrA;
     }
 
-    someMethod (attr:number):boolean {
+    someMethod (attr: number): boolean {
         return (attr%2 == 0);
     }
 
@@ -204,10 +208,8 @@ export default class Sth {
             return this.fieldA;
         };
     }
-}
-                    </code></pre>
-                    <pre class="inline"><code class="small">
-define(["require", "exports"], function (require, exports) {
+}</code></pre>
+        <pre class="inline"><code class="typescript small">define(["require", "exports"], function (require, exports) {
     var Sth = (function () {
         function Sth(attrA) {
             this.fieldA = attrA;
@@ -226,44 +228,35 @@ define(["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = Sth;
 });
-
-                    </code></pre>
-                </section>
-                <section>
-                    <h6><a href="mailto:andrzej.kopec@outlook.com">andrzej.kopec@outlook.com</a></h6>
-                    <h6><small>PS. SkyGate szuka frontendowców<br />Więcej szczegółów na <a href="skygate.pl">skygate.pl</a> lub drogą mailową</small></h6>
-                </section>
-            </div>
-
-        </div>
-
-        <script src="lib/js/head.min.js"></script>
-        <script src="js/reveal.js"></script>
-
-        <script>
-
-            // Full list of configuration options available at:
-            // https://github.com/hakimel/reveal.js#configuration
-            Reveal.initialize({
-                controls: true,
-                progress: true,
-                history: true,
-                center: true,
-
-                transition: 'slide', // none/fade/slide/convex/concave/zoom
-
-                // Optional reveal.js plugins
-                dependencies: [
-                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-                    { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
-                    { src: 'plugin/zoom-js/zoom.js', async: true },
-                    { src: 'plugin/notes/notes.js', async: true }
-                ]
-            });
-
-        </script>
-
-    </body>
-</html>
+</code></pre>
+      </section>
+      <section>
+        <h3>Questions time!</h3>
+        <h6><a href="mailto:andrzej.kopec@outlook.com">andrzej.kopec@outlook.com</a></h6>
+      </section>
+    </div>
+  </div>
+  <script src="lib/js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="bower_components/highlightjs/highlight.pack.min.js"></script>
+  <script>
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Optional reveal.js plugins
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+            { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+            { src: 'plugin/zoom-js/zoom.js', async: true },
+            { src: 'plugin/notes/notes.js', async: true }
+        ]
+    });
+  </script>
+</body>

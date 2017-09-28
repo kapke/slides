@@ -1,0 +1,144 @@
+extends ../presentation-template
+
+block title
+    | TypeScript
+
+block slides
+    +titleSlide('TypeScript')
+
+    +slide
+        h2 Origins
+        ul
+            li 2012 - Microsoft announces the 0.8 version after 2 years of internal usage
+            li Main reason: frontends for enterprise apps
+            li Creator: Anders Hejlsberg (this is the guy who created also C#, Delphi and Turbo Pascal)
+    +slide
+        h2 Main goals
+        ul
+            li Static type checking
+            li No fixes for JS weirdness
+            li Wide and simple support in tools by TypeScript language service
+            li Transpilation of ES.Next features
+    +slide
+        h2 Possibilities
+        ul
+            li Target language and platform selection (ES3, ES5, ES2015, browser, node)
+            li Selection of target module system (AMD, CommonJS, SystemJS, UMD)
+            li Adjustment of how strict checks are applied (null, implicit any, lack of variable usage)
+    +slide
+        h3 Types
+        p And type interference!
+        pre: code.typescript.
+            class Sth&lt;T&gt; {
+                private privateField:T;
+                public publicField:T;
+
+                public getSth ():T {
+                    return this.privateField;
+                }
+            }
+
+            let sth:Sth&lt;Foo&gt; = new Sth(),
+            foo = sth.getSth(); //foo is of type Foo!
+
+    +slide
+        h3 Interfaces
+        pre: code.typescript.
+            interface Foo {
+                bar();
+            }
+
+            class Sth implements Foo {
+                public bar () {}
+            }
+
+            var obj:Foo = {
+                bar: () => {}
+            };
+    +slide
+        h3 ES 2015
+        pre: code.typescript.
+            import Foo from './Foo';
+
+            export default class Sth extends Foo {
+                constructor (attrA) {
+                    super();
+                    this.fieldA = attrA;
+                }
+
+                someMethod* () {
+                    for(let i=0; ;i++) {
+                        yield i;
+                    }
+                }
+
+                anotherMethod () {
+                    return () => {
+                        return this.fieldA;
+                    };
+                }
+            }
+
+    +slide
+        h3 ES 2015+
+        pre: code.typescript.
+            @log
+            async function doSth (params) {
+                const defaultParams = {foo: 'foo', bar: 'bar'};
+                await otherAsyncFunction({...defaultParams, ...params});
+            }
+    +slide
+        h2 Experiments
+        ul
+            li
+                a(href='http://cretz.github.io/pratphall/') PHP as a target language
+            li
+                a(href='http://typedmvvm.codeplex.com/') Sharing code source between different platforms (iOS, Android, Universal App)
+            li
+                a(href='https://github.com/niutech/typescript-compile') Compilation in browser
+            li
+                a(href='https://github.com/praeclarum/Netjs') .NET to TS
+            li
+                a(href='http://duoco.de/') C# to JS with TS and Microsoft Roslyn in the middle
+    section
+        h2 Result code and debugging
+        pre.inline: code.typescript.small.
+            export default class Sth {
+                fieldA;
+
+                constructor (attrA) {
+                    this.fieldA = attrA;
+                }
+
+                someMethod (attr: number): boolean {
+                    return (attr%2 == 0);
+                }
+
+                anotherMethod () {
+                    return () => {
+                        return this.fieldA;
+                    };
+                }
+            }
+        pre.inline: code.typescript.small.
+            define(["require", "exports"], function (require, exports) {
+                var Sth = (function () {
+                    function Sth(attrA) {
+                        this.fieldA = attrA;
+                    }
+                    Sth.prototype.someMethod = function (attr) {
+                        return (attr % 2 == 0);
+                    };
+                    Sth.prototype.anotherMethod = function () {
+                        var _this = this;
+                        return function () {
+                            return _this.fieldA;
+                        };
+                    };
+                    return Sth;
+                })();
+                Object.defineProperty(exports, "__esModule", { value: true });
+                exports.default = Sth;
+            });
+
+    +finalSlide(true)
