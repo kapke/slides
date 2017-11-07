@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>Why dont I test private methods
+  </title>
+  <meta name="author" content="Andrzej Kopeć">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="css/reveal.css">
+  <link id="theme" rel="stylesheet" href="css/theme/white.css">
+  <!-- Code syntax highlighting-->
+  <link rel="stylesheet" href="bower_components/highlightjs/styles/vs.css">
+  <!-- Printing and PDF exports-->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <style>
+    /* skygate-blue: 00b0ea */
+    @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic);
+    .reveal .logo {
+        border: none;
+        box-shadow: none;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    
+    .reveal .logo.devmeeting {
+        height: 60px;
+    }
+    
+    .reveal .logo.skygate {
+        height: 120px;
+    }
+    
+    .reveal .logo.ek {
+        height: 45px;
+    }
+    
+    .reveal h2, .reveal h3, .reveal h4 {
+        color: black;
+        font-family: 'Open Sans';
+        text-transform: none;
+    }
+    .reveal .controls div.navigate-left, .reveal .controls div.navigate-left.enabled {
+        border-right-color: #00b0ea;
+    }
+    .reveal .controls div.navigate-right, .reveal .controls div.navigate-right.enabled {
+        border-left-color: #00b0ea;
+    }
+    .reveal pre {
+        width: auto;
+    }
+    .reveal pre code {
+        background: none;
+        color: black;
+        max-height: 100%;
+    }
+    .reveal table tr:last-child td {
+        border-bottom: 1px solid;
+    }
+    
+    .reveal pre code.typescript.hljs.small {
+        font-size: 66% !important;
+        line-height: 125% !important;
+    }
+    
+    .reveal pre.inline {
+        display: inline-block;
+        box-sizing: border-box;
+        width: calc(50% - 42px);
+        vertical-align: top;
+        box-shadow: none;
+    }
+    
+    .reveal pre.inline code.hljs {
+        overflow: visible;
+        border: none;
+    }
+    
+    
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <!-- Any section element inside of this container is displayed as a slide-->
+    <div class="slides">
+      <section>
+        <h1>Why I don't test private methods</h1><img class="logo skygate no-devmeeting" src="../skygate.png" alt=""/><img class="logo devmeeting" src="devmeetings_logo.jpg" alt=""/>
+        <h6 class="no-devmeeting">Andrzej Kopeć</h6>
+      </section>
+      <section>
+        <h2>What is the unit in unit testing?</h2>
+        <section>
+        </section>
+        <section>function/method?
+        </section>
+        <section>class?
+        </section>
+        <section>object?
+        </section>
+        <section>module?
+        </section>
+      </section>
+      <section>
+        <h2>What's the purpose of unit testing?</h2>
+      </section>
+      <section>
+        <p>Let's have such (pseudo)code</p>
+        <pre><code class="typescript">class Wizard {
+    public goNext () {
+        this.validateCurrentStep();
+        const nextStep = this.getNextStep();
+
+        this.goToStep(nextStep);
+    }
+
+    public goBack () {
+        this.validateCurrentStep();
+        const previousStep = this.getPreviousStep();
+
+        this.goToStep(previousStep);
+    }
+
+    private goToStep (step) {...}
+    private validateCurrentStep () {...}
+    private getNextStep () {}
+    private getPreviousStep () {}
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>Encapsulation</h2>
+      </section>
+      <section>
+        <h2>Single Responsiblity Principle</h2>
+      </section>
+      <section>
+        <h2>Open-closed Principle</h2>
+      </section>
+      <section>
+        <h2>Liskov Substitution Principle</h2>
+      </section>
+      <section>
+        <h3>Questions time!</h3>
+      </section>
+    </div>
+  </div>
+  <script src="lib/js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="bower_components/highlightjs/highlight.pack.min.js"></script>
+  <script>
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Optional reveal.js plugins
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+            { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+            { src: 'plugin/zoom-js/zoom.js', async: true },
+            { src: 'plugin/notes/notes.js', async: true }
+        ]
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (location.search.includes('devmeeting=true')) {
+            const elementsToRemove = Array.from(document.getElementsByClassName('no-devmeeting'));
+    
+            elementsToRemove.forEach(e => e.parentElement.removeChild(e));
+        }
+    });
+  </script>
+</body>
