@@ -1,0 +1,154 @@
+extends ../presentation-template
+
+block title
+    | Why I don't test private methods
+
+block slides
+    +titleSlide("Why I don't test private methods", true)
+
+    +slide
+        h2 What is the unit in unit testing?
+
+        +slide
+
+        +slide function/method?
+        +slide class?
+        +slide object?
+        +slide module?
+
+    +slide
+        h2 What's the purpose of unit testing?
+
+    +slide
+        p Let's have such code
+
+        pre: code.typescript.
+            class Wizard {
+                public currentStep = this.steps[0]; //It doesn't have to be a plain field
+
+                constructor (private steps) {}
+
+                public goNext () {
+                    this.goToStep(this.getNextStep());
+                }
+
+                public goBack () {
+                    this.goToStep(this.getPreviousStep());
+                }
+
+                private goToStep (step) {...}
+                private getNextStep () {}
+                private getPreviousStep () {}
+            }
+
+    +slide
+        h2 Encapsulation
+
+        +slide
+
+        +slide
+            h3 Bad
+
+            pre: code.typescript.
+                it('should go to given step', () => {
+                    const step = new Step()
+                    (wizard as any).goToStep(step);
+
+                    expect(wizard.currentStep).toBe(step);
+                })
+
+        +slide
+            h3 Worse
+
+            pre: code.typescript.
+                class TestableWizard extends Wizard {
+                    public goToStep (step) {
+                        super.goToStep(step);
+                    }
+                }
+
+    +slide
+        h2 Single Responsibility Principle
+
+        +slide
+
+        +slide
+            pre: code.typescript.
+                private goToStep (step) {
+                    //a lot of very important validation logic
+                    //and so on...
+                    this.currentStep = step;
+                }
+
+    +slide
+        h2 Open-closed Principle
+
+        +slide
+
+        +slide
+            h3 Let's add validation!
+
+        +slide
+            pre: code.typescript.
+                class Wizard {
+                    //...
+
+                    private goToStep (step) {
+                        if (!this.currentStep.isValid()) {
+                            return;
+                        }
+
+                        //...
+                    }
+                }
+
+                it('should check current step before moving to another', () => {
+                    makeCurrentStepInvalid();
+
+                    (wizard as any).goToStep(anyOtherStep);
+
+                    expect(wizard.currentStep).toBe(currentStep);
+                });
+
+        +slide
+            h3 But we shouldn't validate current step before moving back!
+            p
+            | Oooops &ndash; we have to
+            strong &nbsp;modify&nbsp;
+            | both tests and code
+
+    +slide
+        h2 Liskov Substitution Principle
+
+        +slide
+
+        +slide
+            h3 Let's say we want to completely rewrite our wizard
+
+        +slide
+            h3 From client perspective nothing can change
+
+        +slide
+            p
+            | Another "Oooops" &ndash; we have to
+            strong &nbsp;modify&nbsp;
+            | both tests and code
+
+    +slide
+        h2 According to the title - my answer is:
+
+    +slide
+        h2 &bdquo;Cause this saves my ass&rdquo;
+
+        +slide
+
+        +slide
+            h3 This allows me to rework code internals at any time
+
+        +slide
+            h3 This forces me to focus on behaviour instead of state
+
+        +slide
+            h3 This forces me to write more descriptive tests which are great documentation for rest of the team
+
+    +finalSlide(true)

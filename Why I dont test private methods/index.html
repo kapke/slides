@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
   <meta charset="utf-8">
-  <title>Why dont I test private methods
+  <title>Why I don't test private methods
   </title>
   <meta name="author" content="Andrzej Kopeć">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -110,24 +110,21 @@
         <h2>What's the purpose of unit testing?</h2>
       </section>
       <section>
-        <p>Let's have such (pseudo)code</p>
+        <p>Let's have such code</p>
         <pre><code class="typescript">class Wizard {
-    public goNext () {
-        this.validateCurrentStep();
-        const nextStep = this.getNextStep();
+    public currentStep = this.steps[0]; //It doesn't have to be a plain field
 
-        this.goToStep(nextStep);
+    constructor (private steps) {}
+
+    public goNext () {
+        this.goToStep(this.getNextStep());
     }
 
     public goBack () {
-        this.validateCurrentStep();
-        const previousStep = this.getPreviousStep();
-
-        this.goToStep(previousStep);
+        this.goToStep(this.getPreviousStep());
     }
 
     private goToStep (step) {...}
-    private validateCurrentStep () {...}
     private getNextStep () {}
     private getPreviousStep () {}
 }
@@ -135,18 +132,109 @@
       </section>
       <section>
         <h2>Encapsulation</h2>
+        <section>
+        </section>
+        <section>
+          <h3>Bad</h3>
+          <pre><code class="typescript">it('should go to given step', () => {
+    const step = new Step()
+    (wizard as any).goToStep(step);
+
+    expect(wizard.currentStep).toBe(step);
+})
+</code></pre>
+        </section>
+        <section>
+          <h3>Worse</h3>
+          <pre><code class="typescript">class TestableWizard extends Wizard {
+    public goToStep (step) {
+        super.goToStep(step);
+    }
+}
+</code></pre>
+        </section>
       </section>
       <section>
-        <h2>Single Responsiblity Principle</h2>
+        <h2>Single Responsibility Principle</h2>
+        <section>
+        </section>
+        <section>
+          <pre><code class="typescript">private goToStep (step) {
+    //a lot of very important validation logic
+    //and so on...
+    this.currentStep = step;
+}
+</code></pre>
+        </section>
       </section>
       <section>
         <h2>Open-closed Principle</h2>
+        <section>
+        </section>
+        <section>
+          <h3>Let's add validation!</h3>
+        </section>
+        <section>
+          <pre><code class="typescript">class Wizard {
+    //...
+
+    private goToStep (step) {
+        if (!this.currentStep.isValid()) {
+            return;
+        }
+
+        //...
+    }
+}
+
+it('should check current step before moving to another', () => {
+    makeCurrentStepInvalid();
+
+    (wizard as any).goToStep(anyOtherStep);
+
+    expect(wizard.currentStep).toBe(currentStep);
+});
+</code></pre>
+        </section>
+        <section>
+          <h3>But we shouldn't validate current step before moving back!</h3>
+          <p></p>Oooops &ndash; we have to<strong>&nbsp;modify&nbsp;</strong>both tests and code
+        </section>
       </section>
       <section>
         <h2>Liskov Substitution Principle</h2>
+        <section>
+        </section>
+        <section>
+          <h3>Let's say we want to completely rewrite our wizard</h3>
+        </section>
+        <section>
+          <h3>From client perspective nothing can change</h3>
+        </section>
+        <section>
+          <p></p>Another "Oooops" &ndash; we have to<strong>&nbsp;modify&nbsp;</strong>both tests and code
+        </section>
+      </section>
+      <section>
+        <h2>According to the title - my answer is:</h2>
+      </section>
+      <section>
+        <h2>&bdquo;Cause this saves my ass&rdquo;</h2>
+        <section>
+        </section>
+        <section>
+          <h3>This allows me to rework code internals at any time</h3>
+        </section>
+        <section>
+          <h3>This forces me to focus on behaviour instead of state</h3>
+        </section>
+        <section>
+          <h3>This forces me to write more descriptive tests which are great documentation for rest of the team</h3>
+        </section>
       </section>
       <section>
         <h3>Questions time!</h3>
+        <h6 class="no-devmeeting"><a href="mailto:andrzej.kopec@outlook.com">andrzej.kopec@outlook.com</a></h6>
       </section>
     </div>
   </div>
