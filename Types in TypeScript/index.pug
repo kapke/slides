@@ -16,7 +16,7 @@ block slides
         h2 Ano tak:
         pre: code.
             let zmienna: typ;
-            const zmienna : typ = new Klasa()
+            const zmienna : Klasa = new Klasa()
 
             function (argument: typ) : typ_zwracany {}
 
@@ -28,9 +28,10 @@ block slides
             li String/string
 
     +slide
-        h2 Ej, ej a te z []?
+        h2 Ej, ej, a te z []?
         pre: code.
             let zmienna1 : type[]; //Tablica obiektów typu "type"
+            let zmienna2: Array&lt;type&gt;; // jak wyżej
             let zmienna3 : [type1, type2]; //Krotka, czyli tablica 2 elementowa
 
     +slide
@@ -89,9 +90,9 @@ block slides
     +slide
         pre: code.
             interface HttpClient {
-                post (url: string, data: any): IPromise&lt;any&gt;
-                put (url: string, data: object): IPromise&lt;any&gt;
-                patch (url: string, data: Object): IPromise&lt;any&gt;
+                post (url: string, data: any): Promise&lt;any&gt;
+                put (url: string, data: object): Promise&lt;any&gt;
+                patch (url: string, data: Object): Promise&lt;any&gt;
             }
 
     +slide
@@ -100,14 +101,15 @@ block slides
     +slide
         pre: code.
             interface HttpClient {
-                get (url: string, callback: (data: any) =&gt; void);
-                delete (url: string, callback: (data: any) =&gt; never);
+                get (url: string, callback: (data: any) =&gt; void): void;
+                delete (url: string, callback: (data: any) =&gt; void): void;
             }
 
     +slide
         h2 A czy mogę jakoś zrobić, by moja wewnętrzna metoda "makeRequest" mogła przyjmować tylko określone wartości?
 
     +slide
+        h2 Tak, z union types albo enumami
         pre: code.
             type HttpMethod = "get" | "post" | "delete";
 
@@ -118,7 +120,18 @@ block slides
             makeRequest(HttpMethod.Get);
 
     +slide
-        h2 Ale teraz wszystko mi się psuje, bo promise ma typ "any" w środku!
+        h2 Ale to "any" praktycznie wyłącza mi tam sprawdzanie typów!
+        pre: code.
+            interface HttpClient {
+                get&lt;T&gt;(url: string): Promise&lt;T&gt;;
+            }
+
+            function makeGet&lt;T&gt; (url: string): Promise&lt;T&gt; {};
+
+            const makeGet = &lt;T&gt;(url: string): Promise&lt;T&gt; => {}
+
+    +slide
+        h2 No ok, a co jak się spodziewam, że mam jakiś konkretny typ a deklaracje mówią inaczej?
 
     +slide
         h2 Na to są 2 rozwiązania:
@@ -129,7 +142,7 @@ block slides
     +slide
         h2 Rzutowanie
         pre: code.
-            let zmienna: any;
+            let zmienna: string|number;
 
             const napis1 = zmienna as string;
             const napis2 = &lt;string&gt;zmienna;
@@ -141,14 +154,14 @@ block slides
                 return product.name && product.price;
             }
 
-            let zmienna: any;
+            let zmienna: Product | Category;
 
             if (isProduct(zmienna)) {
                 //zmienna ma typ Product i TypeScript o nic się nie pluje
             }
 
     +slide
-        h2 No działa, ale jak mam wyświetlić listę wyszukiwania, na której są i produkty i kategorie?
+        h2 No działa, ale jak mam wyświetlić listę wyników wyszukiwania, na której są i produkty i kategorie?
 
     +slide
         h2 Wykorzystując union types
@@ -192,10 +205,11 @@ block slides
         h2 Podobnie jak te kilka wytrychów:
         pre: code.
             type Flags = { [name: string]: boolean};
+            type Flags = Record&lt;string, boolean&gt;
 
-            function get&lt;T, U extends keyof T&gt;(key: U): T[U] {}
+            function get&lt;T, U extends keyof T&gt;(obj: T, key: U): T[U] {}
 
-            type Partial&lt;T&gt; = {
+            type Partial&lt;T&gt; = { //wbudowane w TypeScript
                 [P in keyof T]?: T[P];
             }
 

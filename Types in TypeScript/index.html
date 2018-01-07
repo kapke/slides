@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
   <meta charset="utf-8">
-  <title>Elm
+  <title>Types in TypeScript
   </title>
   <meta name="author" content="Andrzej Kopeć">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -34,7 +34,7 @@
     }
     
     .reveal .logo.skygate {
-        height: 90px;
+        height: 120px;
     }
     
     .reveal .logo.ek {
@@ -64,6 +64,25 @@
         border-bottom: 1px solid;
     }
     
+    .reveal pre code.typescript.hljs.small {
+        font-size: 66% !important;
+        line-height: 125% !important;
+    }
+    
+    .reveal pre.inline {
+        display: inline-block;
+        box-sizing: border-box;
+        width: calc(50% - 42px);
+        vertical-align: top;
+        box-shadow: none;
+    }
+    
+    .reveal pre.inline code.hljs {
+        overflow: visible;
+        border: none;
+    }
+    
+    
   </style>
 </head>
 <body>
@@ -71,8 +90,8 @@
     <!-- Any section element inside of this container is displayed as a slide-->
     <div class="slides">
       <section>
-        <h1>Types</h1><img class="logo skygate" src="skygate.png" alt=""/><img class="logo devmeeting" src="devmeetings_logo.jpg" alt=""/>
-        <h6>Andrzej Kopeć</h6>
+        <h1>Types in TypeScript</h1><img class="logo skygate no-devmeeting" src="../skygate.png" alt=""/><img class="logo devmeeting" src="devmeetings_logo.jpg" alt=""/>
+        <h6 class="no-devmeeting">Andrzej Kopeć</h6>
       </section>
       <section>
         <h2>Czy ja w ogólę potrzebuję jakichś tam typów?</h2>
@@ -83,7 +102,7 @@
       <section>
         <h2>Ano tak:</h2>
         <pre><code>let zmienna: typ;
-const zmienna : typ = new Klasa()
+const zmienna : Klasa = new Klasa()
 
 function (argument: typ) : typ_zwracany {}
 </code></pre>
@@ -97,8 +116,9 @@ function (argument: typ) : typ_zwracany {}
         </ul>
       </section>
       <section>
-        <h2>Ej, ej a te z []?</h2>
+        <h2>Ej, ej, a te z []?</h2>
         <pre><code>let zmienna1 : type[]; //Tablica obiektów typu "type"
+let zmienna2: Array&lt;type&gt;; // jak wyżej
 let zmienna3 : [type1, type2]; //Krotka, czyli tablica 2 elementowa
 </code></pre>
       </section>
@@ -157,9 +177,9 @@ interface Product {
       </section>
       <section>
         <pre><code>interface HttpClient {
-    post (url: string, data: any): IPromise&lt;any&gt;
-    put (url: string, data: object): IPromise&lt;any&gt;
-    patch (url: string, data: Object): IPromise&lt;any&gt;
+    post (url: string, data: any): Promise&lt;any&gt;
+    put (url: string, data: object): Promise&lt;any&gt;
+    patch (url: string, data: Object): Promise&lt;any&gt;
 }
 </code></pre>
       </section>
@@ -168,8 +188,8 @@ interface Product {
       </section>
       <section>
         <pre><code>interface HttpClient {
-    get (url: string, callback: (data: any) =&gt; void);
-    delete (url: string, callback: (data: any) =&gt; never);
+    get (url: string, callback: (data: any) =&gt; void): void;
+    delete (url: string, callback: (data: any) =&gt; void): void;
 }
 </code></pre>
       </section>
@@ -177,6 +197,7 @@ interface Product {
         <h2>A czy mogę jakoś zrobić, by moja wewnętrzna metoda "makeRequest" mogła przyjmować tylko określone wartości?</h2>
       </section>
       <section>
+        <h2>Tak, z union types albo enumami</h2>
         <pre><code>type HttpMethod = "get" | "post" | "delete";
 
 makeRequest("get");
@@ -187,7 +208,18 @@ makeRequest(HttpMethod.Get);
 </code></pre>
       </section>
       <section>
-        <h2>Ale teraz wszystko mi się psuje, bo promise ma typ "any" w środku!</h2>
+        <h2>Ale to "any" praktycznie wyłącza mi tam sprawdzanie typów!</h2>
+        <pre><code>interface HttpClient {
+    get&lt;T&gt;(url: string): Promise&lt;T&gt;;
+}
+
+function makeGet&lt;T&gt; (url: string): Promise&lt;T&gt; {};
+
+const makeGet = &lt;T&gt;(url: string): Promise&lt;T&gt; => {}
+</code></pre>
+      </section>
+      <section>
+        <h2>No ok, a co jak się spodziewam, że mam jakiś konkretny typ a deklaracje mówią inaczej?</h2>
       </section>
       <section>
         <h2>Na to są 2 rozwiązania:</h2>
@@ -198,7 +230,7 @@ makeRequest(HttpMethod.Get);
       </section>
       <section>
         <h2>Rzutowanie</h2>
-        <pre><code>let zmienna: any;
+        <pre><code>let zmienna: string|number;
 
 const napis1 = zmienna as string;
 const napis2 = &lt;string&gt;zmienna;
@@ -210,7 +242,7 @@ const napis2 = &lt;string&gt;zmienna;
     return product.name && product.price;
 }
 
-let zmienna: any;
+let zmienna: Product | Category;
 
 if (isProduct(zmienna)) {
     //zmienna ma typ Product i TypeScript o nic się nie pluje
@@ -218,7 +250,7 @@ if (isProduct(zmienna)) {
 </code></pre>
       </section>
       <section>
-        <h2>No działa, ale jak mam wyświetlić listę wyszukiwania, na której są i produkty i kategorie?</h2>
+        <h2>No działa, ale jak mam wyświetlić listę wyników wyszukiwania, na której są i produkty i kategorie?</h2>
       </section>
       <section>
         <h2>Wykorzystując union types</h2>
@@ -261,22 +293,24 @@ item.detailsUrl; // OK
       <section>
         <h2>Podobnie jak te kilka wytrychów:</h2>
         <pre><code>type Flags = { [name: string]: boolean};
+type Flags = Record&lt;string, boolean&gt;
 
-function get&lt;T, U extends keyof T&gt;(key: U): T[U] {}
+function get&lt;T, U extends keyof T&gt;(obj: T, key: U): T[U] {}
 
-type Partial&lt;T&gt; = {
+type Partial&lt;T&gt; = { //wbudowane w TypeScript
     [P in keyof T]?: T[P];
 }
 </code></pre>
       </section>
       <section>
-        <h3>Pytania?</h3>
-        <h6><a href="mailto:andrzej.kopec@outlook.com">andrzej.kopec@outlook.com</a></h6>
+        <h3>Questions time!</h3>
+        <h6 class="no-devmeeting"><a href="mailto:andrzej.kopec@outlook.com">andrzej.kopec@outlook.com</a></h6>
       </section>
     </div>
   </div>
   <script src="lib/js/head.min.js"></script>
   <script src="js/reveal.js"></script>
+  <script src="bower_components/highlightjs/highlight.pack.min.js"></script>
   <script>
     // Full list of configuration options available at:
     // https://github.com/hakimel/reveal.js#configuration
@@ -295,6 +329,15 @@ type Partial&lt;T&gt; = {
             { src: 'plugin/zoom-js/zoom.js', async: true },
             { src: 'plugin/notes/notes.js', async: true }
         ]
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (location.search.includes('devmeeting=true')) {
+            const elementsToRemove = Array.from(document.getElementsByClassName('no-devmeeting'));
+    
+            elementsToRemove.forEach(e => e.parentElement.removeChild(e));
+        }
     });
   </script>
 </body>
