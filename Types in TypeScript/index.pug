@@ -164,7 +164,7 @@ block slides
         h2 No działa, ale jak mam wyświetlić listę wyników wyszukiwania, na której są i produkty i kategorie?
 
     +slide
-        h2 Wykorzystując union types
+        h2 1. opcja - union types
         pre: code.
             interface Category {
                 name: string;
@@ -179,6 +179,29 @@ block slides
             }
 
             type SearchResultItem = Category | Product;
+
+            let item : SearchResultItem;
+            item.name; //OK;
+            item.image; //OK;
+            item.price //Error
+
+    +slide
+        h2 2. opcja - bazowy interfejs
+        pre: code.
+            interface ShopItem {
+                name: string;
+                image: string;
+            }
+
+            interface Category extends ShopItem {
+                products: Product[];
+            }
+
+            interface Product extends ShopItem {
+                price: Money;
+            }
+
+            type SearchResultItem = ShopItem;
 
             let item : SearchResultItem;
             item.name; //OK;
