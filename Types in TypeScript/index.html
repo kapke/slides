@@ -101,10 +101,10 @@
       </section>
       <section>
         <h2>Ano tak:</h2>
-        <pre><code>let zmienna: typ;
-const zmienna : Klasa = new Klasa()
+        <pre><code>let variable: SomeType;
+const constant : SomeClass = new SomeClass()
 
-function (argument: typ) : typ_zwracany {}
+function (arg: ArgType) : ReturnType {}
 </code></pre>
       </section>
       <section>
@@ -117,9 +117,9 @@ function (argument: typ) : typ_zwracany {}
       </section>
       <section>
         <h2>Ej, ej, a te z []?</h2>
-        <pre><code>let zmienna1 : type[]; //Tablica obiektów typu "type"
-let zmienna2: Array&lt;type&gt;; // jak wyżej
-let zmienna3 : [type1, type2]; //Krotka, czyli tablica 2 elementowa
+        <pre><code>let variable1 : Type[]; //Tablica obiektów typu "type"
+let variable2: Array&lt;Type&gt;; // jak wyżej
+let variable3 : [Type1, Type2]; //Krotka (tuple)
 </code></pre>
       </section>
       <section>
@@ -230,10 +230,10 @@ const makeGet = &lt;T&gt;(url: string): Promise&lt;T&gt; => {}
       </section>
       <section>
         <h2>Rzutowanie</h2>
-        <pre><code>let zmienna: string|number;
+        <pre><code>let variable: string|number;
 
-const napis1 = zmienna as string;
-const napis2 = &lt;string&gt;zmienna;
+const string1 = variable as string;
+const string2 = &lt;string&gt;variable;
 </code></pre>
       </section>
       <section>
@@ -242,10 +242,10 @@ const napis2 = &lt;string&gt;zmienna;
     return product.name && product.price;
 }
 
-let zmienna: Product | Category;
+let productOrCategory: Product | Category;
 
-if (isProduct(zmienna)) {
-    //zmienna ma typ Product i TypeScript o nic się nie pluje
+if (isProduct(productOrCategory)) {
+    //Product
 }
 </code></pre>
       </section>

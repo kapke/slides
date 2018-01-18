@@ -15,10 +15,10 @@ block slides
     +slide
         h2 Ano tak:
         pre: code.
-            let zmienna: typ;
-            const zmienna : Klasa = new Klasa()
+            let variable: SomeType;
+            const constant : SomeClass = new SomeClass()
 
-            function (argument: typ) : typ_zwracany {}
+            function (arg: ArgType) : ReturnType {}
 
     +slide
         h2 Typy podstawowe
@@ -30,9 +30,9 @@ block slides
     +slide
         h2 Ej, ej, a te z []?
         pre: code.
-            let zmienna1 : type[]; //Tablica obiektów typu "type"
-            let zmienna2: Array&lt;type&gt;; // jak wyżej
-            let zmienna3 : [type1, type2]; //Krotka, czyli tablica 2 elementowa
+            let variable1 : Type[]; //Tablica obiektów typu "type"
+            let variable2: Array&lt;Type&gt;; // jak wyżej
+            let variable3 : [Type1, Type2]; //Krotka (tuple)
 
     +slide
         h2 To jak mam opisać np. produkt?
@@ -142,10 +142,10 @@ block slides
     +slide
         h2 Rzutowanie
         pre: code.
-            let zmienna: string|number;
+            let variable: string|number;
 
-            const napis1 = zmienna as string;
-            const napis2 = &lt;string&gt;zmienna;
+            const string1 = variable as string;
+            const string2 = &lt;string&gt;variable;
 
     +slide
         h2 Type guard
@@ -154,10 +154,10 @@ block slides
                 return product.name && product.price;
             }
 
-            let zmienna: Product | Category;
+            let productOrCategory: Product | Category;
 
-            if (isProduct(zmienna)) {
-                //zmienna ma typ Product i TypeScript o nic się nie pluje
+            if (isProduct(productOrCategory)) {
+                //Product
             }
 
     +slide
