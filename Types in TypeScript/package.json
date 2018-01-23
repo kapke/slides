@@ -6,6 +6,7 @@
   "subdomain": "revealjs",
   "main": "js/reveal.js",
   "scripts": {
+    "postinstall": "bower install",
     "test": "grunt test",
     "start": "concurrently -k 'grunt serve' 'npm run watch'",
     "watch": "pug --watch --pretty index.pug",
@@ -21,12 +22,13 @@
     "url": "git://github.com/hakimel/reveal.js.git"
   },
   "dependencies": {
-    "underscore": "~1.5.1",
     "express": "~2.5.9",
     "mustache": "~0.7.2",
-    "socket.io": "~0.9.16"
+    "socket.io": "~0.9.16",
+    "underscore": "~1.5.1"
   },
   "devDependencies": {
+    "bower": "^1.8.2",
     "concurrently": "^2.2.0",
     "grunt": "~0.4.0",
     "grunt-autoprefixer": "~1.0.1",
