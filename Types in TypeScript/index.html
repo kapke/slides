@@ -101,7 +101,7 @@
       </section>
       <section>
         <h2>Ano tak:</h2>
-        <pre><code>let variable: SomeType;
+        <pre><code class="typescript">let variable: SomeType;
 const constant : SomeClass = new SomeClass()
 
 function (arg: ArgType) : ReturnType {}
@@ -117,14 +117,14 @@ function (arg: ArgType) : ReturnType {}
       </section>
       <section>
         <h2>Ej, ej, a te z []?</h2>
-        <pre><code>let variable1 : Type[]; //Tablica obiektów typu "type"
+        <pre><code class="typescript">let variable1 : Type[]; //Tablica obiektów typu "type"
 let variable2: Array&lt;Type&gt;; // jak wyżej
 let variable3 : [Type1, Type2]; //Krotka (tuple)
 </code></pre>
       </section>
       <section>
         <h2>To jak mam opisać np. produkt?</h2>
-        <pre><code>class Product {
+        <pre><code class="typescript">class Product {
     constructor (public name: string, public price: number) {}
 }
 
@@ -144,7 +144,7 @@ interface Product {
       </section>
       <section>
         <h2>Pole opcjonalne</h2>
-        <pre><code>interface Product {
+        <pre><code class="typescript">interface Product {
     ...
     description?: string;
 }
@@ -165,7 +165,7 @@ interface Product {
       </section>
       <section>
         <h2>Nie, zdefiniujesz typ generyczny, o tak:</h2>
-        <pre><code>class Paginator&lt;T&gt; {
+        <pre><code class="typescript">class Paginator&lt;T&gt; {
     constructor (private allElements: T[]) {}
 
     getPage (nr: number): T[] {}
@@ -176,7 +176,7 @@ interface Product {
         <h2>A jak mam niby zdefiniować, że w danej zmiennej może być cokolwiek? Np. w jakimś kliencie Http?</h2>
       </section>
       <section>
-        <pre><code>interface HttpClient {
+        <pre><code class="typescript">interface HttpClient {
     post (url: string, data: any): Promise&lt;any&gt;
     put (url: string, data: object): Promise&lt;any&gt;
     patch (url: string, data: Object): Promise&lt;any&gt;
@@ -187,7 +187,7 @@ interface Product {
         <h2>Ale takie jQuery na przykład jeszcze ma callbacka, ja też chcę!</h2>
       </section>
       <section>
-        <pre><code>interface HttpClient {
+        <pre><code class="typescript">interface HttpClient {
     get (url: string, callback: (data: any) =&gt; void): void;
     delete (url: string, callback: (data: any) =&gt; void): void;
 }
@@ -198,7 +198,7 @@ interface Product {
       </section>
       <section>
         <h2>Tak, z union types albo enumami</h2>
-        <pre><code>type HttpMethod = "get" | "post" | "delete";
+        <pre><code class="typescript">type HttpMethod = "get" | "post" | "delete";
 
 makeRequest("get");
 
@@ -209,7 +209,7 @@ makeRequest(HttpMethod.Get);
       </section>
       <section>
         <h2>Ale to "any" praktycznie wyłącza mi tam sprawdzanie typów!</h2>
-        <pre><code>interface HttpClient {
+        <pre><code class="typescript">interface HttpClient {
     get&lt;T&gt;(url: string): Promise&lt;T&gt;;
 }
 
@@ -230,7 +230,7 @@ const makeGet = &lt;T&gt;(url: string): Promise&lt;T&gt; => {}
       </section>
       <section>
         <h2>Rzutowanie</h2>
-        <pre><code>let variable: string|number;
+        <pre><code class="typescript">let variable: string|number;
 
 const string1 = variable as string;
 const string2 = &lt;string&gt;variable;
@@ -238,7 +238,7 @@ const string2 = &lt;string&gt;variable;
       </section>
       <section>
         <h2>Type guard</h2>
-        <pre><code>function isProduct (product: any) product is Product {
+        <pre><code class="typescript">function isProduct (product: any) product is Product {
     return product.name && product.price;
 }
 
@@ -254,7 +254,7 @@ if (isProduct(productOrCategory)) {
       </section>
       <section>
         <h2>1. opcja - union types</h2>
-        <pre><code>interface Category {
+        <pre><code class="typescript">interface Category {
     name: string;
     image: string;
     products: Product[];
@@ -276,7 +276,7 @@ item.price //Error
       </section>
       <section>
         <h2>2. opcja - bazowy interfejs</h2>
-        <pre><code>interface ShopItem {
+        <pre><code class="typescript">interface ShopItem {
     name: string;
     image: string;
 }
@@ -299,7 +299,7 @@ item.price //Error
       </section>
       <section>
         <h2>No, prawie, działa, bo backend do wyniku wyszukiwania dodaje link do szczegółów...</h2>
-        <pre><code>type WithDetailsLink = {detailsUrl: string;};
+        <pre><code class="typescript">type WithDetailsLink = {detailsUrl: string;};
 type ProductOrCategory = Product | Category;
 
 type SearchResultsItem = ProductOrCategory & WithDetailsLink;
@@ -310,18 +310,44 @@ item.detailsUrl; // OK
       </section>
       <section>
         <h2>Swoją drogą, w JS Intersection Types są dość popularne w różnych bibliotekach:</h2>
-        <pre><code>function assign&lt;T, U&gt; (t: T, u: U): T&U {}
+        <pre><code class="typescript">function assign&lt;T, U&gt; (t: T, u: U): T&U {}
 </code></pre>
       </section>
       <section>
         <h2>Podobnie jak te kilka wytrychów:</h2>
-        <pre><code>type Flags = { [name: string]: boolean};
+        <pre><code class="typescript">type Flags = { [name: string]: boolean};
 type Flags = Record&lt;string, boolean&gt;
 
 function get&lt;T, U extends keyof T&gt;(obj: T, key: U): T[U] {}
 
 type Partial&lt;T&gt; = { //wbudowane w TypeScript
     [P in keyof T]?: T[P];
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>PS. Dla użytkowników reduxa</h2>
+        <pre><code class="typescript">const ADD_PRODUCT = 'AddProduct';
+interface AddProductAction {
+    type: typeof ADD_PRODUCT;
+    payload: Product;
+}
+
+const REMOVE_PRODUCT = 'RemoveProduct';
+interface RemoveProductAction {
+    type: typeof REMOVE_PRODUCT;
+    payload: string;
+}
+
+type ProductAction = AddProductAction | RemoveProductAction;
+
+function handleProduct(action: ProductAction) {
+    switch (action.type) {
+        case ADD_PRODUCT:
+            //action.payload is Product
+        case REMOVE_PRODUCT:
+            //action.payload is string
+    }
 }
 </code></pre>
       </section>

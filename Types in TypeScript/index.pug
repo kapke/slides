@@ -14,7 +14,7 @@ block slides
 
     +slide
         h2 Ano tak:
-        pre: code.
+        pre: code.typescript.
             let variable: SomeType;
             const constant : SomeClass = new SomeClass()
 
@@ -29,14 +29,14 @@ block slides
 
     +slide
         h2 Ej, ej, a te z []?
-        pre: code.
+        pre: code.typescript.
             let variable1 : Type[]; //Tablica obiektów typu "type"
             let variable2: Array&lt;Type&gt;; // jak wyżej
             let variable3 : [Type1, Type2]; //Krotka (tuple)
 
     +slide
         h2 To jak mam opisać np. produkt?
-        pre: code.
+        pre: code.typescript.
             class Product {
                 constructor (public name: string, public price: number) {}
             }
@@ -56,7 +56,7 @@ block slides
 
     +slide
         h2 Pole opcjonalne
-        pre: code.
+        pre: code.typescript.
             interface Product {
                 ...
                 description?: string;
@@ -77,7 +77,7 @@ block slides
 
     +slide
         h2 Nie, zdefiniujesz typ generyczny, o tak:
-        pre: code.
+        pre: code.typescript.
             class Paginator&lt;T&gt; {
                 constructor (private allElements: T[]) {}
 
@@ -88,7 +88,7 @@ block slides
         h2 A jak mam niby zdefiniować, że w danej zmiennej może być cokolwiek? Np. w jakimś kliencie Http?
 
     +slide
-        pre: code.
+        pre: code.typescript.
             interface HttpClient {
                 post (url: string, data: any): Promise&lt;any&gt;
                 put (url: string, data: object): Promise&lt;any&gt;
@@ -99,7 +99,7 @@ block slides
         h2 Ale takie jQuery na przykład jeszcze ma callbacka, ja też chcę!
 
     +slide
-        pre: code.
+        pre: code.typescript.
             interface HttpClient {
                 get (url: string, callback: (data: any) =&gt; void): void;
                 delete (url: string, callback: (data: any) =&gt; void): void;
@@ -110,7 +110,7 @@ block slides
 
     +slide
         h2 Tak, z union types albo enumami
-        pre: code.
+        pre: code.typescript.
             type HttpMethod = "get" | "post" | "delete";
 
             makeRequest("get");
@@ -121,7 +121,7 @@ block slides
 
     +slide
         h2 Ale to "any" praktycznie wyłącza mi tam sprawdzanie typów!
-        pre: code.
+        pre: code.typescript.
             interface HttpClient {
                 get&lt;T&gt;(url: string): Promise&lt;T&gt;;
             }
@@ -141,7 +141,7 @@ block slides
 
     +slide
         h2 Rzutowanie
-        pre: code.
+        pre: code.typescript.
             let variable: string|number;
 
             const string1 = variable as string;
@@ -149,7 +149,7 @@ block slides
 
     +slide
         h2 Type guard
-        pre: code.
+        pre: code.typescript.
             function isProduct (product: any) product is Product {
                 return product.name && product.price;
             }
@@ -165,7 +165,7 @@ block slides
 
     +slide
         h2 1. opcja - union types
-        pre: code.
+        pre: code.typescript.
             interface Category {
                 name: string;
                 image: string;
@@ -187,7 +187,7 @@ block slides
 
     +slide
         h2 2. opcja - bazowy interfejs
-        pre: code.
+        pre: code.typescript.
             interface ShopItem {
                 name: string;
                 image: string;
@@ -210,7 +210,7 @@ block slides
 
     +slide
         h2 No, prawie, działa, bo backend do wyniku wyszukiwania dodaje link do szczegółów...
-        pre: code.
+        pre: code.typescript.
             type WithDetailsLink = {detailsUrl: string;};
             type ProductOrCategory = Product | Category;
 
@@ -221,12 +221,12 @@ block slides
 
     +slide
         h2 Swoją drogą, w JS Intersection Types są dość popularne w różnych bibliotekach:
-        pre: code.
+        pre: code.typescript.
             function assign&lt;T, U&gt; (t: T, u: U): T&U {}
 
     +slide
         h2 Podobnie jak te kilka wytrychów:
-        pre: code.
+        pre: code.typescript.
             type Flags = { [name: string]: boolean};
             type Flags = Record&lt;string, boolean&gt;
 
@@ -234,6 +234,32 @@ block slides
 
             type Partial&lt;T&gt; = { //wbudowane w TypeScript
                 [P in keyof T]?: T[P];
+            }
+
+    +slide
+        h2 PS. Dla użytkowników reduxa
+        pre: code.typescript.
+            const ADD_PRODUCT = 'AddProduct';
+            interface AddProductAction {
+                type: typeof ADD_PRODUCT;
+                payload: Product;
+            }
+
+            const REMOVE_PRODUCT = 'RemoveProduct';
+            interface RemoveProductAction {
+                type: typeof REMOVE_PRODUCT;
+                payload: string;
+            }
+
+            type ProductAction = AddProductAction | RemoveProductAction;
+
+            function handleProduct(action: ProductAction) {
+                switch (action.type) {
+                    case ADD_PRODUCT:
+                        //action.payload is Product
+                    case REMOVE_PRODUCT:
+                        //action.payload is string
+                }
             }
 
     +finalSlide
