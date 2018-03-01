@@ -1,0 +1,20 @@
+{
+  "name": "prezentacje",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Andrzej Kopeć <kapkowski@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/kapke/slides",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "highlightjs": "^9.12.0"
+  }
+}
