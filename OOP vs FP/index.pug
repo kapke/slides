@@ -1,0 +1,389 @@
+extends ../presentation-template
+
+block title
+    | OOP vs FP
+
+block slides
+    +titleSlide('OOP vs FP', withAuthor=true)
+
+    +slide
+        h2 Cofnijmy się w czasie
+
+    +slide
+        h2 Fortran
+
+        +slide
+            h3 1954
+
+            +speakerNotes
+                | Formula translator - upiększony kod maszynowy.
+                | Ludzie opierali mu się dopóki nie miał dobrego optymalizatora.
+                | Podobno do dziś używany jako benchmark i w ciężkich obliczeniach symulacji
+
+        +slide
+            pre: code.fortran.
+                C AREA OF A TRIANGLE - HERON'S FORMULA
+                C INPUT - CARD READER UNIT 5, INTEGER INPUT
+                C OUTPUT -
+                C INTEGER VARIABLES START WITH I,J,K,L,M OR N
+                      READ(5,501) IA,IB,IC
+                  501 FORMAT(3I5)
+                      IF(IA.EQ.0 .OR. IB.EQ.0 .OR. IC.EQ.0) STOP 1
+                      S = (IA + IB + IC) / 2.0
+                      AREA = SQRT( S * (S - IA) * (S - IB) * (S - IC) )
+                      WRITE(6,601) IA,IB,IC,AREA
+                  601 FORMAT(4H A= ,I5,5H  B= ,I5,5H  C= ,I5,8H  AREA= ,F10.2,
+                     $13H SQUARE UNITS)
+                      STOP
+                      END
+
+
+
+    +slide
+        h2 Algol
+
+        +slide
+            h3 1958/1960
+
+            +speakerNotes
+                | 58 - rozwinięcie fortrana
+                | 60 - przełom - pełny proceduralny język, użycie BNF do formalnego opisu
+
+        +slide
+            pre: code.algol.
+                FLOATING POINT ALGOL TEST'
+                 BEGIN REAL A,B,C,D'
+
+                 READ D'
+
+                 FOR A:= 0.0 STEP D UNTIL 6.3 DO
+                 BEGIN
+                   PRINT PUNCH(3),££L??'
+                   B := SIN(A)'
+                   C := COS(A)'
+                   PRINT PUNCH(3),SAMELINE,ALIGNED(1,6),A,B,C'
+                 END'
+                 END'
+
+
+    +slide
+        h2 COBOL
+
+        +slide
+            h3 1959/1960
+
+            +speakerNotes
+                | common business-oriented language
+        +slide
+            pre: code.cobol.
+                IDENTIFICATION DIVISION.
+                PROGRAM-ID. HELLO-WORLD.
+                *
+                ENVIRONMENT DIVISION.
+                *
+                DATA DIVISION.
+                *
+                PROCEDURE DIVISION.
+                PARA-1.
+                DISPLAY "Hello world!".
+                *
+                EXIT PROGRAM.
+                END PROGRAM HELLO-WORLD.
+
+    +slide
+        h2 LISP
+
+        +slide
+            h3 1958
+
+            +speakerNotes
+                | Wynik eksperymentów nad językiem operującym na listach na potrzeby sztucznej inteligencji.
+                | Okazało się, że wyrażenia warunkowe (zaczęto od instrukcji) i rekurencja były tymi elementami, które
+                | popchnęły język w stronę rachunku lambda. Użycie list z notacją prefiksową do reprezentacji kodu znacznie
+                | ułatwiało kwestie parsowania w wielu momentach.
+                | Wolny (garbage collector + brak typów)
+                | Za to bardzo dobrze działa we współdzielonym środowisku
+                | Okazało się, że "czystość" języka pozwoliła na dowodzenie wielu rzeczy
+                | Brak IO przez długi czas
+        +slide
+            pre: code.lisp.
+                (defconstant PI 3.141592)
+                (defun area-circle(rad)
+                   (terpri)
+                   (format t "Radius: ~5f" rad)
+                   (format t "~%Area: ~10f" (* PI rad rad)))
+                (area-circle 10)
+
+    +slide
+        h2 SIMULA
+
+        +slide
+            h3 1964
+
+            +speakerNotes
+                | Język, który zdefiniował programowanie obiektowe. Wszystko zaczęło się od potrzeby eleganckiej formy
+                | wyrażenia polimorfizmu i enkapsulacji w symulacjach statków (potrzeba źródła). Powstał jako rozszerzenie ALGOL
+        +slide
+            pre: code.simula.
+                Begin
+                   Class Glyph;
+                      Virtual: Procedure print Is Procedure print;
+                   Begin
+                   End;
+
+                   Glyph Class Char (c);
+                      Character c;
+                   Begin
+                      Procedure print;
+                        OutChar(c);
+                   End;
+
+                   Glyph Class Line (elements);
+                      Ref (Glyph) Array elements;
+                   Begin
+                      Procedure print;
+                      Begin
+                         Integer i;
+                         For i:= 1 Step 1 Until UpperBound (elements, 1) Do
+                            elements (i).print;
+                         OutImage;
+                      End;
+                   End;
+
+                   Ref (Glyph) rg;
+                   Ref (Glyph) Array rgs (1 : 4);
+
+                   ! Main program;
+                   rgs (1):- New Char ('A');
+                   rgs (2):- New Char ('b');
+                   rgs (3):- New Char ('b');
+                   rgs (4):- New Char ('a');
+                   rg:- New Line (rgs);
+                   rg.print;
+                End;
+
+    +slide
+        h2 Logo
+
+        +slide
+            h3 1968
+
+            +speakerNotes
+                | Powstał po to, by uczyć sposobu myślenia wymaganego do efektywnej pracy z LISPem
+        +slide
+            pre: code.logo.
+                to square
+                repeat 4 [forward 50 right 90]
+                end
+
+    +slide
+        h2 Prolog
+
+        +slide
+            h3 1970
+
+            +speakerNotes
+                | W pełni deklaratywny język do programowania w logice (część pierwszego rzędu - klauzule Horna), który powstał
+                | by analizować język naturalny. Wszystko w światku AI, stąd wpływ LISPa. Bardzo wygodny w użyciu m. in. dzięki pattern matchingowi
+        +slide
+            pre: code.prolog.
+                partition([], _, [], []).
+                partition([X|Xs], Pivot, Smalls, Bigs) :-
+                    (   X @< Pivot ->
+                        Smalls = [X|Rest],
+                        partition(Xs, Pivot, Rest, Bigs)
+                    ;   Bigs = [X|Rest],
+                        partition(Xs, Pivot, Smalls, Rest)
+                    ).
+
+                quicksort([])     --> [].
+                quicksort([X|Xs]) -->
+                    { partition(Xs, X, Smaller, Bigger) },
+                    quicksort(Smaller), [X], quicksort(Bigger).
+
+
+
+    +slide
+        h2 Pascal
+        h3 1970
+
+        +speakerNotes
+            | Wysokopoziomowy Następca ALGOLA
+
+    +slide
+        h2 C
+        h3 1971
+
+        +speakerNotes
+            | Krok bliżej sprzętu - C był rozwijany razem z Unixem i był tworzony z myślą o jak najefektywniejszym
+            | wykorzystaniu sprzętu, a następnie - przenośności kodu (back to COBOL - 1959)
+
+    +slide
+        h2 SmallTalk
+
+        +slide
+            h3 1971
+
+            +speakerNotes
+                | Z jednej strony inspirowany SIMULą - obiektowość, itd. Również PLANNER (protoplasta Prologa) się tam przewinął
+                | z racji prac Kaya nad AI w pewnym momencie. Tam też się przewinęła koncepcja sieci elementów, gdzie elementy
+                | również mogą być sieciami elementów. Po czym zauroczył się pomysłami stojącymi za LISPem (implementacją mniej)
+                | Wkurzało go, że zarówno w językach obiektowych jak i LISPie były głupie wyjątki, by zaimplementować niektóre
+                | rzeczy. Po głupim zakładzie o implementację języka na jednym arkuszu, gdzie Kay chciał przenieść piękno
+                | Lispa do OOP, ukazał się SmallTalk. Swoją drogą - SmallTalk był inspiracją dla Actor Modelu
+                | I miał "blocki" - czyste, anonimowe funkcje
+        +slide
+            pre: code.smalltalk.
+                |myArray|
+
+                myArray := #('a' 'b' 'c' ).
+                myArray do:[:each |
+                    Transcript show: each.
+                    Transcript cr.
+                ].
+
+    +slide
+        h2 ML
+
+        +slide
+            h3 1973
+
+            +speakerNotes
+                | Eksperyment dotyczący otypowania LISPA. Dzięki systemowi typów Hindleya–Milnera (i dość ograniczonemu polimorfizmowi)
+                | Jest udowodnione, że dobrze otypowany kod w ML będzie działał jak trzeba bez wyjątków w run-time. Dodajmy do tego pattern-matching
+                | i mamy język, który jest bardzo lubiany do pisania parserów
+        +slide
+            pre: code.ml.
+                fun qsort(xs : int list) =
+                  if length xs <= 1
+                  then xs
+                  else
+                    let
+                        val s = splitAt(tl xs, hd xs)
+                    in
+                        append(qsort(#2 s), (hd xs) :: qsort(#1 s))
+                    end;
+    +slide
+        h2 C++
+        h3 1983
+
+        +speakerNotes
+            | "Szybka SIMULA" albo "C z klasami"
+
+    +slide
+        h2 CLOS
+
+        +slide
+            h3 1984/89?
+        +slide
+            pre: code.lisp.
+                (define <student> (make-class (list <person>)
+                    (list 'credits 'course-list)))
+                (define <course> (make-class (list <init-object>)
+                    (list 'name 'room 'time 'prof 'student-list)))
+                (add-method get-name
+                    (make-method (list <student>)
+                        (lambda (cnm student) (slot-ref student 'name))))
+                (add-method get-courses
+                    (make-method (list <student>)
+                        (lambda (cnm student) (slot-ref student 'course-list))))
+                (add-method get-class
+                    (make-method (list <student>)
+                        (lambda (cnm student)
+                            (let ((credits (slot-ref student 'credits)))
+                                (cond ((< credits 30) 'freshman)
+                                    ((< credits 60) 'sophomore)
+                                    ((< credits 90) 'junior)
+                                    (else 'senior))))))
+
+    +slide
+        h2 Erlang
+
+        +slide
+            h3 1986
+
+            +speakerNotes
+                | Z powodu ograniczeń dziedzinowych pociągnięto do ekstremum enkapsulację i koncept "share-nothing".
+                | Z powodu tych samych wymagań mamy zasadę "let it fail", a funkcyjny charakter języka zawdzięczamy prologowi.
+                | Co ciekawe - prolog był użyty przez przypadek, a zanim zacząto tworzyć nowy język - wypróbowano ok. 20 istniejących
+        +slide
+            pre: code.erlang.
+                sort([Pivot|T]) ->
+                    sort([ X || X <- T, X < Pivot]) ++
+                    [Pivot] ++
+                    sort([ X || X <- T, X >= Pivot]);
+                sort([]) -> [].
+
+
+
+    +slide
+        h2 Termin "wzorzec projektowy"
+        h3 1987
+
+    +slide
+        h2 Haskell
+        h3 1987
+
+        +speakerNotes
+            | Wynik eksperymentów dotyczących leniwej ewaluacji w kontekście ML. Czystość okazała się wymogiem dla leniwej ewaluacji.
+            | Type-klasy - jako sposób na polimorfizm. Brak formalnego opisu semantyki (ML miał)
+
+    +slide
+        h2 Monady w Haskellu i IO oparte o monady
+
+        +slide
+            h3 1991 & 1993?
+        +slide
+            h3 Czy to jest takie 100% czyste?
+            pre: code.haskell.
+                readFile :: String -> IO String
+
+    +slide
+        h2 Ruby
+        h3 1993
+
+    +slide
+        h2 Java
+        h3 1995
+
+    +slide
+        h2 LiveScript/JavaScript
+        h3 1995
+
+    +slide
+        h2 PHP
+        h3 1995
+
+    +slide
+        h2 Książka "Wzorce Projektowe"
+        h3 1995
+
+    +slide
+        h2 C#
+        h3 2000
+
+    +slide
+        h2 SOLID
+        h3 2002?
+
+        +speakerNotes
+            | Agile Software Development: Principles, Patterns, and Practices
+
+    +slide
+        h2 Wzorce w FP
+
+    +slide
+        h2 Wzorce w Oop
+
+
+    +slide
+        h2 Linki
+
+        a(href="https://www.levenez.com/lang/lang.pdf") Drzewo genealogiczne języków
+        a(href="https://exploring-data.com/vis/programming-languages-influence-network-2014/") interaktywny diagram pokazujący wpływ języków na inne
+        a(href="http://jmc.stanford.edu/articles/lisp/lisp.pdf") Historia LISPa
+        a(href="http://worrydream.com/EarlyHistoryOfSmalltalk/#p4") Historia SmallTalka
+        a(href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/07/history.pdf") Historia Haskella
+        a(href="http://webcem01.cem.itesm.mx:8005/erlang/cd/downloads/hopl_erlang.pdf") Historia Erlanga
+
+    +finalSlide(withContact=true)

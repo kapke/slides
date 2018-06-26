@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>OOP vs FP
+  </title>
+  <meta name="author" content="Andrzej Kopeć">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="css/reveal.css">
+  <link id="theme" rel="stylesheet" href="css/theme/white.css">
+  <!-- Code syntax highlighting-->
+  <link rel="stylesheet" href="/bower_components/highlightjs/styles/vs.css">
+  <!-- Printing and PDF exports-->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <style>
+    /* skygate-blue: 00b0ea */
+    @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic);
+    .reveal .logo {
+        border: none;
+        box-shadow: none;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    
+    .reveal .logo.devmeeting {
+        height: 60px;
+    }
+    
+    .reveal .logo.skygate {
+        height: 120px;
+    }
+    
+    .reveal .logo.scalac {
+        height: 56px;
+        margin-right: 40px;
+    }
+    
+    .reveal .logo.ek {
+        height: 45px;
+    }
+    
+    .reveal h2, .reveal h3, .reveal h4 {
+        color: black;
+        font-family: 'Open Sans';
+        text-transform: none;
+    }
+    .reveal .controls div.navigate-left, .reveal .controls div.navigate-left.enabled {
+        border-right-color: #00b0ea;
+    }
+    .reveal .controls div.navigate-right, .reveal .controls div.navigate-right.enabled {
+        border-left-color: #00b0ea;
+    }
+    .reveal pre {
+        width: auto;
+    }
+    .reveal pre code {
+        background: none;
+        color: black;
+        max-height: 100%;
+    }
+    .reveal table tr:last-child td {
+        border-bottom: 1px solid;
+    }
+    
+    .reveal pre code.typescript.hljs.small {
+        font-size: 66% !important;
+        line-height: 125% !important;
+    }
+    
+    .reveal pre.inline {
+        display: inline-block;
+        box-sizing: border-box;
+        width: calc(50% - 42px);
+        vertical-align: top;
+        box-shadow: none;
+    }
+    
+    .reveal pre.inline code.hljs {
+        overflow: visible;
+        border: none;
+    }
+    
+    
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <!-- Any section element inside of this container is displayed as a slide-->
+    <div class="slides">
+      <section>
+        <h1>OOP vs FP</h1><img class="logo scalac no-devmeeting" src="../scalac_logo.svg" alt=""/><img class="logo devmeeting" src="devmeetings_logo.jpg" alt=""/>
+        <h6 class="no-devmeeting">Andrzej Kopeć</h6>
+      </section>
+      <section>
+        <h2>Cofnijmy się w czasie</h2>
+      </section>
+      <section>
+        <h2>Fortran</h2>
+        <section>
+          <h3>1954</h3>
+          <aside class="notes">
+            Formula translator - upiększony kod maszynowy.
+            Ludzie opierali mu się dopóki nie miał dobrego optymalizatora.
+            Podobno do dziś używany jako benchmark i w ciężkich obliczeniach symulacji
+          </aside>
+        </section>
+        <section>
+          <pre><code class="fortran">C AREA OF A TRIANGLE - HERON'S FORMULA
+C INPUT - CARD READER UNIT 5, INTEGER INPUT
+C OUTPUT -
+C INTEGER VARIABLES START WITH I,J,K,L,M OR N
+      READ(5,501) IA,IB,IC
+  501 FORMAT(3I5)
+      IF(IA.EQ.0 .OR. IB.EQ.0 .OR. IC.EQ.0) STOP 1
+      S = (IA + IB + IC) / 2.0
+      AREA = SQRT( S * (S - IA) * (S - IB) * (S - IC) )
+      WRITE(6,601) IA,IB,IC,AREA
+  601 FORMAT(4H A= ,I5,5H  B= ,I5,5H  C= ,I5,8H  AREA= ,F10.2,
+     $13H SQUARE UNITS)
+      STOP
+      END
+
+
+</code></pre>
+        </section>
+      </section>
+      <section>
+        <h2>Algol</h2>
+        <section>
+          <h3>1958/1960</h3>
+          <aside class="notes">
+            58 - rozwinięcie fortrana
+            60 - przełom - pełny proceduralny język, użycie BNF do formalnego opisu
+          </aside>
+        </section>
+        <section>
+          <pre><code class="algol">FLOATING POINT ALGOL TEST'
+ BEGIN REAL A,B,C,D'
+
+ READ D'
+
+ FOR A:= 0.0 STEP D UNTIL 6.3 DO
+ BEGIN
+   PRINT PUNCH(3),££L??'
+   B := SIN(A)'
+   C := COS(A)'
+   PRINT PUNCH(3),SAMELINE,ALIGNED(1,6),A,B,C'
+ END'
+ END'
+
+</code></pre>
+        </section>
+      </section>
+      <section>
+        <h2>COBOL</h2>
+        <section>
+          <h3>1959/1960</h3>
+          <aside class="notes">common business-oriented language
+          </aside>
+        </section>
+        <section>
+          <pre><code class="cobol">IDENTIFICATION DIVISION.
+PROGRAM-ID. HELLO-WORLD.
+*
+ENVIRONMENT DIVISION.
+*
+DATA DIVISION.
+*
+PROCEDURE DIVISION.
+PARA-1.
+DISPLAY "Hello world!".
+*
+EXIT PROGRAM.
+END PROGRAM HELLO-WORLD.
+</code></pre>
+        </section>
+      </section>
+      <section>
+        <h2>LISP</h2>
+        <section>
+          <h3>1958</h3>
+          <aside class="notes">
+            Wynik eksperymentów nad językiem operującym na listach na potrzeby sztucznej inteligencji.
+            Okazało się, że wyrażenia warunkowe (zaczęto od instrukcji) i rekurencja były tymi elementami, które
+            popchnęły język w stronę rachunku lambda. Użycie list z notacją prefiksową do reprezentacji kodu znacznie
+            ułatwiało kwestie parsowania w wielu momentach.
+            Wolny (garbage collector + brak typów)
+            Za to bardzo dobrze działa we współdzielonym środowisku
+            Okazało się, że "czystość" języka pozwoliła na dowodzenie wielu rzeczy
+            Brak IO przez długi czas
+          </aside>
+        </section>
+        <section>
+          <pre><code class="lisp">(defconstant PI 3.141592)
+(defun area-circle(rad)
+   (terpri)
+   (format t "Radius: ~5f" rad)
+   (format t "~%Area: ~10f" (* PI rad rad)))
+(area-circle 10)
+</code></pre>
+        </section>
+      </section>
+      <section>
+        <h2>SIMULA</h2>
+        <section>
+          <h3>1964</h3>
+          <aside class="notes">
+            Język, który zdefiniował programowanie obiektowe. Wszystko zaczęło się od potrzeby eleganckiej formy
+            wyrażenia polimorfizmu i enkapsulacji w symulacjach statków (potrzeba źródła). Powstał jako rozszerzenie ALGOL
+          </aside>
+        </section>
+        <section>
+          <pre><code class="simula">Begin
+   Class Glyph;
+      Virtual: Procedure print Is Procedure print;
+   Begin
+   End;
+
+   Glyph Class Char (c);
+      Character c;
+   Begin
+      Procedure print;
+        OutChar(c);
+   End;
+
+   Glyph Class Line (elements);
+      Ref (Glyph) Array elements;
+   Begin
+      Procedure print;
+      Begin
+         Integer i;
+         For i:= 1 Step 1 Until UpperBound (elements, 1) Do
+            elements (i).print;
+         OutImage;
+      End;
+   End;
+
+   Ref (Glyph) rg;
+   Ref (Glyph) Array rgs (1 : 4);
+
+   ! Main program;
+   rgs (1):- New Char ('A');
+   rgs (2):- New Char ('b');
+   rgs (3):- New Char ('b');
+   rgs (4):- New Char ('a');
+   rg:- New Line (rgs);
+   rg.print;
+End;
+</code></pre>
+        </section>
+      </section>
+      <section>
+        <h2>Logo</h2>
+        <section>
+          <h3>1968</h3>
+          <aside class="notes">Powstał po to, by uczyć sposobu myślenia wymaganego do efektywnej pracy z LISPem
+          </aside>
+        </section>
+        <section>
+          <pre><code class="logo">to square
+repeat 4 [forward 50 right 90]
+end
+</code></pre>
+        </section>
+      </section>
+      <section>
+        <h2>Prolog</h2>
+        <section>
+          <h3>1970</h3>
+          <aside class="notes">
+            W pełni deklaratywny język do programowania w logice (część pierwszego rzędu - klauzule Horna), który powstał
+            by analizować język naturalny. Wszystko w światku AI, stąd wpływ LISPa. Bardzo wygodny w użyciu m. in. dzięki pattern matchingowi
+          </aside>
+        </section>
+        <section>
+          <pre><code class="prolog">partition([], _, [], []).
+partition([X|Xs], Pivot, Smalls, Bigs) :-
+    (   X @< Pivot ->
+        Smalls = [X|Rest],
+        partition(Xs, Pivot, Rest, Bigs)
+    ;   Bigs = [X|Rest],
+        partition(Xs, Pivot, Smalls, Rest)
+    ).
+
+quicksort([])     --> [].
+quicksort([X|Xs]) -->
+    { partition(Xs, X, Smaller, Bigger) },
+    quicksort(Smaller), [X], quicksort(Bigger).
+
+
+</code></pre>
+        </section>
+      </section>
+      <section>
+        <h2>Pascal</h2>
+        <h3>1970</h3>
+        <aside class="notes">Wysokopoziomowy Następca ALGOLA
+        </aside>
+      </section>
+      <section>
+        <h2>C</h2>
+        <h3>1971</h3>
+        <aside class="notes">
+          Krok bliżej sprzętu - C był rozwijany razem z Unixem i był tworzony z myślą o jak najefektywniejszym
+          wykorzystaniu sprzętu, a następnie - przenośności kodu (back to COBOL - 1959)
+        </aside>
+      </section>
+      <section>
+        <h2>SmallTalk</h2>
+        <section>
+          <h3>1971</h3>
+          <aside class="notes">
+            Z jednej strony inspirowany SIMULą - obiektowość, itd. Również PLANNER (protoplasta Prologa) się tam przewinął
+            z racji prac Kaya nad AI w pewnym momencie. Tam też się przewinęła koncepcja sieci elementów, gdzie elementy
+            również mogą być sieciami elementów. Po czym zauroczył się pomysłami stojącymi za LISPem (implementacją mniej)
+            Wkurzało go, że zarówno w językach obiektowych jak i LISPie były głupie wyjątki, by zaimplementować niektóre
+            rzeczy. Po głupim zakładzie o implementację języka na jednym arkuszu, gdzie Kay chciał przenieść piękno
+            Lispa do OOP, ukazał się SmallTalk. Swoją drogą - SmallTalk był inspiracją dla Actor Modelu
+            I miał "blocki" - czyste, anonimowe funkcje
+          </aside>
+        </section>
+        <section>
+          <pre><code class="smalltalk">|myArray|
+
+myArray := #('a' 'b' 'c' ).
+myArray do:[:each |
+    Transcript show: each.
+    Transcript cr.
+].
+</code></pre>
+        </section>
+      </section>
+      <section>
+        <h2>ML</h2>
+        <section>
+          <h3>1973</h3>
+          <aside class="notes">
+            Eksperyment dotyczący otypowania LISPA. Dzięki systemowi typów Hindleya–Milnera (i dość ograniczonemu polimorfizmowi)
+            Jest udowodnione, że dobrze otypowany kod w ML będzie działał jak trzeba bez wyjątków w run-time. Dodajmy do tego pattern-matching
+            i mamy język, który jest bardzo lubiany do pisania parserów
+          </aside>
+        </section>
+        <section>
+          <pre><code class="ml">fun qsort(xs : int list) =
+  if length xs <= 1
+  then xs
+  else
+    let
+        val s = splitAt(tl xs, hd xs)
+    in
+        append(qsort(#2 s), (hd xs) :: qsort(#1 s))
+    end;</code></pre>
+        </section>
+      </section>
+      <section>
+        <h2>C++</h2>
+        <h3>1983</h3>
+        <aside class="notes">"Szybka SIMULA" albo "C z klasami"
+        </aside>
+      </section>
+      <section>
+        <h2>CLOS</h2>
+        <section>
+          <h3>1984/89?</h3>
+        </section>
+        <section>
+          <pre><code class="lisp">(define <student> (make-class (list <person>)
+    (list 'credits 'course-list)))
+(define <course> (make-class (list <init-object>)
+    (list 'name 'room 'time 'prof 'student-list)))
+(add-method get-name
+    (make-method (list <student>)
+        (lambda (cnm student) (slot-ref student 'name))))
+(add-method get-courses
+    (make-method (list <student>)
+        (lambda (cnm student) (slot-ref student 'course-list))))
+(add-method get-class
+    (make-method (list <student>)
+        (lambda (cnm student)
+            (let ((credits (slot-ref student 'credits)))
+                (cond ((< credits 30) 'freshman)
+                    ((< credits 60) 'sophomore)
+                    ((< credits 90) 'junior)
+                    (else 'senior))))))
+</code></pre>
+        </section>
+      </section>
+      <section>
+        <h2>Erlang</h2>
+        <section>
+          <h3>1986</h3>
+          <aside class="notes">
+            Z powodu ograniczeń dziedzinowych pociągnięto do ekstremum enkapsulację i koncept "share-nothing".
+            Z powodu tych samych wymagań mamy zasadę "let it fail", a funkcyjny charakter języka zawdzięczamy prologowi.
+            Co ciekawe - prolog był użyty przez przypadek, a zanim zacząto tworzyć nowy język - wypróbowano ok. 20 istniejących
+          </aside>
+        </section>
+        <section>
+          <pre><code class="erlang">sort([Pivot|T]) ->
+    sort([ X || X <- T, X < Pivot]) ++
+    [Pivot] ++
+    sort([ X || X <- T, X >= Pivot]);
+sort([]) -> [].
+
+
+</code></pre>
+        </section>
+      </section>
+      <section>
+        <h2>Termin "wzorzec projektowy"</h2>
+        <h3>1987</h3>
+      </section>
+      <section>
+        <h2>Haskell</h2>
+        <h3>1987</h3>
+        <aside class="notes">
+          Wynik eksperymentów dotyczących leniwej ewaluacji w kontekście ML. Czystość okazała się wymogiem dla leniwej ewaluacji.
+          Type-klasy - jako sposób na polimorfizm. Brak formalnego opisu semantyki (ML miał)
+        </aside>
+      </section>
+      <section>
+        <h2>Monady w Haskellu i IO oparte o monady</h2>
+        <section>
+          <h3>1991 & 1993?</h3>
+        </section>
+        <section>
+          <h3>Czy to jest takie 100% czyste?</h3>
+          <pre><code class="haskell">readFile :: String -> IO String
+</code></pre>
+        </section>
+      </section>
+      <section>
+        <h2>Ruby</h2>
+        <h3>1993</h3>
+      </section>
+      <section>
+        <h2>Java</h2>
+        <h3>1995</h3>
+      </section>
+      <section>
+        <h2>LiveScript/JavaScript</h2>
+        <h3>1995</h3>
+      </section>
+      <section>
+        <h2>PHP</h2>
+        <h3>1995</h3>
+      </section>
+      <section>
+        <h2>Książka "Wzorce Projektowe"</h2>
+        <h3>1995</h3>
+      </section>
+      <section>
+        <h2>C#</h2>
+        <h3>2000</h3>
+      </section>
+      <section>
+        <h2>SOLID</h2>
+        <h3>2002?</h3>
+        <aside class="notes">Agile Software Development: Principles, Patterns, and Practices
+        </aside>
+      </section>
+      <section>
+        <h2>Wzorce w FP</h2>
+      </section>
+      <section>
+        <h2>Wzorce w Oop</h2>
+      </section>
+      <section>
+        <h2>Linki</h2><a href="https://www.levenez.com/lang/lang.pdf">Drzewo genealogiczne języków</a><a href="https://exploring-data.com/vis/programming-languages-influence-network-2014/">interaktywny diagram pokazujący wpływ języków na inne</a><a href="http://jmc.stanford.edu/articles/lisp/lisp.pdf">Historia LISPa</a><a href="http://worrydream.com/EarlyHistoryOfSmalltalk/#p4">Historia SmallTalka</a><a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/07/history.pdf">Historia Haskella</a><a href="http://webcem01.cem.itesm.mx:8005/erlang/cd/downloads/hopl_erlang.pdf">Historia Erlanga</a>
+      </section>
+      <section>
+        <h3>Questions time!</h3>
+        <h6 class="no-devmeeting"><a href="mailto:andrzej.kopec@outlook.com">andrzej.kopec@outlook.com</a></h6>
+        <h6 class="no-devmeeting">@kapke_</h6>
+      </section>
+    </div>
+  </div>
+  <script src="lib/js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="bower_components/highlightjs/highlight.pack.min.js"></script>
+  <script>
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Optional reveal.js plugins
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+            { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+            { src: 'plugin/zoom-js/zoom.js', async: true },
+            { src: 'plugin/notes/notes.js', async: true }
+        ]
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (location.search.includes('devmeeting=true')) {
+            const elementsToRemove = Array.from(document.getElementsByClassName('no-devmeeting'));
+    
+            elementsToRemove.forEach(e => e.parentElement.removeChild(e));
+        }
+    });
+  </script>
+</body>

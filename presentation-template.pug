@@ -19,6 +19,7 @@ mixin finalSlide(withContact)
         h3 Questions time!
         if withContact
             h6.no-devmeeting: a(href="mailto:andrzej.kopec@outlook.com") andrzej.kopec@outlook.com
+            h6.no-devmeeting @kapke_
         if block
             block
 
@@ -30,6 +31,10 @@ mixin hiringSlide
             | Więcej szczegółów u mnie, na&nbsp;
             a(href="http://skygate.pl") skygate.pl
             | , lub mailem
+
+mixin speakerNotes
+    aside.notes
+        block
 
 doctype html
 head
