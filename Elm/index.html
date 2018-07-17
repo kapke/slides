@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
   <meta charset="utf-8">
-  <title>Elm
+  <title>Bezbłędny frontend z Elm
   </title>
   <meta name="author" content="Andrzej Kopeć">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/reveal.css">
   <link id="theme" rel="stylesheet" href="css/theme/white.css">
   <!-- Code syntax highlighting-->
-  <link rel="stylesheet" href="bower_components/highlightjs/styles/vs.css">
+  <link rel="stylesheet" href="/bower_components/highlightjs/styles/vs.css">
   <!-- Printing and PDF exports-->
   <script>
     var link = document.createElement( 'link' );
@@ -34,7 +34,12 @@
     }
     
     .reveal .logo.skygate {
-        height: 90px;
+        height: 120px;
+    }
+    
+    .reveal .logo.scalac {
+        height: 56px;
+        margin-right: 40px;
     }
     
     .reveal .logo.ek {
@@ -64,6 +69,25 @@
         border-bottom: 1px solid;
     }
     
+    .reveal pre code.typescript.hljs.small {
+        font-size: 66% !important;
+        line-height: 125% !important;
+    }
+    
+    .reveal pre.inline {
+        display: inline-block;
+        box-sizing: border-box;
+        width: calc(50% - 42px);
+        vertical-align: top;
+        box-shadow: none;
+    }
+    
+    .reveal pre.inline code.hljs {
+        overflow: visible;
+        border: none;
+    }
+    
+    
   </style>
 </head>
 <body>
@@ -71,35 +95,45 @@
     <!-- Any section element inside of this container is displayed as a slide-->
     <div class="slides">
       <section>
-        <h1>Elm</h1><img class="logo skygate" src="skygate.png" alt=""/><img class="logo devmeeting" src="devmeetings_logo.jpg" alt=""/>
-        <h6>Andrzej Kopeć</h6>
+        <h1>Bezbłędny frontend z Elm</h1><img class="logo scalac no-devmeeting" src="../scalac_logo.svg" alt=""/><img class="logo devmeeting" src="devmeetings_logo.jpg" alt=""/>
+        <h6 class="no-devmeeting">Andrzej Kopeć</h6>
       </section>
       <section>
         <h2>Czym w ogóle jest Elm? I czy ktoś go w ogóle potrzebuje?</h2>
+        <section><img src="/Elm/reddit-printscreen.png">
+        </section>
       </section>
       <section>
         <h2>A co to w ogóle znaczy, że funkcyjny?</h2>
-        <ul>
-          <li>brak efektów ubocznych</li>
-          <li>niemutowalność danych</li>
-          <li>funkcje jako obiekty pierwszej kategorii</li>
-        </ul>
+        <section>
+          <p>Niemutowalność danych</p>
+          <p>Bo mutacja danych to efekt uboczny...</p>
+        </section>
+        <section>
+          <p>...a efektów ubocznych brak</p>
+          <p>Funkcja może tylko obliczyć nowy wynik i go zwrócić</p>
+        </section>
+        <section>
+          <p>Na szczęście funkcja to też wartość</p>
+        </section>
       </section>
       <section>
-        <h2>A z tego wynika, że...</h2>
-        <ul>
-          <li>występuje tzw. "referential transparency"</li>
-          <li>funkcje są bezstanowe</li>
-        </ul>
+        <h2>System typów Damasa–Hindleya–Milnera</h2>
+        <section>
+          <h3>Make invalid states impossible to represent</h3>
+        </section>
+        <section>
+          <h3>Świetny kompilator</h3>
+        </section>
       </section>
       <section>
-        <h2>No dobra, ale mówiłeś, że do frontendu...</h2>
+        <h2>ale miał być do frontendu...</h2>
       </section>
       <section>
         <ul>
           <li>The Elm Architecture</li>
           <li>Wbudowana biblioteka do Virtual DOM</li>
-          <li>Zadania</li>
+          <li>Asynchroniczność</li>
           <li>Porty i flagi</li>
         </ul>
       </section>
@@ -112,14 +146,14 @@ main = Html.beginnerProgram { model = 0, update = update, view = view }
 -- MODEL
 type alias Model = Int
 
--- UPDATE
+-- Message
 type Msg = MakeCookie
 
+-- UPDATE
 update : Msg -> Model -> Model
 update msg model =
   case msg of
     MakeCookie -> model + 1
-
 
 -- VIEW
 view : Model -> Html Msg
@@ -225,10 +259,19 @@ app.ports.getUserId.subscribe(() => {
       </section>
       <section>
         <h2>Czyli święty Graal na frontend?</h2>
+        <section><a href="https://medium.com/@eeue56/top-6-ways-to-make-your-elm-app-crash-at-runtime-562b2fa92d70">Nie dla każdego</a>
+        </section>
       </section>
       <section>
-        <h3>Pytania?</h3>
-        <h6><a href="mailto:andrzej.kopec@outlook.com">andrzej.kopec@outlook.com</a></h6>
+        <ul>
+          <li><a href="https://www.youtube.com/watch?v=XsNk5aOpqUc#t=4m30s">Podsumowanie NoRedInk</a></li>
+          <li><a href="https://blog.noredink.com/post/126978281075/walkthrough-introducing-elm-to-a-js-web-app">Podsumowanie NoRedInk#2</a></li>
+        </ul>
+      </section>
+      <section>
+        <h3>Questions time!</h3>
+        <h6 class="no-devmeeting"><a href="mailto:andrzej.kopec@outlook.com">andrzej.kopec@outlook.com</a></h6>
+        <h6 class="no-devmeeting">@kapke_</h6>
       </section>
     </div>
   </div>
@@ -253,6 +296,15 @@ app.ports.getUserId.subscribe(() => {
             { src: 'plugin/zoom-js/zoom.js', async: true },
             { src: 'plugin/notes/notes.js', async: true }
         ]
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (location.search.includes('devmeeting=true')) {
+            const elementsToRemove = Array.from(document.getElementsByClassName('no-devmeeting'));
+    
+            elementsToRemove.forEach(e => e.parentElement.removeChild(e));
+        }
     });
   </script>
 </body>

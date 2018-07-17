@@ -1,34 +1,45 @@
 extends ../presentation-template
 
 block title
-    | Elm
+    | Bezbłędny frontend z Elm
 
 block slides
-    +titleSlide('Elm')
+    +titleSlide('Bezbłędny frontend z Elm')
 
     +slide
         h2 Czym w ogóle jest Elm? I czy ktoś go w ogóle potrzebuje?
 
-    +slide
-        h2 A co to w ogóle znaczy, że funkcyjny?
-        ul
-            li brak efektów ubocznych
-            li niemutowalność danych
-            li funkcje jako obiekty pierwszej kategorii
-    +slide
-        h2 A z tego wynika, że...
-        ul
-            li występuje tzw. "referential transparency"
-            li funkcje są bezstanowe
+        +slide
+            img(src="/Elm/reddit-printscreen.png")
 
     +slide
-        h2 No dobra, ale mówiłeś, że do frontendu...
+        h2 A co to w ogóle znaczy, że funkcyjny?
+
+        +slide
+            p Niemutowalność danych
+            p Bo mutacja danych to efekt uboczny...
+        +slide
+            p ...a efektów ubocznych brak
+            p Funkcja może tylko obliczyć nowy wynik i go zwrócić
+        +slide
+            p Na szczęście funkcja to też wartość
+
+    +slide
+        h2 System typów Damasa–Hindleya–Milnera
+
+        +slide
+            h3 Make invalid states impossible to represent
+        +slide
+            h3 Świetny kompilator
+
+    +slide
+        h2 ale miał być do frontendu...
 
     +slide
         ul
             li The Elm Architecture
             li Wbudowana biblioteka do Virtual DOM
-            li Zadania
+            li Asynchroniczność
             li Porty i flagi
 
     +slide
@@ -41,14 +52,14 @@ block slides
             -- MODEL
             type alias Model = Int
 
-            -- UPDATE
+            -- Message
             type Msg = MakeCookie
 
+            -- UPDATE
             update : Msg -> Model -> Model
             update msg model =
               case msg of
                 MakeCookie -> model + 1
-
 
             -- VIEW
             view : Model -> Html Msg
@@ -152,5 +163,13 @@ block slides
 
     +slide
         h2 Czyli święty Graal na frontend?
+
+        +slide
+            a(href="https://medium.com/@eeue56/top-6-ways-to-make-your-elm-app-crash-at-runtime-562b2fa92d70") Nie dla każdego
+
+    +slide
+        ul
+            li: a(href="https://www.youtube.com/watch?v=XsNk5aOpqUc#t=4m30s") Podsumowanie NoRedInk
+            li: a(href="https://blog.noredink.com/post/126978281075/walkthrough-introducing-elm-to-a-js-web-app") Podsumowanie NoRedInk#2
 
     +finalSlide
