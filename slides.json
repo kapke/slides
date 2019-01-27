@@ -10,6 +10,7 @@
     "Solid architecture",
     "Unit testing",
     "Why I dont test private methods",
-    "OOP vs FP"
+    "OOP vs FP",
+    "Akka Actors Typed"
   ]
 }

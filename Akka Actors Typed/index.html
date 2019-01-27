@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>ActorRef[Typed]
+  </title>
+  <meta name="author" content="Andrzej Kopeć">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="css/reveal.css">
+  <link id="theme" rel="stylesheet" href="css/theme/white.css">
+  <!-- Code syntax highlighting-->
+  <link rel="stylesheet" href="/bower_components/highlightjs/styles/vs.css">
+  <!-- Printing and PDF exports-->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <style>
+    /* skygate-blue: 00b0ea */
+    /* scalac-red: ff0000 */
+    @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic);
+    .reveal .logo {
+        border: none;
+        box-shadow: none;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    
+    .reveal .logo.devmeeting {
+        height: 60px;
+    }
+    
+    .reveal .logo.skygate {
+        height: 120px;
+    }
+    
+    .reveal .logo.scalac {
+        height: 68px;
+        margin-right: 40px;
+    }
+    
+    .reveal .logo.ek {
+        height: 45px;
+    }
+    
+    .reveal h2, .reveal h3, .reveal h4 {
+        color: black;
+        font-family: 'Open Sans';
+        text-transform: none;
+    }
+    .reveal .controls div.navigate-left, .reveal .controls div.navigate-left.enabled {
+        border-right-color: #ff0000;
+    }
+    .reveal .controls div.navigate-right, .reveal .controls div.navigate-right.enabled {
+        border-left-color: #ff0000;
+    }
+    
+    .reveal .controls div.navigate-up, .reveal .controls div.navigate-up.enabled {
+        border-bottom-color: #ff0000;
+    }
+    
+    .reveal .controls div.navigate-down, .reveal .controls div.navigate-down.enabled {
+        border-top-color: #ff0000;
+    }
+    .reveal pre {
+        width: auto;
+    }
+    .reveal pre code {
+        background: none;
+        color: black;
+        max-height: 100%;
+    }
+    .reveal table tr:last-child td {
+        border-bottom: 1px solid;
+    }
+    
+    .reveal pre code.typescript.hljs.small {
+        font-size: 66% !important;
+        line-height: 125% !important;
+    }
+    
+    .reveal pre.inline {
+        display: inline-block;
+        box-sizing: border-box;
+        width: calc(50% - 42px);
+        vertical-align: top;
+        box-shadow: none;
+    }
+    
+    .reveal pre.inline code.hljs {
+        overflow: visible;
+        border: none;
+    }
+    
+    
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <!-- Any section element inside of this container is displayed as a slide-->
+    <div class="slides">
+      <section>
+        <h1 style="text-transform: none">ActorRef[Typed]</h1><img class="logo scalac no-devmeeting" src="../scalac_logo.svg" alt=""/><img class="logo devmeeting" src="../devmeetings_logo.jpg" alt=""/>
+        <h6 class="no-devmeeting">Andrzej Kopeć</h6>
+      </section>
+      <section>
+        <h2>Co najbardziej sobie cenią programiści Scali?</h2>
+        <section>
+        </section>
+        <section>
+          <h3>Typy</h3>
+        </section>
+      </section>
+      <section>
+        <h2>Co oferuje Akka Actors?</h2>
+        <section>
+        </section>
+        <section>
+          <pre><code class="lang-scala">PartialFunction[Any, Unit]
+</code></pre>
+        </section>
+      </section>
+      <section>
+        <h2>A teraz wyobraźmy sobie nowego programistę w projekcie</h2>
+        <section>
+        </section>
+        <section>
+          <h4>Nawigacja oparta jest o&nbsp;<code>Ctrl+F</code></h4>
+          <pre><code class="scala">class BlockImporter(blockFetcher: ActorRef) extends Actor {
+  blockFetcher ! ???
+}
+</code></pre>
+        </section>
+        <section>
+          <h3>Mutowalne API</h3>
+        </section>
+        <section>
+          <h4>Gdzie tu jest błąd?</h4>
+          <pre><code class="lang-scala">class BlockImporter extends Actor {
+  var importedBlocks: List[Block] = Nil
+
+  val importBlocks: List[Block] => Future[Unit]
+
+  def receive = {
+    case ImportBlocks(blocks) =>
+      importBlocks(blocks)
+        .onComplete(_ => importedBlocks = importedBlocks ++ blocks)
+  }
+}</code></pre>
+        </section>
+        <section>
+          <h4>A tu?</h4>
+          <pre><code class="lang-scala">def receive = notImportingBlocks(Nil)
+
+def notImportingBlocks(importedBlocks: List[Block]) = {
+  case ImportBlocks(blocks) =>
+    importBlocks(blocks)
+      .onComplete(_ => context become notImportingBlocks(importedBlocks ++ blocks))
+}
+</code></pre>
+        </section>
+        <section>
+          <pre><code class="lang-scala">def receive = notImportingBlocks(Nil)
+
+def notImportingBlocks(importedBlocks: List[Block]) = {
+  case ImportBlocks(blocks) =>
+    importBlocks(blocks).onComplete(_ => self ! BlocksImportCompleted(blocks))
+  case BlocksImportCompleted =>
+    context become notImportingBlocks(importedBlocks ++ blocks)
+}
+</code></pre>
+        </section>
+      </section>
+      <section>
+        <h3>Current state is a left fold of events</h3>
+        <section>
+        </section>
+        <section>
+          <h4>Czyli po naszemu</h4>
+          <pre><code class="lang-scala">val replayEvent: (State, Event) => State
+val initialState: State
+
+val state = events.foldLeft(initialState)(replayEvent)
+</code></pre>
+        </section>
+      </section>
+      <section>
+        <h3>Powitajmy&nbsp;<code>Behavior[T]</code></h3>
+        <section>
+          <pre><code class="lang-scala">object Behaviors {
+  def receive[T](onMessage: (ActorContext[T], T) ⇒ Behavior[T]): Behavior[T]
+
+  def receiveMessage[T](onMessage: T ⇒ Behavior[T]): Behavior[T]
+}
+
+</code></pre>
+        </section>
+      </section>
+      <section>
+        <h2>W praktyce robimy to tak:</h2>
+      </section>
+      <section>
+        <h3>1. Zdefiniuj sobie typy wiadomości</h3>
+        <pre><code class="lang-scala">sealed trait BlockImporterMsg
+case class ImportBlocks(blocks: List[Block]) extends BlockImporterMsg
+case class BlocksImported(blocks: List[Block]) extends BlockImporterMsg
+</code></pre>
+      </section>
+      <section>
+        <h3>2. Zdefiniuj zachowanie aktora</h3>
+        <pre><code class="lang-scala">object BlockImporter {
+  def behavior(importedBlocks: List[Block] = Nil): Behavior[BlockImporterMsg] =
+    Behaviors.receive((ctx, msg) =>
+      msg match {
+        case ImportBlocks(blocks) =>
+          importBlocks(blocks).onComplete(_ => ctx.self ! BlocksImported(blocks))
+          Behaviors.same
+        case BlocksImportCompleted =>
+          behavior(importedBlocks ++ blocks)
+      }
+}
+</code></pre>
+      </section>
+      <section>
+        <h3>3. Jeszcze aktor stanowiący punkt wejścia</h3>
+        <section>
+          <pre><code class="lang-scala">object Guardian {
+  case object Start
+
+  def behavior = Behaviors.setup[Start.type]{ ctx =>
+    val importer: ActorRef[BlockImporterMsg] = ctx.spawn(BlockImporter.behavior(), "block-importer")
+
+    Behaviors.receiveMessage {
+      case Start =>
+        importer ! ImportBlocks(blocks)
+        Behaviors.same
+    }
+  }
+}
+</code></pre>
+        </section>
+        <section>
+          <pre><code class="lang-scala">object Guardian {
+  def behavior = Behaviors.setup { ctx =>
+    val importer: ActorRef[BlockImporterMsg] = ctx.spawn(BlockImporter.behavior(), "block-importer")
+
+    SpawnProtocol.behavior
+  }
+}
+</code></pre>
+        </section>
+      </section>
+      <section>
+        <h3>4. I na koniec system</h3>
+        <pre><code class="lang-scala">import akka.actor.typed.ActorSystem
+object Main extends App {
+  val system = ActorSystem(Guardian.behavior, "guardian")
+
+  system ! Guardian.Start
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>No dobra, piękny hello world, a jak poradzić sobie z...</h2>
+      </section>
+      <section>
+        <h3>Logowaniem wiadomości?</h3>
+        <section>
+          <pre><code class="lang-scala">Behaviors.logMessages(otherBehavior)
+</code></pre>
+        </section>
+        <section>
+          <pre><code class="lang-scala">def behavior: Behavior[SomeMsg] =
+  Behaviors.intercept(LoggingInterceptor[SomeMsg]())(otherBehavior)
+</code></pre>
+        </section>
+        <section>
+          <pre><code class="lang-scala">class LoggingInterceptor[M] extends BehaviorInterceptor[M, M] {
+
+  def aroundReceive(ctx: ActorContext[M], msg: M, target: BehaviorInterceptor.ReceiveTarget[M]): Behavior[M] = {
+    ctx.asScala.log.debug("Message {}", msg)
+    target(ctx, msg)
+  }
+
+  def aroundSignal(ctx: ActorContext[M], signal: Signal, target: BehaviorInterceptor.SignalTarget[M]): Behavior[M] = {
+    ctx.asScala.log.debug("Signal {}", signal)
+    target(ctx, signal)
+  }
+}
+</code></pre>
+        </section>
+      </section>
+      <section>
+        <h3>Nadzorowaniem innych aktorów?</h3>
+        <pre><code class="lang-scala">Behaviors
+  .supervise(otherBehavior)
+  .onFailure(SupervisorStrategy.restart)
+</code></pre>
+      </section>
+      <section>
+        <h3>Obsługą cyklu życia aktora?</h3>
+        <pre><code class="lang-scala">Behaviors
+  .receive(/* ... */)
+  .receiveSignal {
+    case (_, PostStop) =>
+      //cleanup
+      Behaviors.same
+  }
+</code></pre>
+      </section>
+      <section>
+        <h3>Zarządzaniem czasem?</h3>
+        <pre><code class="lang-scala">Behaviors.withTimers(timers => {
+  timers.startPeriodicTimer("check-peers", CheckPeers, 10.seconds)
+
+  Behaviors.receiveMessage {
+    case CheckPeers =>
+      //doSth
+      Behaviors.same
+  }
+})
+</code></pre>
+      </section>
+      <section>
+        <h3>A jeśli chcemy coś niestandardowego</h3>
+        <pre><code class="lang-scala">package akka.actors.typed
+
+abstract class ExtensibleBehavior[T] extends Behavior[T] {
+
+  def receive(ctx: TypedActorContext[T], msg: T): Behavior[T]
+
+  def receiveSignal(ctx: TypedActorContext[T], msg: Signal): Behavior[T]
+}
+
+</code></pre>
+      </section>
+      <section>
+        <h3>Questions time!</h3>
+        <h6 class="no-devmeeting"><a href="mailto:andrzej.kopec@outlook.com">andrzej.kopec@outlook.com</a></h6>
+        <h6 class="no-devmeeting">@kapke_</h6>
+      </section>
+    </div>
+  </div>
+  <script src="lib/js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="bower_components/highlightjs/highlight.pack.min.js"></script>
+  <script>
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Optional reveal.js plugins
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+            { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+            { src: 'plugin/zoom-js/zoom.js', async: true },
+            { src: 'plugin/notes/notes.js', async: true }
+        ]
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (location.search.includes('devmeeting=true')) {
+            const elementsToRemove = Array.from(document.getElementsByClassName('no-devmeeting'));
+    
+            elementsToRemove.forEach(e => e.parentElement.removeChild(e));
+        }
+    });
+  </script>
+</body>
