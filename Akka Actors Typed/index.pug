@@ -24,12 +24,12 @@ block slides
                 PartialFunction[Any, Unit]
 
     +slide
-        h2 A teraz wyobraźmy sobie nowego programistę w projekcie
+        h4 A teraz wyobraźmy sobie nowego programistę w projekcie
 
         +slide
 
         +slide
-            h4 Nawigacja oparta jest o&nbsp;
+            p Nawigacja oparta jest o&nbsp;
                 code Ctrl+F
             pre: code.scala.
                 class BlockImporter(blockFetcher: ActorRef) extends Actor {
@@ -40,7 +40,7 @@ block slides
             h3 Mutowalne API
 
         +slide
-            h4 Gdzie tu jest błąd?
+            p Gdzie tu jest błąd?
 
             pre: code.lang-scala.
                 class BlockImporter extends Actor {
@@ -55,7 +55,7 @@ block slides
                   }
                 }
         +slide
-            h4 A tu?
+            p A tu?
 
             pre: code.lang-scala.
                 def receive = notImportingBlocks(Nil)

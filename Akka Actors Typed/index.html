@@ -133,11 +133,11 @@
         </section>
       </section>
       <section>
-        <h2>A teraz wyobraźmy sobie nowego programistę w projekcie</h2>
+        <h4>A teraz wyobraźmy sobie nowego programistę w projekcie</h4>
         <section>
         </section>
         <section>
-          <h4>Nawigacja oparta jest o&nbsp;<code>Ctrl+F</code></h4>
+          <p>Nawigacja oparta jest o&nbsp;<code>Ctrl+F</code></p>
           <pre><code class="scala">class BlockImporter(blockFetcher: ActorRef) extends Actor {
   blockFetcher ! ???
 }
@@ -147,7 +147,7 @@
           <h3>Mutowalne API</h3>
         </section>
         <section>
-          <h4>Gdzie tu jest błąd?</h4>
+          <p>Gdzie tu jest błąd?</p>
           <pre><code class="lang-scala">class BlockImporter extends Actor {
   var importedBlocks: List[Block] = Nil
 
@@ -161,7 +161,7 @@
 }</code></pre>
         </section>
         <section>
-          <h4>A tu?</h4>
+          <p>A tu?</p>
           <pre><code class="lang-scala">def receive = notImportingBlocks(Nil)
 
 def notImportingBlocks(importedBlocks: List[Block]) = {
@@ -348,8 +348,8 @@ abstract class ExtensibleBehavior[T] extends Behavior[T] {
       </section>
       <section>
         <h3>Questions time!</h3>
-        <h6 class="no-devmeeting"><a href="mailto:andrzej.kopec@outlook.com">andrzej.kopec@outlook.com</a></h6>
-        <h6 class="no-devmeeting">@kapke_</h6>
+        <h4 class="no-devmeeting"><a href="mailto:andrzej.kopec@outlook.com">andrzej.kopec@outlook.com</a></h4>
+        <h4 class="no-devmeeting">@kapke_</h4>
       </section>
     </div>
   </div>
