@@ -15,6 +15,7 @@
     "tests"
   ],
   "dependencies": {
+    "reveal-highlight-themes": "~8.4.0",
     "highlightjs": "^9.12.0"
   }
 }
