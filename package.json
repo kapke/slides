@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build": "pug index.pug --pretty --obj=slides.json",
+    "build:styles:watch": "sass --watch style/",
     "serve": "live-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -24,7 +25,8 @@
     "jade": "^1.11.0",
     "live-server": "^1.1.0",
     "pug": "^2.0.3",
-    "pug-cli": "^1.0.0-alpha6"
+    "pug-cli": "^1.0.0-alpha6",
+    "sass": "^1.17.2"
   },
   "description": "",
   "dependencies": {

@@ -1,0 +1,71 @@
+@import url("https://fonts.googleapis.com/css?family=Muli:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i|Ropa+Sans:400,400i");
+* {
+  --bg-color: #000000;
+  --main-color: #ffffff;
+  --accent-color: #ff412e;
+}
+
+body {
+  background: var(--bg-color);
+  color: var(--main-color);
+  font-family: "Muli", sans-serif;
+}
+
+.reveal {
+  /* Control arrows */
+  /* Progress bar */
+  /* Utils */
+}
+.reveal h1 {
+  font-family: "Ropa Sans", sans-serif;
+  color: var(--main-color);
+  font-size: 9.6rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  margin-bottom: 1rem;
+}
+.reveal h2 {
+  font-family: "Muli", sans-serif;
+  color: var(--main-color);
+  font-size: 4.4rem;
+}
+.reveal section img {
+  border: none;
+  background: none;
+  box-shadow: none;
+}
+.reveal .controls div.navigate-left, .reveal .controls div.navigate-left.enabled {
+  border-right-color: var(--accent-color);
+}
+.reveal .controls div.navigate-right, .reveal .controls div.navigate-right.enabled {
+  border-left-color: var(--accent-color);
+}
+.reveal .controls div.navigate-up, .reveal .controls div.navigate-up.enabled {
+  border-bottom-color: var(--accent-color);
+}
+.reveal .controls div.navigate-down, .reveal .controls div.navigate-down.enabled {
+  border-top-color: var(--accent-color);
+}
+.reveal .progress span {
+  background-color: var(--accent-color);
+}
+.reveal .uppercased {
+  text-transform: uppercase;
+}
+.reveal .light {
+  font-weight: 100;
+}
+
+.logo.scalac {
+  width: 50%;
+  margin: 0 auto 10%;
+}
+
+.title-slide {
+  height: 100%;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/*# sourceMappingURL=scalac_theme.css.map */

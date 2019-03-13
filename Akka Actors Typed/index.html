@@ -8,9 +8,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
   <link rel="stylesheet" href="css/reveal.css">
-  <link id="theme" rel="stylesheet" href="css/theme/white.css">
-  <!-- Code syntax highlighting-->
-  <link rel="stylesheet" href="../bower_components/highlightjs/styles/vs.css">
+  <link rel="stylesheet" href="../bower_components/highlightjs/styles/zenburn.css"/>
+  <link rel="stylesheet" href="../style/scalac_theme.css"/>
   <!-- Printing and PDF exports-->
   <script>
     var link = document.createElement( 'link' );
@@ -19,101 +18,16 @@
     link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
     document.getElementsByTagName( 'head' )[0].appendChild( link );
   </script>
-  <style>
-    /* skygate-blue: 00b0ea */
-    /* scalac-red: ff0000 */
-    @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic);
-    .reveal .logo {
-        border: none;
-        box-shadow: none;
-        display: inline-block;
-        vertical-align: middle;
-    }
-    
-    .reveal .logo.devmeeting {
-        height: 60px;
-    }
-    
-    .reveal .logo.skygate {
-        height: 120px;
-    }
-    
-    .reveal .logo.scalac {
-        height: 68px;
-        margin-right: 40px;
-    }
-    
-    .reveal .logo.ek {
-        height: 45px;
-    }
-    
-    .reveal h2, .reveal h3, .reveal h4 {
-        color: black;
-        font-family: 'Open Sans';
-        text-transform: none;
-    }
-    
-    /* Control arrows */
-    .reveal .controls div.navigate-left, .reveal .controls div.navigate-left.enabled {
-        border-right-color: #ff0000;
-    }
-    .reveal .controls div.navigate-right, .reveal .controls div.navigate-right.enabled {
-        border-left-color: #ff0000;
-    }
-    
-    .reveal .controls div.navigate-up, .reveal .controls div.navigate-up.enabled {
-        border-bottom-color: #ff0000;
-    }
-    
-    .reveal .controls div.navigate-down, .reveal .controls div.navigate-down.enabled {
-        border-top-color: #ff0000;
-    }
-    
-    /* Progress bar */
-    .reveal .progress span {
-        background-color: #ff0000;
-    }
-    
-    .reveal pre {
-        width: auto;
-    }
-    .reveal pre code {
-        background: none;
-        color: black;
-        max-height: 100%;
-    }
-    .reveal table tr:last-child td {
-        border-bottom: 1px solid;
-    }
-    
-    .reveal pre code.typescript.hljs.small {
-        font-size: 66% !important;
-        line-height: 125% !important;
-    }
-    
-    .reveal pre.inline {
-        display: inline-block;
-        box-sizing: border-box;
-        width: calc(50% - 42px);
-        vertical-align: top;
-        box-shadow: none;
-    }
-    
-    .reveal pre.inline code.hljs {
-        overflow: visible;
-        border: none;
-    }
-    
-    
-  </style>
 </head>
 <body>
-  <div class="reveal">
+  <div class="reveal scalac">
     <!-- Any section element inside of this container is displayed as a slide-->
     <div class="slides">
-      <section>
-        <h1 style="text-transform: none">ActorRef[Typed]</h1><img class="logo scalac no-devmeeting" src="../scalac_logo.svg" alt=""/><img class="logo devmeeting" src="../devmeetings_logo.jpg" alt=""/>
-        <h6 class="no-devmeeting">Andrzej Kopeć</h6>
+      <section class="title-slide">
+        <div class="headers">
+          <h1 style="text-transform: none">ActorRef[Typed]</h1>
+          <h2 class="uppercased light">Andrzej Kopeć</h2>
+        </div><img class="logo scalac no-devmeeting" src="../scalac_logo_light.png" alt=""/>
       </section>
       <section>
         <h2>Co najbardziej sobie cenią programiści Scali?</h2>
