@@ -9,43 +9,50 @@ block title
 block slides
     +titleSlide("ActorRef[Typed]", true, false)
 
+    +justSentence("What is the most valuable thing in Scala?")
+
+    +justSentence("Type system")
+
+    +justSentence("What does Akka Actors offer?")
+
+    +justSentence
+        pre PartialFunction[Any, Unit]
+
+    +justSentence("And now imagine a new dev in project")
+
+    +slide(class="to-middle")
+        h2
+            pre Ctrl+F
+            | &nbsp;based navigation
+
+        pre: code.scala.
+            class BlockImporter(blockFetcher: ActorRef) extends Actor {
+              blockFetcher ! ???
+            }
+
+    +justSentence("Mutable-by-default API")
+
+    +justSentence("Will you spot the error?")
+
     +slide
-        h2 Co najbardziej sobie cenią programiści Scali?
+        pre: code.lang-scala.
+            class BlockImporter extends Actor {
+              var importedBlocks: List[Block] = Nil
 
-        +slide
+              val importBlocks: List[Block] => Future[Unit]
 
-        +slide
-            h3 Typy
+              def receive = {
+                case ImportBlocks(blocks) =>
+                  importBlocks(blocks)
+                    .onComplete(_ =>
+                      importedBlocks = importedBlocks ++ blocks
+                    )
+              }
+            }
 
     +slide
-        h2 Co oferuje Akka Actors?
-
-        +slide
-
-        +slide
-            pre: code.lang-scala.
-                PartialFunction[Any, Unit]
-
-    +slide
-        h4 A teraz wyobraźmy sobie nowego programistę w projekcie
-
-        +slide
-
-        +slide
-            p Nawigacja oparta jest o&nbsp;
-                code Ctrl+F
-            pre: code.scala.
-                class BlockImporter(blockFetcher: ActorRef) extends Actor {
-                  blockFetcher ! ???
-                }
-
-        +slide
-            h3 Mutowalne API
-
-        +slide
-            p Gdzie tu jest błąd?
-
-            pre: code.lang-scala.
+        pre
+            code.nohighlight.dimmed.
                 class BlockImporter extends Actor {
                   var importedBlocks: List[Block] = Nil
 
@@ -54,61 +61,86 @@ block slides
                   def receive = {
                     case ImportBlocks(blocks) =>
                       importBlocks(blocks)
-                        .onComplete(_ => importedBlocks = importedBlocks ++ blocks)
-                  }
+                        .onComplete(_ =>
+
+            code.nohighlight.highlighted.
+                &nbsp;           importedBlocks = importedBlocks ++ blocks
+
+            code.nohighlight.dimmed.
+                &nbsp;     )
                 }
-        +slide
-            p A tu?
+              }
 
-            pre: code.lang-scala.
-                def receive = notImportingBlocks(Nil)
+    +slide
+        pre: code.lang-scala.
+            def receive = running(Nil)
 
-                def notImportingBlocks(importedBlocks: List[Block]) = {
+            def running(importedBlocks: List[Block]) = {
+              case ImportBlocks(blocks) =>
+                importBlocks(blocks)
+                  .onComplete(_ =>
+                    context become running(importedBlocks ++ blocks))
+            }
+
+    +slide
+        pre
+            code.nohighlight.dimmed.
+                def receive = running(Nil)
+
+                def running(importedBlocks: List[Block]) = {
                   case ImportBlocks(blocks) =>
                     importBlocks(blocks)
-                      .onComplete(_ => context become notImportingBlocks(importedBlocks ++ blocks))
+                      .onComplete(_ =>
+
+            code.nohighlight.highlighted.
+                &nbsp;       context become running(importedBlocks ++ blocks))
+
+            code.nohighlight.dimmed.
                 }
 
-        +slide
-            pre: code.lang-scala.
-                def receive = notImportingBlocks(Nil)
+    +slide
+        pre: code.lang-scala.
+            def receive = notImportingBlocks(Nil)
 
-                def notImportingBlocks(importedBlocks: List[Block]) = {
-                  case ImportBlocks(blocks) =>
-                    importBlocks(blocks).onComplete(_ => self ! BlocksImportCompleted(blocks))
-                  case BlocksImportCompleted =>
-                    context become notImportingBlocks(importedBlocks ++ blocks)
-                }
+            def notImportingBlocks(importedBlocks: List[Block]) = {
+              case ImportBlocks(blocks) =>
+                context become importingBlocks(importedBlocks)
+                importBlocks(blocks).onComplete(_ => self ! BlocksImportCompleted(blocks))
+            }
+
+            def importingBlocks(importedBlocks: List[Block]) = {
+              case BlocksImportCompleted =>
+               context become notImportingBlocks(importedBlocks ++ blocks)
+            }
 
     +slide
         h3 Current state is a left fold of events
 
-        +slide
+    +slide
+        h4 Czyli po naszemu
 
-        +slide
-            h4 Czyli po naszemu
+        pre: code.lang-scala.
+            val replayEvent: (State, Event) => State
+            val initialState: State
 
-            pre: code.lang-scala.
-                val replayEvent: (State, Event) => State
-                val initialState: State
-
-                val state = events.foldLeft(initialState)(replayEvent)
+            val state = events.foldLeft(initialState)(replayEvent)
 
     +slide
-        h3 Powitajmy&nbsp;
+        h3 Say hello to&nbsp;
             code Behavior[T]
 
-        +slide
-            pre: code.lang-scala.
-                object Behaviors {
-                  def receive[T](onMessage: (ActorContext[T], T) ⇒ Behavior[T]): Behavior[T]
-
-                  def receiveMessage[T](onMessage: T ⇒ Behavior[T]): Behavior[T]
-                }
-
-
     +slide
-        h2 W praktyce robimy to tak:
+        pre: code.lang-scala.
+            package akka.actor.typed.scaladsl
+
+            object Behaviors {
+              def receive[T](onMessage: (ActorContext[T], T) ⇒ Behavior[T]): Behavior[T]
+
+              def receiveMessage[T](onMessage: T ⇒ Behavior[T]): Behavior[T]
+            }
+
+
+    +justSentence("W praktyce robimy to tak:")
 
     +slide
         h3 1. Zdefiniuj sobie typy wiadomości

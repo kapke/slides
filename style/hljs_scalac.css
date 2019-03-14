@@ -1,0 +1,92 @@
+/*
+  xt256.css
+
+  Contact: initbar [at] protonmail [dot] ch
+         : github.com/initbar
+*/
+.hljs {
+  display: block;
+  overflow-x: auto;
+  color: #ffffff;
+  background: transparent;
+  padding: 0.5;
+}
+
+.hljs-subst {
+  color: #BFBFBF;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+.hljs-builtin-name,
+.hljs-type {
+  color: #ffffff;
+}
+
+.hljs-params {
+  color: #ff412e;
+}
+
+.hljs-literal,
+.hljs-number,
+.hljs-name {
+  color: #ff412e;
+  font-weight: bolder;
+}
+
+.hljs-comment {
+  color: #BFBFBF;
+}
+
+.hljs-selector-id,
+.hljs-quote {
+  color: #BFBFBF;
+}
+
+.hljs-template-variable,
+.hljs-variable,
+.hljs-title {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.hljs-selector-class,
+.hljs-keyword,
+.hljs-symbol {
+  color: #BFBFBF;
+}
+
+.hljs-string,
+.hljs-bullet {
+  color: #ffffff;
+}
+
+.hljs-tag,
+.hljs-section {
+  color: #ffffff;
+}
+
+.hljs-selector-tag {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.hljs-attribute,
+.hljs-built_in,
+.hljs-regexp,
+.hljs-link {
+  color: #ffffff;
+}
+
+.hljs-meta {
+  color: #fff;
+  font-weight: bolder;
+}
+
+/*# sourceMappingURL=hljs_scalac.css.map */

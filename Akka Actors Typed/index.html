@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
   <link rel="stylesheet" href="css/reveal.css">
-  <link rel="stylesheet" href="../bower_components/highlightjs/styles/zenburn.css"/>
+  <link rel="stylesheet" href="../style/hljs_scalac.css"/>
   <link rel="stylesheet" href="../style/scalac_theme.css"/>
   <!-- Printing and PDF exports-->
   <script>
@@ -29,40 +29,38 @@
           <h2 class="uppercased light">Andrzej Kopeć</h2>
         </div><img class="logo scalac no-devmeeting" src="../scalac_logo_light.png" alt=""/>
       </section>
-      <section>
-        <h2>Co najbardziej sobie cenią programiści Scali?</h2>
-        <section>
-        </section>
-        <section>
-          <h3>Typy</h3>
-        </section>
+      <section class="just-sentence">
+        <h2>What is the most valuable thing in Scala?</h2>
       </section>
-      <section>
-        <h2>Co oferuje Akka Actors?</h2>
-        <section>
-        </section>
-        <section>
-          <pre><code class="lang-scala">PartialFunction[Any, Unit]
-</code></pre>
-        </section>
+      <section class="just-sentence">
+        <h2>Type system</h2>
       </section>
-      <section>
-        <h4>A teraz wyobraźmy sobie nowego programistę w projekcie</h4>
-        <section>
-        </section>
-        <section>
-          <p>Nawigacja oparta jest o&nbsp;<code>Ctrl+F</code></p>
-          <pre><code class="scala">class BlockImporter(blockFetcher: ActorRef) extends Actor {
+      <section class="just-sentence">
+        <h2>What does Akka Actors offer?</h2>
+      </section>
+      <section class="just-sentence">
+        <pre>PartialFunction[Any, Unit]</pre>
+      </section>
+      <section class="just-sentence">
+        <h2>And now imagine a new dev in project</h2>
+      </section>
+      <section class="to-middle">
+        <h2>
+          <pre>Ctrl+F</pre>&nbsp;based navigation
+        </h2>
+        <pre><code class="scala">class BlockImporter(blockFetcher: ActorRef) extends Actor {
   blockFetcher ! ???
 }
 </code></pre>
-        </section>
-        <section>
-          <h3>Mutowalne API</h3>
-        </section>
-        <section>
-          <p>Gdzie tu jest błąd?</p>
-          <pre><code class="lang-scala">class BlockImporter extends Actor {
+      </section>
+      <section class="just-sentence">
+        <h2>Mutable-by-default API</h2>
+      </section>
+      <section class="just-sentence">
+        <h2>Will you spot the error?</h2>
+      </section>
+      <section>
+        <pre><code class="lang-scala">class BlockImporter extends Actor {
   var importedBlocks: List[Block] = Nil
 
   val importBlocks: List[Block] => Future[Unit]
@@ -70,59 +68,92 @@
   def receive = {
     case ImportBlocks(blocks) =>
       importBlocks(blocks)
-        .onComplete(_ => importedBlocks = importedBlocks ++ blocks)
+        .onComplete(_ =>
+          importedBlocks = importedBlocks ++ blocks
+        )
   }
-}</code></pre>
-        </section>
-        <section>
-          <p>A tu?</p>
-          <pre><code class="lang-scala">def receive = notImportingBlocks(Nil)
+}
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="nohighlight dimmed">class BlockImporter extends Actor {
+  var importedBlocks: List[Block] = Nil
 
-def notImportingBlocks(importedBlocks: List[Block]) = {
+  val importBlocks: List[Block] => Future[Unit]
+
+  def receive = {
+    case ImportBlocks(blocks) =>
+      importBlocks(blocks)
+        .onComplete(_ =>
+</code><code class="nohighlight highlighted">&nbsp;           importedBlocks = importedBlocks ++ blocks
+</code><code class="nohighlight dimmed">  &nbsp;     )
+  }
+}
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="lang-scala">def receive = running(Nil)
+
+def running(importedBlocks: List[Block]) = {
   case ImportBlocks(blocks) =>
     importBlocks(blocks)
-      .onComplete(_ => context become notImportingBlocks(importedBlocks ++ blocks))
+      .onComplete(_ =>
+        context become running(importedBlocks ++ blocks))
 }
 </code></pre>
-        </section>
-        <section>
-          <pre><code class="lang-scala">def receive = notImportingBlocks(Nil)
+      </section>
+      <section>
+        <pre><code class="nohighlight dimmed">def receive = running(Nil)
+
+def running(importedBlocks: List[Block]) = {
+  case ImportBlocks(blocks) =>
+    importBlocks(blocks)
+      .onComplete(_ =>
+</code><code class="nohighlight highlighted">&nbsp;       context become running(importedBlocks ++ blocks))
+</code><code class="nohighlight dimmed">}
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="lang-scala">def receive = notImportingBlocks(Nil)
 
 def notImportingBlocks(importedBlocks: List[Block]) = {
   case ImportBlocks(blocks) =>
+    context become importingBlocks(importedBlocks)
     importBlocks(blocks).onComplete(_ => self ! BlocksImportCompleted(blocks))
+}
+
+def importingBlocks(importedBlocks: List[Block]) = {
   case BlocksImportCompleted =>
-    context become notImportingBlocks(importedBlocks ++ blocks)
+   context become notImportingBlocks(importedBlocks ++ blocks)
 }
 </code></pre>
-        </section>
       </section>
       <section>
         <h3>Current state is a left fold of events</h3>
-        <section>
-        </section>
-        <section>
-          <h4>Czyli po naszemu</h4>
-          <pre><code class="lang-scala">val replayEvent: (State, Event) => State
+      </section>
+      <section>
+        <h4>Czyli po naszemu</h4>
+        <pre><code class="lang-scala">val replayEvent: (State, Event) => State
 val initialState: State
 
 val state = events.foldLeft(initialState)(replayEvent)
 </code></pre>
-        </section>
       </section>
       <section>
-        <h3>Powitajmy&nbsp;<code>Behavior[T]</code></h3>
-        <section>
-          <pre><code class="lang-scala">object Behaviors {
+        <h3>Say hello to&nbsp;<code>Behavior[T]</code></h3>
+      </section>
+      <section>
+        <pre><code class="lang-scala">package akka.actor.typed.scaladsl
+
+object Behaviors {
   def receive[T](onMessage: (ActorContext[T], T) ⇒ Behavior[T]): Behavior[T]
 
   def receiveMessage[T](onMessage: T ⇒ Behavior[T]): Behavior[T]
 }
 
 </code></pre>
-        </section>
       </section>
-      <section>
+      <section class="just-sentence">
         <h2>W praktyce robimy to tak:</h2>
       </section>
       <section>
@@ -271,24 +302,49 @@ abstract class ExtensibleBehavior[T] extends Behavior[T] {
   <script src="js/reveal.js"></script>
   <script src="bower_components/highlightjs/highlight.pack.min.js"></script>
   <script>
+    window.kapke = {
+        revealConfig: {
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+            transition: 'slide', // none/fade/slide/convex/concave/zoom
+            // Optional reveal.js plugins
+            dependencies: [
+                {
+                    src: 'lib/js/classList.js', condition: function () {
+                        return !document.body.classList;
+                    }
+                },
+                {
+                    src: 'plugin/markdown/marked.js', condition: function () {
+                        return !!document.querySelector('[data-markdown]');
+                    }
+                },
+                {
+                    src: 'plugin/markdown/markdown.js', condition: function () {
+                        return !!document.querySelector('[data-markdown]');
+                    }
+                },
+                {
+                    src: 'plugin/highlight/highlight.js', async: true, condition: function () {
+                        return !!document.querySelector('pre code');
+                    }, callback: function () {
+                        hljs.initHighlightingOnLoad();
+                    }
+                },
+                {src: 'plugin/zoom-js/zoom.js', async: true},
+                {src: 'plugin/notes/notes.js', async: true}
+            ]
+        }
+    }
+    
+  </script>
+  <script>window.kapke.revealConfig.center = false</script>
+  <script>
     // Full list of configuration options available at:
     // https://github.com/hakimel/reveal.js#configuration
-    Reveal.initialize({
-        controls: true,
-        progress: true,
-        history: true,
-        center: true,
-        transition: 'slide', // none/fade/slide/convex/concave/zoom
-        // Optional reveal.js plugins
-        dependencies: [
-            { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-            { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-            { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-            { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
-            { src: 'plugin/zoom-js/zoom.js', async: true },
-            { src: 'plugin/notes/notes.js', async: true }
-        ]
-    });
+    Reveal.initialize(window.kapke.revealConfig);
   </script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
