@@ -105,7 +105,9 @@ block slides
             def notImportingBlocks(importedBlocks: List[Block]) = {
               case ImportBlocks(blocks) =>
                 context become importingBlocks(importedBlocks)
-                importBlocks(blocks).onComplete(_ => self ! BlocksImportCompleted(blocks))
+                importBlocks(blocks)
+                  .map(_ => BlocksImportCompleted(blocks))
+                  .pipeTo(self)
             }
 
             def importingBlocks(importedBlocks: List[Block]) = {
@@ -113,167 +115,184 @@ block slides
                context become notImportingBlocks(importedBlocks ++ blocks)
             }
 
-    +slide
-        h3 Current state is a left fold of events
+    // Is it needed?
+    //+slide
+    //    h2 Current state is a left fold of events
 
-    +slide
-        h4 Czyli po naszemu
+    //+slide
+    //    pre: code.lang-scala.
+    //        val replayEvent: (State, Event) => State
+    //        val initialState: State
+    //
+    //        val state = events.foldLeft(initialState)(replayEvent)
 
-        pre: code.lang-scala.
-            val replayEvent: (State, Event) => State
-            val initialState: State
-
-            val state = events.foldLeft(initialState)(replayEvent)
-
-    +slide
-        h3 Say hello to&nbsp;
-            code Behavior[T]
+    +justSentence
+        h2 Say hello to&nbsp;
+            pre Behavior[T]
 
     +slide
         pre: code.lang-scala.
             package akka.actor.typed.scaladsl
 
             object Behaviors {
-              def receive[T](onMessage: (ActorContext[T], T) ⇒ Behavior[T]): Behavior[T]
+              def receive[T](
+                onMessage: (ActorContext[T], T) ⇒ Behavior[T]
+              ): Behavior[T]
 
-              def receiveMessage[T](onMessage: T ⇒ Behavior[T]): Behavior[T]
+              def receiveMessage[T](
+                onMessage: T ⇒ Behavior[T]
+              ): Behavior[T]
             }
 
 
-    +justSentence("W praktyce robimy to tak:")
+    +justSentence("In practice it looks as follows:")
+
+    +justSentence("Define your protocol")
 
     +slide
-        h3 1. Zdefiniuj sobie typy wiadomości
-
         pre: code.lang-scala.
             sealed trait BlockImporterMsg
-            case class ImportBlocks(blocks: List[Block]) extends BlockImporterMsg
-            case class BlocksImported(blocks: List[Block]) extends BlockImporterMsg
+
+            case class ImportBlocks(
+              blocks: List[Block],
+              respondTo: ActorRef[BlocksImported]) extends BlockImporterMsg
+            case class BlocksImported(blocks: List[Block])
+
+            case class BlocksImportCompleted(blocks: List[Block]) extends BlockImporterMsg
+
+    +justSentence("Define the behavior")
 
     +slide
-        h3 2. Zdefiniuj zachowanie aktora
-
         pre: code.lang-scala.
             object BlockImporter {
               def behavior(importedBlocks: List[Block] = Nil): Behavior[BlockImporterMsg] =
                 Behaviors.receive((ctx, msg) =>
                   msg match {
-                    case ImportBlocks(blocks) =>
-                      importBlocks(blocks).onComplete(_ => ctx.self ! BlocksImported(blocks))
+                    case ImportBlocks(blocks, respondTo) =>
+                      importBlocks(blocks)
+                        .onComplete(_ => {
+                          respondTo ! BlocksImported(blocks)
+                          ctx.self ! BlocksImportCompleted(blocks)
+                        })
                       Behaviors.same
                     case BlocksImportCompleted =>
                       behavior(importedBlocks ++ blocks)
                   }
             }
 
-    +slide
-        h3 3. Jeszcze aktor stanowiący punkt wejścia
-
-        +slide
-            pre: code.lang-scala.
-                object Guardian {
-                  case object Start
-
-                  def behavior = Behaviors.setup[Start.type]{ ctx =>
-                    val importer: ActorRef[BlockImporterMsg] = ctx.spawn(BlockImporter.behavior(), "block-importer")
-
-                    Behaviors.receiveMessage {
-                      case Start =>
-                        importer ! ImportBlocks(blocks)
-                        Behaviors.same
-                    }
-                  }
-                }
-
-        +slide
-            pre: code.lang-scala.
-                object Guardian {
-                  def behavior = Behaviors.setup { ctx =>
-                    val importer: ActorRef[BlockImporterMsg] = ctx.spawn(BlockImporter.behavior(), "block-importer")
-
-                    SpawnProtocol.behavior
-                  }
-                }
+    +justSentence("Now the guardian...")
 
     +slide
-        h3 4. I na koniec system
+        pre: code.lang-scala.
+            object Guardian {
+              case object Start
 
+              def behavior = Behaviors.setup[Start.type]{ ctx =>
+                val importer: ActorRef[BlockImporterMsg] = ctx.spawn(BlockImporter.behavior(), "block-importer")
+
+                Behaviors.receiveMessage {
+                  case Start =>
+                    importer ! ImportBlocks(blocks)
+                    Behaviors.same
+                }
+              }
+            }
+
+    +slide
+        pre: code.lang-scala.
+            object Guardian {
+              def behavior = SpawnProtocol.behavior
+            }
+
+
+    +justSentence("And the system")
+
+    +slide
         pre: code.lang-scala.
             import akka.actor.typed.ActorSystem
+
             object Main extends App {
               val system = ActorSystem(Guardian.behavior, "guardian")
 
               system ! Guardian.Start
             }
 
-    +slide
-        h2 No dobra, piękny hello world, a jak poradzić sobie z...
+    +justSentence
+        div
+            h2 Wait! Nice "hello, world"
+            h2 but I need...
+
+    +justSentence("Logging?")
 
     +slide
-        h3 Logowaniem wiadomości?
-
-        +slide
-            pre: code.lang-scala.
-                Behaviors.logMessages(otherBehavior)
-
-        +slide
-            pre: code.lang-scala.
-                def behavior: Behavior[SomeMsg] =
-                  Behaviors.intercept(LoggingInterceptor[SomeMsg]())(otherBehavior)
-
-        +slide
-
-            pre: code.lang-scala.
-                class LoggingInterceptor[M] extends BehaviorInterceptor[M, M] {
-
-                  def aroundReceive(ctx: ActorContext[M], msg: M, target: BehaviorInterceptor.ReceiveTarget[M]): Behavior[M] = {
-                    ctx.asScala.log.debug("Message {}", msg)
-                    target(ctx, msg)
-                  }
-
-                  def aroundSignal(ctx: ActorContext[M], signal: Signal, target: BehaviorInterceptor.SignalTarget[M]): Behavior[M] = {
-                    ctx.asScala.log.debug("Signal {}", signal)
-                    target(ctx, signal)
-                  }
-                }
+        pre: code.lang-scala.
+            Behaviors.logMessages(otherBehavior)
 
     +slide
-        h3 Nadzorowaniem innych aktorów?
+        pre: code.lang-scala.
+            def behavior: Behavior[SomeMsg] =
+              Behaviors
+                .intercept(
+                  LoggingInterceptor[SomeMsg]())(
+                  otherBehavior)
 
+    +slide
+        pre: code.lang-scala.
+            class LoggingInterceptor[M] extends BehaviorInterceptor[M, M] {
+
+              def aroundReceive(ctx: ActorContext[M], msg: M, target: BehaviorInterceptor.ReceiveTarget[M]): Behavior[M] = {
+                ctx.asScala.log.debug("Message {}", msg)
+                target(ctx, msg)
+              }
+
+              def aroundSignal(ctx: ActorContext[M], signal: Signal, target: BehaviorInterceptor.SignalTarget[M]): Behavior[M] = {
+                ctx.asScala.log.debug("Signal {}", signal)
+                target(ctx, signal)
+              }
+            }
+
+    +justSentence("Supervision?")
+
+    +slide
         pre: code.lang-scala.
             Behaviors
               .supervise(otherBehavior)
               .onFailure(SupervisorStrategy.restart)
 
-    +slide
-        h3 Obsługą cyklu życia aktora?
+    +justSentence("To handle actor lifecycle?")
 
+    +slide
         pre: code.lang-scala.
             Behaviors
               .receive(/* ... */)
               .receiveSignal {
-                case (_, PostStop) =>
+                case (_, PostStop) => //PreRestart, Terminated
                   //cleanup
                   Behaviors.same
               }
 
+    +justSentence("Managing time?")
+
     +slide
-        h3 Zarządzaniem czasem?
-
         pre: code.lang-scala.
-            Behaviors.withTimers(timers => {
-              timers.startPeriodicTimer("check-peers", CheckPeers, 10.seconds)
+            val receive = Behaviors.receiveMessage {
+              case CheckPeers =>
+                //doSth
+                Behaviors.same
+            }
 
-              Behaviors.receiveMessage {
-                case CheckPeers =>
-                  //doSth
-                  Behaviors.same
-              }
+            Behaviors.withTimers(timers => {
+              timers.startPeriodicTimer(
+                "check-peers",
+                CheckPeers,
+                10.seconds)
+
+                receive
             })
 
-    +slide
-        h3 A jeśli chcemy coś niestandardowego
+    +justSentence("And there's always...")
 
+    +slide
         pre: code.lang-scala.
             package akka.actors.typed
 
@@ -285,4 +304,4 @@ block slides
             }
 
 
-    +finalSlide
+    +finalSlides

@@ -40,9 +40,7 @@
     "grunt-contrib-watch": "~0.5.3",
     "grunt-sass": "^1.2.1",
     "grunt-zip": "~0.7.0",
-    "node-sass": "^3.10.0",
-    "pug": "^2.0.3",
-    "pug-cli": "^1.0.0-alpha6"
+    "node-sass": "^3.10.0"
   },
   "license": "MIT"
 }

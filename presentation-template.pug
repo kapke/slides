@@ -25,7 +25,7 @@ mixin titleSlide(title, withAuthor, uppercased)
                 h6.no-devmeeting Andrzej Kopeć
 
 mixin justSentence(text)
-    +slide(class = "just-sentence")
+    +slide(class="just-sentence")
         if text
             h2= text
         if block
@@ -40,6 +40,20 @@ mixin finalSlide(withContact)
             h4.no-devmeeting @kapke_
         if block
             block
+
+mixin contact
+    +slide(class="contact to-middle")
+        div
+            h2 Andrzej Kopeć
+            h2 andrzej.kopec@scalac.io
+            h2 @kapke_
+
+mixin finalSlides
+    +slide
+        h1 Thank you
+
+    +contact
+
 
 mixin hiringSlide
     +finalSlide

@@ -85,6 +85,9 @@ body {
   flex-direction: column;
   justify-content: flex-end;
 }
+.reveal section.contact {
+  text-align: right;
+}
 .reveal section.just-sentence {
   height: 100%;
   top: 0;
@@ -94,6 +97,7 @@ body {
   position: absolute;
   bottom: 50%;
   width: 100%;
+  left: 0;
 }
 .reveal section.just-sentence > pre {
   font-size: 4.4rem;

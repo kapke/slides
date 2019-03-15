@@ -1,0 +1,9 @@
+name: slides
+windows:
+  - builds:
+      layout: tiled
+      panes:
+        - npm run build:styles:watch
+        - npm run build:indexes:watch
+        - cd .. && live-server
+

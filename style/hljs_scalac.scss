@@ -26,7 +26,10 @@
   font-weight: bold;
 }
 
-.hljs-builtin-name,
+.hljs-builtin-name {
+  color: $color-main;
+}
+
 .hljs-type {
   color: $color-main;
 }
