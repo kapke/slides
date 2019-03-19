@@ -8,7 +8,7 @@
 
 .hljs {
   display: block;
-  overflow-x: auto;
+  overflow: visible;
   color: $color-main;
   background: transparent;
   padding: 0.5;
@@ -35,13 +35,13 @@
 }
 
 .hljs-params {
-  color: $color-accent;
+  color: $color-main;
 }
 
 .hljs-literal,
 .hljs-number,
 .hljs-name {
-  color: $color-accent;
+  color: $color-main;
   font-weight: bolder;
 }
 

@@ -4,6 +4,7 @@
   --color-main: #ffffff;
   --color-accent: #ff412e;
   --color-subdue: #BFBFBF;
+  --color-dimmed: #9B9B9B;
 }
 
 body {
@@ -29,7 +30,7 @@ body {
   font-family: "Muli", sans-serif;
   color: var(--color-main);
   font-size: 4.4rem;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 .reveal h2 pre {
   display: inline;
@@ -42,10 +43,10 @@ body {
   font-size: 2rem;
 }
 .reveal pre code.dimmed {
-  color: var(--color-subdue);
+  color: var(--color-dimmed);
 }
 .reveal pre code.highlighted {
-  color: var(--color-accent);
+  color: var(--color-main);
 }
 .reveal section img {
   border: none;
@@ -78,6 +79,9 @@ body {
   display: flex !important;
   flex-direction: column;
   justify-content: space-between;
+}
+.reveal section.title-slide h1 {
+  margin-bottom: 2.5rem;
 }
 .reveal section.to-middle {
   min-height: 50%;

@@ -2,10 +2,10 @@
 link.rel = 'stylesheet';
 link.type = 'text/css';
 link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-document.getElementsByTagName( 'head' )[0].appendChild( link );</script></head><body><div class="reveal scalac"><!-- Any section element inside of this container is displayed as a slide--><div class="slides"><section class="title-slide"><div class="headers"><h1 style="text-transform: none">ActorRef[Typed]</h1><h2 class="uppercased light">Andrzej Kopeć</h2></div><img class="logo scalac no-devmeeting" src="../scalac_logo_light.png" alt=""/></section><section class="just-sentence"><h2>What is the most valuable thing in Scala?</h2></section><section class="just-sentence"><h2>Type system</h2></section><section class="just-sentence"><h2>What does Akka Actors offer?</h2></section><section class="just-sentence"><pre>PartialFunction[Any, Unit]</pre></section><section class="just-sentence"><h2>And now imagine a new dev in project</h2></section><section class="to-middle"><h2><pre>Ctrl+F</pre>&nbsp;based navigation</h2><pre><code class="scala">class BlockImporter(blockFetcher: ActorRef) extends Actor {
+document.getElementsByTagName( 'head' )[0].appendChild( link );</script></head><body><div class="reveal scalac"><!-- Any section element inside of this container is displayed as a slide--><div class="slides"><section class="title-slide"><div class="headers"><h1 style="text-transform: none">ActorRef[Typed]</h1><h2 class="uppercased light">Andrzej Kopeć</h2></div><img class="logo scalac no-devmeeting" src="../scalac_logo_light.png" alt=""/></section><!--+justSentence("What is the most valuable thing in Scala?")--><section class="just-sentence"><h2>The most valuable in Scala?</h2></section><section class="just-sentence"><h2>Type system</h2></section><section class="just-sentence"><h2>Yet we have</h2></section><section class="just-sentence"><pre>PartialFunction[Any, Unit]</pre></section><section class="just-sentence"><h2>New dev in project</h2></section><section class="to-middle"><h2><pre>Ctrl+F</pre>&nbsp;based navigation</h2><pre><code class="scala">class BlockImporter(blockFetcher: ActorRef) extends Actor {
   blockFetcher ! ???
 }
-</code></pre></section><section class="just-sentence"><h2>Mutable-by-default API</h2></section><section class="just-sentence"><h2>Will you spot the error?</h2></section><section><pre><code class="lang-scala">class BlockImporter extends Actor {
+</code></pre></section><section class="just-sentence"><h2>Mutable-by-default API</h2></section><!--Do wywalenia?--><!--+justSentence("Will you spot the error?")--><section class="to-middle"><pre><code class="lang-scala">class BlockImporter extends Actor {
   var importedBlocks: List[Block] = Nil
 
   val importBlocks: List[Block] => Future[Unit]
@@ -18,7 +18,7 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );</script></head><
         )
   }
 }
-</code></pre></section><section><pre><code class="nohighlight dimmed">class BlockImporter extends Actor {
+</code></pre></section><section class="to-middle"><pre><code class="nohighlight dimmed">class BlockImporter extends Actor {
   var importedBlocks: List[Block] = Nil
 
   val importBlocks: List[Block] => Future[Unit]
@@ -27,11 +27,11 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );</script></head><
     case ImportBlocks(blocks) =>
       importBlocks(blocks)
         .onComplete(_ =>
-</code><code class="nohighlight highlighted">&nbsp;           importedBlocks = importedBlocks ++ blocks
+</code><code class="nohighlight highlighted">&nbsp;         importedBlocks = importedBlocks ++ blocks
 </code><code class="nohighlight dimmed">  &nbsp;     )
   }
 }
-</code></pre></section><section><pre><code class="lang-scala">def receive = running(Nil)
+</code></pre></section><section class="to-middle"><pre><code class="lang-scala">def receive = running(Nil)
 
 def running(importedBlocks: List[Block]) = {
   case ImportBlocks(blocks) =>
@@ -39,7 +39,7 @@ def running(importedBlocks: List[Block]) = {
       .onComplete(_ =>
         context become running(importedBlocks ++ blocks))
 }
-</code></pre></section><section><pre><code class="nohighlight dimmed">def receive = running(Nil)
+</code></pre></section><section class="to-middle"><pre><code class="nohighlight dimmed">def receive = running(Nil)
 
 def running(importedBlocks: List[Block]) = {
   case ImportBlocks(blocks) =>
@@ -47,42 +47,63 @@ def running(importedBlocks: List[Block]) = {
       .onComplete(_ =>
 </code><code class="nohighlight highlighted">&nbsp;       context become running(importedBlocks ++ blocks))
 </code><code class="nohighlight dimmed">}
-</code></pre></section><section><pre><code class="lang-scala">def receive = notImportingBlocks(Nil)
-
+</code></pre></section><section class="to-middle"><pre><code class="nohighlight dimmed">def receive = notImportingBlocks(Nil)
+</code><code class="nohighlight highlighted">&nbsp;
 def notImportingBlocks(importedBlocks: List[Block]) = {
   case ImportBlocks(blocks) =>
     context become importingBlocks(importedBlocks)
     importBlocks(blocks)
-      .map(_ => BlocksImportCompleted(blocks))
+      .map(BlocksImportCompleted(_))
       .pipeTo(self)
 }
-
+</code><code class="nohighlight dimmed">&nbsp;
 def importingBlocks(importedBlocks: List[Block]) = {
   case BlocksImportCompleted =>
-   context become notImportingBlocks(importedBlocks ++ blocks)
+    context become notImportingBlocks(importedBlocks ++ blocks)
 }
-</code></pre></section><!-- Is it needed?--><!--+slide--><!--    h2 Current state is a left fold of events--><!--+slide--><!--    pre: code.lang-scala.--><!--        val replayEvent: (State, Event) => State--><!--        val initialState: State--><!----><!--        val state = events.foldLeft(initialState)(replayEvent)--><section class="just-sentence"><h2>Say hello to&nbsp;<pre>Behavior[T]</pre></h2></section><section><pre><code class="lang-scala">package akka.actor.typed.scaladsl
+</code></pre></section><section class="to-middle"><pre><code class="nohighlight dimmed">def receive = notImportingBlocks(Nil)
+</code><code class="nohighlight dimmed">&nbsp;
+def notImportingBlocks(importedBlocks: List[Block]) = {
+  case ImportBlocks(blocks) =>
+    context become importingBlocks(importedBlocks)
+    importBlocks(blocks)
+      .map(BlocksImportCompleted(_))
+      .pipeTo(self)
+}
+</code><code class="nohighlight highlighted">&nbsp;
+def importingBlocks(importedBlocks: List[Block]) = {
+  case BlocksImportCompleted =>
+    context become notImportingBlocks(importedBlocks ++ blocks)
+}
+</code></pre></section><section class="just-sentence"><h2>Future?</h2></section><section class="just-sentence"><h2>Say hello to&nbsp;<pre>Behavior[T]</pre></h2></section><section class="to-middle"><pre><code class="lang-scala">package akka.actor.typed.scaladsl
 
 object Behaviors {
   def receive[T](
     onMessage: (ActorContext[T], T) ⇒ Behavior[T]
   ): Behavior[T]
-
-  def receiveMessage[T](
-    onMessage: T ⇒ Behavior[T]
-  ): Behavior[T]
 }
-
-</code></pre></section><section class="just-sentence"><h2>In practice it looks as follows:</h2></section><section class="just-sentence"><h2>Define your protocol</h2></section><section><pre><code class="lang-scala">sealed trait BlockImporterMsg
+</code></pre></section><section class="just-sentence"><h2>In practice it looks as follows:</h2></section><section class="just-sentence"><h2>Define your protocol</h2></section><!-- podkreślić respondTo--><section class="to-middle"><pre><code class="lang-scala">sealed trait BlockImporterMsg
 
 case class ImportBlocks(
   blocks: List[Block],
-  respondTo: ActorRef[BlocksImported]) extends BlockImporterMsg
+  respondTo: ActorRef[BlocksImported]
+  ) extends BlockImporterMsg
 case class BlocksImported(blocks: List[Block])
 
-case class BlocksImportCompleted(blocks: List[Block]) extends BlockImporterMsg
-</code></pre></section><section class="just-sentence"><h2>Define the behavior</h2></section><section><pre><code class="lang-scala">object BlockImporter {
-  def behavior(importedBlocks: List[Block] = Nil): Behavior[BlockImporterMsg] =
+case class BlocksImportCompleted(
+  blocks: List[Block]) extends BlockImporterMsg
+</code></pre></section><section class="to-middle"><pre><code class="nohighlight dimmed">sealed trait BlockImporterMsg
+
+case class ImportBlocks(
+  blocks: List[Block],
+</code><code class="nohighligh highlighted">&nbsp; respondTo: ActorRef[BlocksImported]
+</code><code class="nohighlight dimmed">&nbsp; ) extends BlockImporterMsg
+</code><code class="nohighlight highlighted">case class BlocksImported(blocks: List[Block])
+</code><code class="nohighlight dimmed">&nbsp;
+case class BlocksImportCompleted(
+  blocks: List[Block]) extends BlockImporterMsg
+</code></pre></section><section class="just-sentence"><h2>Define the behavior</h2></section><section class="to-middle"><pre><code class="lang-scala">object BlockImporter {
+  def behavior(importedBlocks: List[Block] = Nil) =
     Behaviors.receive((ctx, msg) =>
       msg match {
         case ImportBlocks(blocks, respondTo) =>
@@ -92,15 +113,31 @@ case class BlocksImportCompleted(blocks: List[Block]) extends BlockImporterMsg
               ctx.self ! BlocksImportCompleted(blocks)
             })
           Behaviors.same
-        case BlocksImportCompleted =>
+        case BlocksImportCompleted(blocks) =>
           behavior(importedBlocks ++ blocks)
       }
 }
-</code></pre></section><section class="just-sentence"><h2>Now the guardian...</h2></section><section><pre><code class="lang-scala">object Guardian {
+</code></pre></section><section class="to-middle"><pre><code class="nohighlight dimmed">object BlockImporter {
+  def behavior(importedBlocks: List[Block] = Nil) =
+    Behaviors.receive((ctx, msg) =>
+      msg match {
+        case ImportBlocks(blocks, respondTo) =>
+          importBlocks(blocks)
+            .onComplete(_ => {
+              respondTo ! BlocksImported(blocks)
+              ctx.self ! BlocksImportCompleted(blocks)
+            })
+</code><code class="nohighlight highlighted">&nbsp;         Behaviors.same
+</code><code class="nohighlight dimmed">&nbsp;       case BlocksImportCompleted(blocks) =>
+</code><code class="nohighlight highlighted">&nbsp;         behavior(importedBlocks ++ blocks)
+</code><code class="nohighlight dimmed">&nbsp;     }
+}
+</code></pre></section><section class="just-sentence"><h2>Now the guardian...</h2></section><section class="to-middle"><pre><code class="lang-scala">object Guardian {
   case object Start
 
   def behavior = Behaviors.setup[Start.type]{ ctx =>
-    val importer: ActorRef[BlockImporterMsg] = ctx.spawn(BlockImporter.behavior(), "block-importer")
+    val importer: ActorRef[BlockImporterMsg] =
+      ctx.spawn(BlockImporter.behavior(), "block-importer")
 
     Behaviors.receiveMessage {
       case Start =>
@@ -109,46 +146,56 @@ case class BlocksImportCompleted(blocks: List[Block]) extends BlockImporterMsg
     }
   }
 }
-</code></pre></section><section><pre><code class="lang-scala">object Guardian {
+</code></pre></section><section class="to-middle"><pre><code class="lang-scala">object Guardian {
   def behavior = SpawnProtocol.behavior
 }
 
-</code></pre></section><section class="just-sentence"><h2>And the system</h2></section><section><pre><code class="lang-scala">import akka.actor.typed.ActorSystem
+</code></pre></section><section class="just-sentence"><h2>And the system</h2></section><section class="to-middle"><pre><code class="lang-scala">import akka.actor.typed.ActorSystem
 
 object Main extends App {
   val system = ActorSystem(Guardian.behavior, "guardian")
 
   system ! Guardian.Start
 }
-</code></pre></section><section class="just-sentence"><div><h2>Wait! Nice "hello, world"</h2><h2>but I need...</h2></div></section><section class="just-sentence"><h2>Logging?</h2></section><section><pre><code class="lang-scala">Behaviors.logMessages(otherBehavior)
-</code></pre></section><section><pre><code class="lang-scala">def behavior: Behavior[SomeMsg] =
+</code></pre></section><section class="just-sentence"><div><h2>Wait! Nice "hello, world"</h2><h2>but I need...</h2></div></section><section class="just-sentence"><h2>Logging?</h2></section><section class="to-middle"><pre><code>Behaviors.setup { ctx =>
+  ctx.log.debug("in setup")
+  someBehavior
+}
+
+Behaviors.receive((ctx, msg) => {
+  ctx.log.debug("msg: {}", msg)
+  Behaviors.same
+})
+</code></pre></section><section class="to-middle"><pre><code class="lang-scala">Behaviors.logMessages(otherBehavior)
+</code></pre></section><section class="to-middle"><pre><code class="lang-scala">def behavior: Behavior[SomeMsg] =
   Behaviors
     .intercept(
       LoggingInterceptor[SomeMsg]())(
       otherBehavior)
-</code></pre></section><section><pre><code class="lang-scala">class LoggingInterceptor[M] extends BehaviorInterceptor[M, M] {
+</code></pre></section><section class="to-middle"><pre><code class="lang-scala">class LoggingInterceptor[M] extends BehaviorInterceptor[M, M] {
 
-  def aroundReceive(ctx: ActorContext[M], msg: M, target: BehaviorInterceptor.ReceiveTarget[M]): Behavior[M] = {
+  def aroundReceive(
+    ctx: ActorContext[M],
+    msg: M,
+    target: BehaviorInterceptor.ReceiveTarget[M]
+  ): Behavior[M] = {
     ctx.asScala.log.debug("Message {}", msg)
     target(ctx, msg)
   }
 
-  def aroundSignal(ctx: ActorContext[M], signal: Signal, target: BehaviorInterceptor.SignalTarget[M]): Behavior[M] = {
-    ctx.asScala.log.debug("Signal {}", signal)
-    target(ctx, signal)
-  }
+  def aroundSignal(ctx, signal, target): Behavior[M] = ???
 }
-</code></pre></section><section class="just-sentence"><h2>Supervision?</h2></section><section><pre><code class="lang-scala">Behaviors
-  .supervise(otherBehavior)
-  .onFailure(SupervisorStrategy.restart)
-</code></pre></section><section class="just-sentence"><h2>To handle actor lifecycle?</h2></section><section><pre><code class="lang-scala">Behaviors
+</code></pre></section><section class="just-sentence"><h2>To handle actor lifecycle?</h2></section><section class="to-middle"><pre><code class="lang-scala">Behaviors
   .receive(/* ... */)
   .receiveSignal {
-    case (_, PostStop) => //PreRestart, Terminated
+    case (ctx, PostStop) => //PreRestart, Terminated, ChildFailed
       //cleanup
       Behaviors.same
   }
-</code></pre></section><section class="just-sentence"><h2>Managing time?</h2></section><section><pre><code class="lang-scala">val receive = Behaviors.receiveMessage {
+</code></pre></section><section class="just-sentence"><h2>Supervision?</h2></section><section class="to-middle"><pre><code class="lang-scala">Behaviors
+  .supervise(otherBehavior)
+  .onFailure(SupervisorStrategy.restart)
+</code></pre></section><section class="just-sentence"><h2>Managing time?</h2></section><section class="to-middle"><pre><code class="lang-scala">val receive = Behaviors.receiveMessage {
   case CheckPeers =>
     //doSth
     Behaviors.same
@@ -162,7 +209,7 @@ Behaviors.withTimers(timers => {
 
     receive
 })
-</code></pre></section><section class="just-sentence"><h2>And there's always...</h2></section><section><pre><code class="lang-scala">package akka.actors.typed
+</code></pre></section><section class="just-sentence"><h2>And there's always...</h2></section><section class="to-middle"><pre><code class="lang-scala">package akka.actors.typed
 
 abstract class ExtensibleBehavior[T] extends Behavior[T] {
 

@@ -6,7 +6,7 @@
 */
 .hljs {
   display: block;
-  overflow-x: auto;
+  overflow: visible;
   color: #ffffff;
   background: transparent;
   padding: 0.5;
@@ -33,13 +33,13 @@
 }
 
 .hljs-params {
-  color: #ff412e;
+  color: #ffffff;
 }
 
 .hljs-literal,
 .hljs-number,
 .hljs-name {
-  color: #ff412e;
+  color: #ffffff;
   font-weight: bolder;
 }
 

@@ -9,16 +9,17 @@ block title
 block slides
     +titleSlide("ActorRef[Typed]", true, false)
 
-    +justSentence("What is the most valuable thing in Scala?")
+    //+justSentence("What is the most valuable thing in Scala?")
+    +justSentence("The most valuable in Scala?")
 
     +justSentence("Type system")
 
-    +justSentence("What does Akka Actors offer?")
+    +justSentence("Yet we have")
 
     +justSentence
         pre PartialFunction[Any, Unit]
 
-    +justSentence("And now imagine a new dev in project")
+    +justSentence("New dev in project")
 
     +slide(class="to-middle")
         h2
@@ -32,9 +33,10 @@ block slides
 
     +justSentence("Mutable-by-default API")
 
-    +justSentence("Will you spot the error?")
+    //Do wywalenia?
+    //+justSentence("Will you spot the error?")
 
-    +slide
+    +slide(class="to-middle")
         pre: code.lang-scala.
             class BlockImporter extends Actor {
               var importedBlocks: List[Block] = Nil
@@ -50,7 +52,7 @@ block slides
               }
             }
 
-    +slide
+    +slide(class="to-middle")
         pre
             code.nohighlight.dimmed.
                 class BlockImporter extends Actor {
@@ -64,14 +66,14 @@ block slides
                         .onComplete(_ =>
 
             code.nohighlight.highlighted.
-                &nbsp;           importedBlocks = importedBlocks ++ blocks
+                &nbsp;         importedBlocks = importedBlocks ++ blocks
 
             code.nohighlight.dimmed.
                 &nbsp;     )
                 }
               }
 
-    +slide
+    +slide(class="to-middle")
         pre: code.lang-scala.
             def receive = running(Nil)
 
@@ -82,7 +84,7 @@ block slides
                     context become running(importedBlocks ++ blocks))
             }
 
-    +slide
+    +slide(class="to-middle")
         pre
             code.nohighlight.dimmed.
                 def receive = running(Nil)
@@ -98,39 +100,57 @@ block slides
             code.nohighlight.dimmed.
                 }
 
-    +slide
-        pre: code.lang-scala.
-            def receive = notImportingBlocks(Nil)
+    +slide(class="to-middle")
+        pre
+            code.nohighlight.dimmed.
+                def receive = notImportingBlocks(Nil)
 
-            def notImportingBlocks(importedBlocks: List[Block]) = {
-              case ImportBlocks(blocks) =>
-                context become importingBlocks(importedBlocks)
-                importBlocks(blocks)
-                  .map(_ => BlocksImportCompleted(blocks))
-                  .pipeTo(self)
-            }
+            code.nohighlight.highlighted.
+                &nbsp;
+                def notImportingBlocks(importedBlocks: List[Block]) = {
+                  case ImportBlocks(blocks) =>
+                    context become importingBlocks(importedBlocks)
+                    importBlocks(blocks)
+                      .map(BlocksImportCompleted(_))
+                      .pipeTo(self)
+                }
 
-            def importingBlocks(importedBlocks: List[Block]) = {
-              case BlocksImportCompleted =>
-               context become notImportingBlocks(importedBlocks ++ blocks)
-            }
+            code.nohighlight.dimmed.
+                &nbsp;
+                def importingBlocks(importedBlocks: List[Block]) = {
+                  case BlocksImportCompleted =>
+                    context become notImportingBlocks(importedBlocks ++ blocks)
+                }
 
-    // Is it needed?
-    //+slide
-    //    h2 Current state is a left fold of events
+    +slide(class="to-middle")
+        pre
+            code.nohighlight.dimmed.
+                def receive = notImportingBlocks(Nil)
 
-    //+slide
-    //    pre: code.lang-scala.
-    //        val replayEvent: (State, Event) => State
-    //        val initialState: State
-    //
-    //        val state = events.foldLeft(initialState)(replayEvent)
+            code.nohighlight.dimmed.
+                &nbsp;
+                def notImportingBlocks(importedBlocks: List[Block]) = {
+                  case ImportBlocks(blocks) =>
+                    context become importingBlocks(importedBlocks)
+                    importBlocks(blocks)
+                      .map(BlocksImportCompleted(_))
+                      .pipeTo(self)
+                }
+
+            code.nohighlight.highlighted.
+                &nbsp;
+                def importingBlocks(importedBlocks: List[Block]) = {
+                  case BlocksImportCompleted =>
+                    context become notImportingBlocks(importedBlocks ++ blocks)
+                }
+
+    +justSentence("Future?")
 
     +justSentence
         h2 Say hello to&nbsp;
             pre Behavior[T]
 
-    +slide
+    +slide(class="to-middle")
         pre: code.lang-scala.
             package akka.actor.typed.scaladsl
 
@@ -138,34 +158,54 @@ block slides
               def receive[T](
                 onMessage: (ActorContext[T], T) ⇒ Behavior[T]
               ): Behavior[T]
-
-              def receiveMessage[T](
-                onMessage: T ⇒ Behavior[T]
-              ): Behavior[T]
             }
-
 
     +justSentence("In practice it looks as follows:")
 
     +justSentence("Define your protocol")
 
-    +slide
+    // podkreślić respondTo
+    +slide(class="to-middle")
         pre: code.lang-scala.
             sealed trait BlockImporterMsg
 
             case class ImportBlocks(
               blocks: List[Block],
-              respondTo: ActorRef[BlocksImported]) extends BlockImporterMsg
+              respondTo: ActorRef[BlocksImported]
+              ) extends BlockImporterMsg
             case class BlocksImported(blocks: List[Block])
 
-            case class BlocksImportCompleted(blocks: List[Block]) extends BlockImporterMsg
+            case class BlocksImportCompleted(
+              blocks: List[Block]) extends BlockImporterMsg
+
+    +slide(class="to-middle")
+        pre
+            code.nohighlight.dimmed.
+                sealed trait BlockImporterMsg
+
+                case class ImportBlocks(
+                  blocks: List[Block],
+
+            code.nohighligh.highlighted.
+                  &nbsp; respondTo: ActorRef[BlocksImported]
+
+            code.nohighlight.dimmed.
+                &nbsp; ) extends BlockImporterMsg
+
+            code.nohighlight.highlighted.
+                case class BlocksImported(blocks: List[Block])
+
+            code.nohighlight.dimmed.
+                &nbsp;
+                case class BlocksImportCompleted(
+                  blocks: List[Block]) extends BlockImporterMsg
 
     +justSentence("Define the behavior")
 
-    +slide
+    +slide(class="to-middle")
         pre: code.lang-scala.
             object BlockImporter {
-              def behavior(importedBlocks: List[Block] = Nil): Behavior[BlockImporterMsg] =
+              def behavior(importedBlocks: List[Block] = Nil) =
                 Behaviors.receive((ctx, msg) =>
                   msg match {
                     case ImportBlocks(blocks, respondTo) =>
@@ -175,20 +215,48 @@ block slides
                           ctx.self ! BlocksImportCompleted(blocks)
                         })
                       Behaviors.same
-                    case BlocksImportCompleted =>
+                    case BlocksImportCompleted(blocks) =>
                       behavior(importedBlocks ++ blocks)
                   }
             }
 
+    +slide(class="to-middle")
+        pre
+            code.nohighlight.dimmed.
+                object BlockImporter {
+                  def behavior(importedBlocks: List[Block] = Nil) =
+                    Behaviors.receive((ctx, msg) =>
+                      msg match {
+                        case ImportBlocks(blocks, respondTo) =>
+                          importBlocks(blocks)
+                            .onComplete(_ => {
+                              respondTo ! BlocksImported(blocks)
+                              ctx.self ! BlocksImportCompleted(blocks)
+                            })
+
+            code.nohighlight.highlighted.
+                &nbsp;         Behaviors.same
+
+            code.nohighlight.dimmed.
+                &nbsp;       case BlocksImportCompleted(blocks) =>
+
+            code.nohighlight.highlighted.
+                &nbsp;         behavior(importedBlocks ++ blocks)
+
+            code.nohighlight.dimmed.
+                &nbsp;     }
+                }
+
     +justSentence("Now the guardian...")
 
-    +slide
+    +slide(class="to-middle")
         pre: code.lang-scala.
             object Guardian {
               case object Start
 
               def behavior = Behaviors.setup[Start.type]{ ctx =>
-                val importer: ActorRef[BlockImporterMsg] = ctx.spawn(BlockImporter.behavior(), "block-importer")
+                val importer: ActorRef[BlockImporterMsg] =
+                  ctx.spawn(BlockImporter.behavior(), "block-importer")
 
                 Behaviors.receiveMessage {
                   case Start =>
@@ -198,7 +266,7 @@ block slides
               }
             }
 
-    +slide
+    +slide(class="to-middle")
         pre: code.lang-scala.
             object Guardian {
               def behavior = SpawnProtocol.behavior
@@ -207,7 +275,7 @@ block slides
 
     +justSentence("And the system")
 
-    +slide
+    +slide(class="to-middle")
         pre: code.lang-scala.
             import akka.actor.typed.ActorSystem
 
@@ -224,11 +292,23 @@ block slides
 
     +justSentence("Logging?")
 
-    +slide
+    +slide(class="to-middle")
+        pre: code.
+            Behaviors.setup { ctx =>
+              ctx.log.debug("in setup")
+              someBehavior
+            }
+
+            Behaviors.receive((ctx, msg) => {
+              ctx.log.debug("msg: {}", msg)
+              Behaviors.same
+            })
+
+    +slide(class="to-middle")
         pre: code.lang-scala.
             Behaviors.logMessages(otherBehavior)
 
-    +slide
+    +slide(class="to-middle")
         pre: code.lang-scala.
             def behavior: Behavior[SomeMsg] =
               Behaviors
@@ -236,44 +316,45 @@ block slides
                   LoggingInterceptor[SomeMsg]())(
                   otherBehavior)
 
-    +slide
+    +slide(class="to-middle")
         pre: code.lang-scala.
             class LoggingInterceptor[M] extends BehaviorInterceptor[M, M] {
 
-              def aroundReceive(ctx: ActorContext[M], msg: M, target: BehaviorInterceptor.ReceiveTarget[M]): Behavior[M] = {
+              def aroundReceive(
+                ctx: ActorContext[M],
+                msg: M,
+                target: BehaviorInterceptor.ReceiveTarget[M]
+              ): Behavior[M] = {
                 ctx.asScala.log.debug("Message {}", msg)
                 target(ctx, msg)
               }
 
-              def aroundSignal(ctx: ActorContext[M], signal: Signal, target: BehaviorInterceptor.SignalTarget[M]): Behavior[M] = {
-                ctx.asScala.log.debug("Signal {}", signal)
-                target(ctx, signal)
-              }
+              def aroundSignal(ctx, signal, target): Behavior[M] = ???
             }
+
+    +justSentence("To handle actor lifecycle?")
+
+    +slide(class="to-middle")
+        pre: code.lang-scala.
+            Behaviors
+              .receive(/* ... */)
+              .receiveSignal {
+                case (ctx, PostStop) => //PreRestart, Terminated, ChildFailed
+                  //cleanup
+                  Behaviors.same
+              }
 
     +justSentence("Supervision?")
 
-    +slide
+    +slide(class="to-middle")
         pre: code.lang-scala.
             Behaviors
               .supervise(otherBehavior)
               .onFailure(SupervisorStrategy.restart)
 
-    +justSentence("To handle actor lifecycle?")
-
-    +slide
-        pre: code.lang-scala.
-            Behaviors
-              .receive(/* ... */)
-              .receiveSignal {
-                case (_, PostStop) => //PreRestart, Terminated
-                  //cleanup
-                  Behaviors.same
-              }
-
     +justSentence("Managing time?")
 
-    +slide
+    +slide(class="to-middle")
         pre: code.lang-scala.
             val receive = Behaviors.receiveMessage {
               case CheckPeers =>
@@ -292,7 +373,7 @@ block slides
 
     +justSentence("And there's always...")
 
-    +slide
+    +slide(class="to-middle")
         pre: code.lang-scala.
             package akka.actors.typed
 

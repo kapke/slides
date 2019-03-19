@@ -7,6 +7,7 @@
     --color-main: #{$color-main};
     --color-accent: #{$color-accent};
     --color-subdue: #{$color-subdue};
+    --color-dimmed: #{$color-dimmed};
 }
 
 body {
@@ -29,7 +30,7 @@ body {
     font-family: "Muli", sans-serif;
     color:  var(--color-main);
     font-size: 4.4rem;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 
     pre {
       display: inline;
@@ -45,11 +46,11 @@ body {
 
     code {
       &.dimmed {
-        color: var(--color-subdue);
+        color: var(--color-dimmed);
       }
 
       &.highlighted {
-        color: var(--color-accent);
+        color: var(--color-main);
       }
     }
   }
@@ -99,6 +100,10 @@ body {
       display: flex !important;
       flex-direction: column;
       justify-content: space-between;
+
+      h1 {
+        margin-bottom: 2.5rem;
+      }
     }
 
     &.to-middle {
