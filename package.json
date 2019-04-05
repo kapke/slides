@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "pug index.pug --pretty --obj=slides.json",
-    "build:indexes:watch": "pug --watch \"Akka Actors Typed/index.pug\"",
+    "build": "npm run build:index && npm run build:indexes",
+    "build:index": "pug --pretty --obj=slides.json index.pug",
+    "build:indexes": "pug --pretty \"Akka Actors Typed/index.pug\"",
+    "build:indexes:watch": "npm run build:indexes -- --watch",
     "build:styles:watch": "sass --watch style/",
     "serve": "live-server",
     "test": "echo \"Error: no test specified\" && exit 1"
