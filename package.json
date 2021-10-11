@@ -5,7 +5,7 @@
   "scripts": {
     "build": "npm run build:index && npm run build:indexes",
     "build:index": "pug --pretty --obj=slides.json index.pug",
-    "build:indexes": "pug --pretty \"Akka Actors Typed/index.pug\"",
+    "build:indexes": "pug --pretty \"3-years-with-Scala/index.pug\"",
     "build:indexes:watch": "npm run build:indexes -- --watch",
     "build:styles:watch": "sass --watch style/",
     "serve": "live-server",

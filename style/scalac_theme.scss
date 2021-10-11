@@ -17,6 +17,7 @@ body {
 }
 
 .reveal {
+
   h1 {
     font-family: 'Ropa Sans', sans-serif;
     color:  var(--color-main);
@@ -27,7 +28,7 @@ body {
   }
 
   h2  {
-    font-family: "Muli", sans-serif;
+    font-family: "Ropa Sans", sans-serif;
     color:  var(--color-main);
     font-size: 4.4rem;
     margin-bottom: 2rem;
@@ -36,6 +37,10 @@ body {
       display: inline;
       font-size: inherit;
     }
+  }
+
+  .accent {
+    color: var(--color-accent);
   }
 
   pre {
@@ -142,6 +147,16 @@ body {
   &.scalac {
     width: 50%;
     margin: 0 auto 10%;
+  }
+
+  &.scalac-small {
+    position: fixed;
+    left: 3vh;
+    bottom: 3vw;
+    width: 20vw;
+    height: 5vh;
+    object-fit: contain;
+    object-position: left center;
   }
 }
 

@@ -1,0 +1,259 @@
+extends ../presentation-template
+
+block theme
+    - themeName = "scalac"
+
+block title
+    | 3 years with Scala
+
+block slides
+    +titleSlide("3 years with Scala", false, false)
+
+    +slide(class="to-middle")
+        h2
+            | Why&nbsp;
+            span.accent Scala
+            | ?
+
+    +justSentence("Lesson 1")
+
+    +slide
+        h2 There's no 'true' FP
+
+        +slide
+        +slide
+            h2 Objects?
+        +slide
+            h2 Classes?
+        +slide
+            h2 Inheritance?
+        +slide
+            h2 Side-effecting functions?
+        +slide
+            h2 Strong typing?
+
+    +justSentence("There's always programming with (mostly pure) functions")
+
+    +justSentence("Lesson 2")
+
+    +justSentence("Make invalid states impossible to represent")
+
+    +slide
+        h2 What's wrong?
+        pre: code.lang-ts.
+            interface Progress {
+                current?: number
+                total?: number
+            }
+    +slide
+        h2 There are 3 possible states
+        pre: code.lang-ts.
+            type Progress =
+              | {type: "not-started"}
+              | {type: "in-progress", current: number, total: number}
+              | {type: "finished", count: number}
+
+    +slide
+        h2 The numbers are off though...
+        pre: code.lang-ts.
+            type Progress =
+              | {type: "not-started"}
+              | {type: "in-progress", current: number, total: number}
+              | {type: "finished", count: number}
+
+    +slide
+        pre: code.lang-ts.
+            //library
+            type Branded&lt;T, Brand&gt; = T & {__Brand: Brand}
+            function brand&lt;T, Brand&gt;(value: T, brand: Brand): Branded&lt;T, Brand&gt; {
+                return value as Branded&lt;T, Brand&gt;
+            }
+            //app
+            const PosIntBrand: unique symbol = Symbol("PosInt") //do not export!
+            type PosInt = Branded&lt;number, typeof PosIntKind&gt;
+            function PosInt(number: number): Either&lt;PosIntError, PosInt&gt; {
+                return (Number.isInt(number) && number &gt; 0)
+                    ? Either.right(brand(number, PosIntBrand))
+                    : Either.left("error")
+            }
+
+    +slide
+        h2 Numbers are fine now, one thing isn't
+        pre: code.lang-ts.
+            type Progress =
+              | {type: "not-started"}
+              | {type: "in-progress", current: PosInt, total: PosInt}
+              | {type: "finished", count: PosInt}
+
+    +slide
+        h2 Final touch
+        pre: code.lang-ts.
+            type Progress =
+              | {type: "not-started"}
+              | {type: "in-progress", current: PosInt, missing: PosInt}
+              | {type: "finished", count: PosInt}
+
+    +justSentence("Lesson 3")
+
+    +justSentence("No mocks")
+
+    +slide(class="to-middle")
+        h2 No
+        pre jest.mock
+        br
+        pre jasmine.Spy
+
+    +slide
+        h2 Result?
+
+    +slide
+        h2 Result?
+        pre: code.lang-ts.
+            //Instead of directly using imported code...
+            import storage from '../storage'
+            export function doSth(data: Sth) {
+              storage.save(data.foo)
+            }
+
+    +slide
+        h2 Result?
+        pre: code.lang-ts.
+            // ...we receive dependencies in parameters or class constructor
+            export function doSth(storage: Storage, data: Sth) {
+              storage.save(data.foo)
+            }
+
+    +slide
+        h2 Result?
+        pre: code.lang-ts.
+            // ...we receive dependencies in parameters or class constructor
+            export class SomeService {
+              constructor(private storage: Storage) {}
+
+              doSth(data: Sth) {
+                storage.save(data.foo)
+              }
+            }
+
+    +slide
+        h2 Result?
+        pre: code.lang-ts.
+            // Ready to use fake implementations
+            class FakeStorage implements Storage {
+              private value: Foo;
+
+              save(newValue: Foo) {
+                return new Promise((resolve) =&gt; {
+                  this.value = newValue
+                })
+              }
+
+              get {
+                Promise.resolve(this.value)
+              }
+            }
+
+
+    +slide
+        h2 Result?
+        pre: code.lang-ts.
+            //Smaller dependencies, law of interface segregation and stuff
+
+            interface FooSth {
+                doSthA()
+                doSthB()
+                doSthC()
+
+                doFooA()
+                doFooB()
+                doFooC() //and more...
+            }
+
+    +justSentence("Lesson 4")
+
+    +justSentence("Property-based tests")
+
+    +slide
+        pre: code.lang-ts.
+            it("should return saved element", () =&gt; {
+              const personGen = Gen.name.tupleWith(Gen.posInt).map(([name, age]) =&gt; Person(name, age))
+              forAll(personGen, async (person) =&gt; {
+                const storage = new Storage()
+                await storage.save(person)
+                const result = await storage.get()
+                expect(result).toEqual(person)
+              })
+            })
+
+    +slide
+        pre: code.lang-ts.
+            it("should match existing implementation", () =&gt; {
+              forAll(Gen.arrayOf(Gen.number), (numbers) =&gt; {
+                const expected = [...numbers].sort()
+                const actual = mySort([...number])
+
+                expect(actual).toEqual(expected)
+              })
+            })
+
+    +slide
+        pre: code.lang-ts.
+            it("should match simplified model", () =&gt; {
+              type Action = {type: "put", value: number} | {type: "get"}
+
+              const actionGen: Gen&lt;Action&gt; = Gen.oneOf(
+                Gen.number.map(nr =&gt; Action.put(nr)),
+                Gen.const(Action.get)
+              )
+
+              forAll(Gen.arrayOf(actionGen), (actions) =&gt; {
+                const storage = new Storage()
+                const storageModel = new StorageModel() // e.g. fake in-memory impl presented...
+
+                applyActions(actions, storage)
+                applyActions(actions, storageModel)
+
+                expect(inspectStorage(newStorage)).toEqual(inspectStorage(oldStorage))
+              })
+            })
+
+
+    +justSentence("Lesson 5")
+
+    +justSentence("Effects as values")
+
+    +slide
+        h2 Scary monads, etc
+
+        +slide
+            pre.
+                //Errors usually
+                type Either&lt;A, B&gt; = {side: "left", a: A} | {side: "right", b: B}
+        +slide
+            pre.
+                //Data present or not
+                type Option&lt;A&gt; = {type: "some", value: A} | {type: "none"}
+        +slide
+            pre.
+                //Data ariving from somewhere
+                Observable
+        +slide
+            pre.
+                //Async computation
+                Promise
+        +slide
+            h3 They all are cool values with lots of operators
+
+    +justSentence("Lessons 6, 7, 8, ...")
+
+    +justSentence("Immutability and persistent data strucutres")
+
+    +justSentence("Folds")
+
+    +justSentence("Side-effects wih IO")
+
+    +justSentence("Only pure functions")
+
+    +justSentence("Serialization with io-ts")
+
+    +finalSlides

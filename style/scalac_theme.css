@@ -27,7 +27,7 @@ body {
   margin-bottom: 1rem;
 }
 .reveal h2 {
-  font-family: "Muli", sans-serif;
+  font-family: "Ropa Sans", sans-serif;
   color: var(--color-main);
   font-size: 4.4rem;
   margin-bottom: 2rem;
@@ -35,6 +35,9 @@ body {
 .reveal h2 pre {
   display: inline;
   font-size: inherit;
+}
+.reveal .accent {
+  color: var(--color-accent);
 }
 .reveal pre {
   font-family: "Ubuntu Mono", monospace;
@@ -110,6 +113,15 @@ body {
 .logo.scalac {
   width: 50%;
   margin: 0 auto 10%;
+}
+.logo.scalac-small {
+  position: fixed;
+  left: 3vh;
+  bottom: 3vw;
+  width: 20vw;
+  height: 5vh;
+  object-fit: contain;
+  object-position: left center;
 }
 
 /*# sourceMappingURL=scalac_theme.css.map */

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>3 years with Scala
+  </title>
+  <meta name="author" content="Andrzej Kopeć">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="css/reveal.css">
+  <link rel="stylesheet" href="../style/hljs_scalac.css"/>
+  <link rel="stylesheet" href="../style/scalac_theme.css"/>
+  <!-- Printing and PDF exports-->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+</head>
+<body>
+  <div class="reveal scalac">
+    <!-- Any section element inside of this container is displayed as a slide-->
+    <div class="slides">
+      <section class="title-slide">
+        <div class="headers">
+          <h1 style="text-transform: none">3 years with Scala</h1>
+        </div>
+      </section>
+      <section class="to-middle">
+        <h2>Why&nbsp;<span class="accent">Scala</span>?</h2>
+      </section>
+      <section class="just-sentence">
+        <h2>Lesson 1</h2>
+      </section>
+      <section>
+        <h2>There's no 'true' FP</h2>
+        <section>
+        </section>
+        <section>
+          <h2>Objects?</h2>
+        </section>
+        <section>
+          <h2>Classes?</h2>
+        </section>
+        <section>
+          <h2>Inheritance?</h2>
+        </section>
+        <section>
+          <h2>Side-effecting functions?</h2>
+        </section>
+        <section>
+          <h2>Strong typing?</h2>
+        </section>
+      </section>
+      <section class="just-sentence">
+        <h2>There's always programming with (mostly pure) functions</h2>
+      </section>
+      <section class="just-sentence">
+        <h2>Lesson 2</h2>
+      </section>
+      <section class="just-sentence">
+        <h2>Make invalid states impossible to represent</h2>
+      </section>
+      <section>
+        <h2>What's wrong?</h2>
+        <pre><code class="lang-ts">interface Progress {
+    current?: number
+    total?: number
+}</code></pre>
+      </section>
+      <section>
+        <h2>There are 3 possible states</h2>
+        <pre><code class="lang-ts">type Progress =
+  | {type: "not-started"}
+  | {type: "in-progress", current: number, total: number}
+  | {type: "finished", count: number}
+</code></pre>
+      </section>
+      <section>
+        <h2>The numbers are off though...</h2>
+        <pre><code class="lang-ts">type Progress =
+  | {type: "not-started"}
+  | {type: "in-progress", current: number, total: number}
+  | {type: "finished", count: number}
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="lang-ts">//library
+type Branded&lt;T, Brand&gt; = T & {__Brand: Brand}
+function brand&lt;T, Brand&gt;(value: T, brand: Brand): Branded&lt;T, Brand&gt; {
+    return value as Branded&lt;T, Brand&gt;
+}
+//app
+const PosIntBrand: unique symbol = Symbol("PosInt") //do not export!
+type PosInt = Branded&lt;number, typeof PosIntKind&gt;
+function PosInt(number: number): Either&lt;PosIntError, PosInt&gt; {
+    return (Number.isInt(number) && number &gt; 0)
+        ? Either.right(brand(number, PosIntBrand))
+        : Either.left("error")
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>Numbers are fine now, one thing isn't</h2>
+        <pre><code class="lang-ts">type Progress =
+  | {type: "not-started"}
+  | {type: "in-progress", current: PosInt, total: PosInt}
+  | {type: "finished", count: PosInt}
+</code></pre>
+      </section>
+      <section>
+        <h2>Final touch</h2>
+        <pre><code class="lang-ts">type Progress =
+  | {type: "not-started"}
+  | {type: "in-progress", current: PosInt, missing: PosInt}
+  | {type: "finished", count: PosInt}
+</code></pre>
+      </section>
+      <section class="just-sentence">
+        <h2>Lesson 3</h2>
+      </section>
+      <section class="just-sentence">
+        <h2>No mocks</h2>
+      </section>
+      <section class="to-middle">
+        <h2>No</h2>
+        <pre>jest.mock</pre><br>
+        <pre>jasmine.Spy</pre>
+      </section>
+      <section>
+        <h2>Result?</h2>
+      </section>
+      <section>
+        <h2>Result?</h2>
+        <pre><code class="lang-ts">//Instead of directly using imported code...
+import storage from '../storage'
+export function doSth(data: Sth) {
+  storage.save(data.foo)
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>Result?</h2>
+        <pre><code class="lang-ts">// ...we receive dependencies in parameters or class constructor
+export function doSth(storage: Storage, data: Sth) {
+  storage.save(data.foo)
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>Result?</h2>
+        <pre><code class="lang-ts">// ...we receive dependencies in parameters or class constructor
+export class SomeService {
+  constructor(private storage: Storage) {}
+
+  doSth(data: Sth) {
+    storage.save(data.foo)
+  }
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>Result?</h2>
+        <pre><code class="lang-ts">// Ready to use fake implementations
+class FakeStorage implements Storage {
+  private value: Foo;
+
+  save(newValue: Foo) {
+    return new Promise((resolve) =&gt; {
+      this.value = newValue
+    })
+  }
+
+  get {
+    Promise.resolve(this.value)
+  }
+}
+
+</code></pre>
+      </section>
+      <section>
+        <h2>Result?</h2>
+        <pre><code class="lang-ts">//Smaller dependencies, law of interface segregation and stuff
+
+interface FooSth {
+    doSthA()
+    doSthB()
+    doSthC()
+
+    doFooA()
+    doFooB()
+    doFooC() //and more...
+}
+</code></pre>
+      </section>
+      <section class="just-sentence">
+        <h2>Lesson 4</h2>
+      </section>
+      <section class="just-sentence">
+        <h2>Property-based tests</h2>
+      </section>
+      <section>
+        <pre><code class="lang-ts">it("should return saved element", () =&gt; {
+  const personGen = Gen.name.tupleWith(Gen.posInt).map(([name, age]) =&gt; Person(name, age))
+  forAll(personGen, async (person) =&gt; {
+    const storage = new Storage()
+    await storage.save(person)
+    const result = await storage.get()
+    expect(result).toEqual(person)
+  })
+})
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="lang-ts">it("should match existing implementation", () =&gt; {
+  forAll(Gen.arrayOf(Gen.number), (numbers) =&gt; {
+    const expected = [...numbers].sort()
+    const actual = mySort([...number])
+
+    expect(actual).toEqual(expected)
+  })
+})
+</code></pre>
+      </section>
+      <section>
+        <pre><code class="lang-ts">it("should match simplified model", () =&gt; {
+  type Action = {type: "put", value: number} | {type: "get"}
+
+  const actionGen: Gen&lt;Action&gt; = Gen.oneOf(
+    Gen.number.map(nr =&gt; Action.put(nr)),
+    Gen.const(Action.get)
+  )
+
+  forAll(Gen.arrayOf(actionGen), (actions) =&gt; {
+    const storage = new Storage()
+    const storageModel = new StorageModel() // e.g. fake in-memory impl presented...
+
+    applyActions(actions, storage)
+    applyActions(actions, storageModel)
+
+    expect(inspectStorage(newStorage)).toEqual(inspectStorage(oldStorage))
+  })
+})
+
+</code></pre>
+      </section>
+      <section class="just-sentence">
+        <h2>Lesson 5</h2>
+      </section>
+      <section class="just-sentence">
+        <h2>Effects as values</h2>
+      </section>
+      <section>
+        <h2>Scary monads, etc</h2>
+        <section>
+          <pre>//Errors usually
+type Either&lt;A, B&gt; = {side: "left", a: A} | {side: "right", b: B}</pre>
+        </section>
+        <section>
+          <pre>//Data present or not
+type Option&lt;A&gt; = {type: "some", value: A} | {type: "none"}</pre>
+        </section>
+        <section>
+          <pre>//Data ariving from somewhere
+Observable</pre>
+        </section>
+        <section>
+          <pre>//Async computation
+Promise</pre>
+        </section>
+        <section>
+          <h3>They all are cool values with lots of operators</h3>
+        </section>
+      </section>
+      <section class="just-sentence">
+        <h2>Lessons 6, 7, 8, ...</h2>
+      </section>
+      <section class="just-sentence">
+        <h2>Immutability and persistent data strucutres</h2>
+      </section>
+      <section class="just-sentence">
+        <h2>Folds</h2>
+      </section>
+      <section class="just-sentence">
+        <h2>Side-effects wih IO</h2>
+      </section>
+      <section class="just-sentence">
+        <h2>Only pure functions</h2>
+      </section>
+      <section class="just-sentence">
+        <h2>Serialization with io-ts</h2>
+      </section>
+      <section>
+        <h1>Thank you</h1>
+      </section>
+      <section class="contact to-middle">
+        <div>
+          <h2>Andrzej Kopeć</h2>
+          <h2>andrzej.kopec@scalac.io</h2>
+          <h2>@kapke_</h2>
+        </div>
+      </section>
+    </div><img class="logo scalac-small" src="../scalac_logo_light.png" alt="">
+  </div>
+  <script src="lib/js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="bower_components/highlightjs/highlight.pack.min.js"></script>
+  <script>
+    window.kapke = {
+        revealConfig: {
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+            transition: 'slide', // none/fade/slide/convex/concave/zoom
+            // Optional reveal.js plugins
+            dependencies: [
+                {
+                    src: 'lib/js/classList.js', condition: function () {
+                        return !document.body.classList;
+                    }
+                },
+                {
+                    src: 'plugin/markdown/marked.js', condition: function () {
+                        return !!document.querySelector('[data-markdown]');
+                    }
+                },
+                {
+                    src: 'plugin/markdown/markdown.js', condition: function () {
+                        return !!document.querySelector('[data-markdown]');
+                    }
+                },
+                {
+                    src: 'plugin/highlight/highlight.js', async: true, condition: function () {
+                        return !!document.querySelector('pre code');
+                    }, callback: function () {
+                        hljs.initHighlightingOnLoad();
+                    }
+                },
+                {src: 'plugin/zoom-js/zoom.js', async: true},
+                {src: 'plugin/notes/notes.js', async: true}
+            ]
+        }
+    }
+    
+  </script>
+  <script>window.kapke.revealConfig.center = false</script>
+  <script>
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize(window.kapke.revealConfig);
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (location.search.includes('devmeeting=true')) {
+            const elementsToRemove = Array.from(document.getElementsByClassName('no-devmeeting'));
+    
+            elementsToRemove.forEach(e => e.parentElement.removeChild(e));
+        }
+    });
+  </script>
+</body>
