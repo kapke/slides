@@ -4,10 +4,11 @@ mixin slide
     section(class = attributes.class)
         block
 
-mixin titleSlide(title, withAuthor, uppercased)
+mixin titleSlide(title, withAuthor, uppercased, withBranding)
     - withAuthor = withAuthor !== undefined ? !!withAuthor : true
     - uppercased = uppercased !== undefined ? !!uppercased : true
     - transform = uppercased ? 'uppercase' : 'none'
+    - withBranding = withBranding !== undefined ? !!withBranding : false
 
     +slide(class = "title-slide")
         if themeName == "scalac"
@@ -15,7 +16,7 @@ mixin titleSlide(title, withAuthor, uppercased)
                 h1(style='text-transform: ' + transform)= title
                 if withAuthor
                     h2.uppercased.light Andrzej Kopeć
-            if withAuthor
+            if withAuthor && withBranding
                 img.logo.scalac.no-devmeeting(src="../scalac_logo_light.png", alt="")
         else
             h1(style='text-transform: ' + transform)= title
